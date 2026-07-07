@@ -27,6 +27,7 @@ import {
 } from "../lib/authRequestContext";
 import logger from "../utils/logger";
 import { useSettingsStore } from "../stores/settingsStore";
+import { usePolicyStore } from "../stores/policyStore";
 
 const useStaticSession = () => ({
   data: null,
@@ -191,6 +192,7 @@ export function useAuth() {
         if (!cancelled) {
           logger.debug("Auth state sync", { isSignedIn: true, userId: resolvedUserId }, "auth");
           useSettingsStore.getState().setIsSignedIn(true);
+          void usePolicyStore.getState().fetchPolicy();
         }
       } else {
         invalidateValidatedAuthContext();
