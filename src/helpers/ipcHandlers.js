@@ -7632,8 +7632,14 @@ class IPCHandlers {
         if (!response.ok) throw new Error(`API error: ${response.status}`);
 
         const json = await response.json();
-        const data = json?.data ?? null;
-        if (data && data.managed) {
+        const data = json?.data;
+        // Treat a malformed 200 body as a failure, not an authoritative
+        // "unmanaged" verdict, so the catch serves the cached policy (fail-closed)
+        // instead of deleting it and unlocking the user.
+        if (!data || typeof data.managed !== "boolean") {
+          throw new Error("Malformed policy response");
+        }
+        if (data.managed) {
           try {
             fs.writeFileSync(cachePath, JSON.stringify(data), { mode: 0o600 });
           } catch (err) {
