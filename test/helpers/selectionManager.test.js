@@ -177,6 +177,58 @@ test("a copy that replaces the sentinel is captured and the clipboard restored",
   assert.equal(writes.at(-1), "user clipboard");
 });
 
+// A line copy (one line + trailing terminator) from an empty-selection Ctrl+C
+// in editors like VS Code must never be mistaken for a real selection.
+const VSCODE_TARGET = { kind: "x11-window", id: "7", windowClass: "code" };
+
+function makeLineCopyHarness(copiedText) {
+  let polled = false;
+  return makeCaptureHarness({
+    readClipboard: (written) => {
+      if (written.length === 0) return ["user clipboard"];
+      if (!polled) {
+        polled = true;
+        return [written[0]];
+      }
+      return [copiedText, written[0]];
+    },
+  });
+}
+
+test("a line copy from an empty selection in a line-copy editor reads as no selection", async () => {
+  const { manager, writes } = makeLineCopyHarness("const x = 1;\r\n");
+  const result = await manager._captureViaClipboard(
+    async () => ({ success: true, target: VSCODE_TARGET }),
+    VSCODE_TARGET
+  );
+
+  assert.equal(result.status, "none");
+  assert.equal(writes.at(-1), "user clipboard");
+});
+
+test("a multi-line selection in a line-copy editor is still captured", async () => {
+  const { manager } = makeLineCopyHarness("first line\nsecond line\n");
+  const result = await manager._captureViaClipboard(
+    async () => ({ success: true, target: VSCODE_TARGET }),
+    VSCODE_TARGET
+  );
+
+  assert.equal(result.status, "selected");
+  assert.equal(result.text, "first line\nsecond line\n");
+});
+
+test("a trailing-newline selection outside line-copy editors is still captured", async () => {
+  const { manager } = makeLineCopyHarness("whole line\n");
+  const firefoxTarget = { kind: "x11-window", id: "7", windowClass: "org.mozilla.firefox" };
+  const result = await manager._captureViaClipboard(
+    async () => ({ success: true, target: firefoxTarget }),
+    firefoxTarget
+  );
+
+  assert.equal(result.status, "selected");
+  assert.equal(result.text, "whole line\n");
+});
+
 test("does not overwrite a clipboard value copied while capture is in flight", async () => {
   let userCopied = false;
   const { manager, writes } = makeCaptureHarness({

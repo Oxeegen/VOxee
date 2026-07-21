@@ -92,7 +92,11 @@ class LlamaServerManager {
       if (cpuBin) paths.cpu = cpuBin;
     }
 
-    this.cachedServerBinaryPaths = paths;
+    // Only cache hits: a miss may be transient (binary downloaded after
+    // startup), and caching it would require an app restart to recover.
+    if (Object.keys(paths).length > 0) {
+      this.cachedServerBinaryPaths = paths;
+    }
     return paths;
   }
 

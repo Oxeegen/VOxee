@@ -1,4 +1,7 @@
-import { resolveDictationAgentReachability } from "./dictationRouting.js";
+import {
+  resolveDictationAgentProvider,
+  resolveDictationAgentReachability,
+} from "./dictationRouting.js";
 
 // The dictation agent's inference scope, shared by the dictation route in
 // audioManager and the Prompt Studio test tab so a prompt test hits the same
@@ -11,9 +14,11 @@ export function resolveDictationAgentInference(settings, { isCloudAgent = false 
   const model = settings.dictationAgentModel?.trim() || "";
   const isSelfHosted =
     settings.dictationAgentMode === "self-hosted" && !!settings.dictationAgentRemoteUrl?.trim();
-  const provider = isCloudAgent
-    ? "openwhispr"
-    : settings.dictationAgentProvider?.trim() || undefined;
+  const provider = resolveDictationAgentProvider({
+    isCloudAgent,
+    dictationAgentMode: settings.dictationAgentMode,
+    dictationAgentProvider: settings.dictationAgentProvider,
+  });
   const isCustom = settings.dictationAgentMode === "providers" && provider === "custom";
 
   return {

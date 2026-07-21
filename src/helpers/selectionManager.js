@@ -4,8 +4,36 @@ const debugLogger = require("./debugLogger");
 
 const SESSION_TTL_MS = 5 * 60 * 1000;
 const MAX_SELECTION_EDIT_CODE_POINTS = 6000;
+// Ceiling for one synthetic-copy round trip. A no-selection agent command
+// pays this in full, and replaceSelectedText spends a second round trip
+// re-verifying — the accepted cost of failing closed rather than pasting blind.
 const COPY_TIMEOUT_MS = 1200;
 const CLIPBOARD_POLL_MS = 20;
+
+// Editors that copy the whole current line when Ctrl+C lands with an empty
+// selection (VS Code's editor.emptySelectionClipboard, Scintilla, JetBrains,
+// Visual Studio), making a bare caret look like a selection to the
+// synthetic-copy capture. Matched against the target's exe name and window class.
+const LINE_COPY_EDITOR_SIGNATURES = [
+  "code", // VS Code and forks (VSCodium, code-oss)
+  "cursor",
+  "windsurf",
+  "notepad++",
+  "sublime",
+  "jetbrains",
+  "idea64",
+  "pycharm",
+  "webstorm",
+  "phpstorm",
+  "rider64",
+  "clion",
+  "goland",
+  "rubymine",
+  "datagrip",
+  "dataspell",
+  "studio64", // Android Studio
+  "devenv", // Visual Studio
+];
 
 function runFile(command, args, options = {}) {
   return new Promise((resolve) => {
@@ -80,7 +108,15 @@ class SelectionManager {
       }
       const result = await runSpawn(binary, ["--detect-only"], { timeout: 700 });
       const match = result.stdout.match(/TARGET\s+(\S+)/);
-      this.lastTarget = result.success && match ? { kind: "win-hwnd", id: match[1] } : null;
+      this.lastTarget =
+        result.success && match
+          ? {
+              kind: "win-hwnd",
+              id: match[1],
+              windowClass: result.stdout.match(/^WINDOW_CLASS (.+)$/m)?.[1]?.trim() || null,
+              exeName: result.stdout.match(/^EXE_NAME (.+)$/m)?.[1]?.trim() || null,
+            }
+          : null;
       return;
     }
     if (this.platform === "linux") {
@@ -190,9 +226,6 @@ class SelectionManager {
     if (!pid || !this.textEditMonitor?.getSelectedText) {
       return { status: "unavailable", code: "target_unavailable" };
     }
-    if (expectedTarget && expectedTarget.pid !== pid) {
-      return { status: "target_changed" };
-    }
     const frontmostPid = await this.textEditMonitor._readFrontmostPid?.();
     if (frontmostPid && frontmostPid !== pid) {
       return { status: "target_changed" };
@@ -273,7 +306,9 @@ class SelectionManager {
       }
 
       if (target.kind === "x11-window" && this.clipboardManager.commandExists("xdotool")) {
-        const chord = await this._getLinuxCopyChord(target.id);
+        const chord = this.clipboardManager.isLinuxTerminalWindowClass(target.windowClass)
+          ? "ctrl+shift+c"
+          : "ctrl+c";
         const result = await runFile(
           "xdotool",
           ["windowactivate", "--sync", target.id, "key", chord],
@@ -325,7 +360,14 @@ class SelectionManager {
     if (this.clipboardManager.commandExists("xdotool") && process.env.DISPLAY) {
       const result = await runFile("xdotool", ["getactivewindow"], { timeout: 500 });
       const id = result.stdout.trim();
-      if (result.success && id) return { kind: "x11-window", id };
+      if (result.success && id) {
+        const classResult = await runFile("xdotool", ["getwindowclassname", id], { timeout: 500 });
+        return {
+          kind: "x11-window",
+          id,
+          windowClass: classResult.success ? classResult.stdout.trim().toLowerCase() : null,
+        };
+      }
     }
 
     if (this.clipboardManager.commandExists("kdotool")) {
@@ -367,13 +409,6 @@ class SelectionManager {
     return result.success && match ? { kind: "atspi-pid", id: match[1] } : null;
   }
 
-  async _getLinuxCopyChord(windowId) {
-    const result = await runFile("xdotool", ["getwindowclassname", windowId], { timeout: 500 });
-    return this.clipboardManager.isLinuxTerminalWindowClass(result.stdout)
-      ? "ctrl+shift+c"
-      : "ctrl+c";
-  }
-
   async _captureViaClipboard(sendCopy, expectedTarget) {
     const original = this.clipboardManager._saveClipboard();
     const beforeWrite = this.clipboardManager._readClipboardTextAll();
@@ -381,7 +416,9 @@ class SelectionManager {
     this.clipboardManager._writeClipboardTextAll(sentinel);
     // A clipboard side the sentinel write didn't reach (KDE desyncs X11 from
     // Wayland) still holds pre-copy content; snapshot it so stale text can't
-    // be mistaken for the copied selection.
+    // be mistaken for the copied selection. Known limitation: a clipboard that
+    // already held exactly the selected text reads as "no selection", and the
+    // command falls back to standalone dictation.
     const baseline = new Set([
       ...beforeWrite,
       ...this.clipboardManager._readClipboardTextAll(),
@@ -412,7 +449,20 @@ class SelectionManager {
     if (copiedText === null) {
       return { status: "none", target: copyResult.target };
     }
+    // A line copy from an empty-selection Ctrl+C is exactly one line with a
+    // trailing terminator; treat that shape from a known line-copy editor as
+    // "no selection" so a bare caret never gets its line rewritten. Proper
+    // fix: a real selection read (UIA TextPattern), like --atspi-selection.
+    if (/^[^\n]*\r?\n$/.test(copiedText) && this._isLineCopyEditor(expectedTarget)) {
+      return { status: "none", target: copyResult.target };
+    }
     return { status: "selected", text: copiedText, target: copyResult.target };
+  }
+
+  _isLineCopyEditor(target) {
+    const signature = `${target?.exeName || ""} ${target?.windowClass || ""}`.toLowerCase();
+    if (!signature.trim()) return false;
+    return LINE_COPY_EDITOR_SIGNATURES.some((editor) => signature.includes(editor));
   }
 
   _restoreClipboardIfOurs(original, writtenTexts, baseline = new Set()) {
