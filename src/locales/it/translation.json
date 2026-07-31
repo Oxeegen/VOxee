@@ -1156,7 +1156,9 @@
         "couldNotOpenTitle": "Impossibile aprire la fatturazione",
         "manageBilling": "Gestisci fatturazione",
         "opening": "Apertura...",
-        "updatePaymentMethod": "Aggiorna metodo di pagamento"
+        "updatePaymentMethod": "Aggiorna metodo di pagamento",
+        "contactOwnerTitle": "Contatta il proprietario dell'area di lavoro",
+        "contactOwnerDescription": "Solo il proprietario dell'area di lavoro può aggiornarne la fatturazione."
       },
       "checkout": {
         "couldNotOpenDescription": "Si è verificato un problema nell'apertura della pagina di pagamento. Riprova.",
@@ -1353,6 +1355,10 @@
           "noPassword": "Nessuna password è impostata per questo account.",
           "generic": "Qualcosa è andato storto. Riprova."
         }
+      },
+      "planUnavailable": {
+        "title": "Piano non disponibile",
+        "description": "Non siamo riusciti a caricare il tuo piano. Il tuo accesso resta invariato."
       }
     },
     "agentConfig": {

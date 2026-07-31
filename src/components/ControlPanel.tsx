@@ -21,6 +21,7 @@ import { useUpdater } from "../hooks/useUpdater";
 import { useSettings } from "../hooks/useSettings";
 import { useAuth } from "../hooks/useAuth";
 import { useUsage } from "../hooks/useUsage";
+import { decideUpsell } from "../lib/upsell";
 import { useCollapsibleSidebar } from "../hooks/useCollapsibleSidebar";
 import {
   useTranscriptions,
@@ -158,6 +159,12 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   } = useSettings();
   const { isSignedIn, isLoaded: authLoaded, user } = useAuth();
   const usage = useUsage();
+  const upsell = decideUpsell({
+    authLoaded,
+    isSignedIn,
+    hasPaidAccess: usage?.hasPaidAccess ?? null,
+    isPastDue: usage?.isPastDue ?? false,
+  });
 
   const {
     status: updateStatus,
@@ -306,7 +313,8 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   }, [toast, t]);
 
   useEffect(() => {
-    if (!usage?.isPastDue || !usage.hasLoaded) return;
+    // isPastDue is only ever true on a successful usage response.
+    if (!usage?.isPastDue) return;
     if (sessionStorage.getItem("pastDueNotified")) return;
     sessionStorage.setItem("pastDueNotified", "true");
     toast({
@@ -315,7 +323,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
       variant: "destructive",
       duration: 8000,
     });
-  }, [usage?.isPastDue, usage?.hasLoaded, toast, t]);
+  }, [usage?.isPastDue, toast, t]);
 
   useEffect(() => {
     const unsubscribe = window.electronAPI?.onWorkspaceInvitationToken?.((token) => {
@@ -955,8 +963,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             userImage={user?.image}
             isSignedIn={isSignedIn}
             authLoaded={authLoaded}
-            isProUser={!!(usage?.isSubscribed || usage?.isTrial)}
-            usageLoaded={usage?.hasLoaded ?? false}
+            upsell={upsell}
             updateAction={
               !updateStatus.isDevelopment &&
               (updateStatus.updateAvailable ||
@@ -1148,7 +1155,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             {activeView === "integrations" && (
               <Suspense fallback={null}>
                 <IntegrationsView
-                  isPaid={!!(usage?.isSubscribed || usage?.isTrial)}
+                  isPaid={usage?.hasPaidAccessOptimistic ?? false}
                   onUpgrade={() => {
                     setSettingsSection("plansBilling");
                     setShowSettings(true);

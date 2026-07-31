@@ -1434,7 +1434,9 @@
         "couldNotOpenTitle": "Abrechnung konnte nicht geöffnet werden",
         "manageBilling": "Abrechnung verwalten",
         "opening": "Wird geöffnet...",
-        "updatePaymentMethod": "Zahlungsmethode aktualisieren"
+        "updatePaymentMethod": "Zahlungsmethode aktualisieren",
+        "contactOwnerTitle": "Wenden Sie sich an den Workspace-Inhaber",
+        "contactOwnerDescription": "Nur der Workspace-Inhaber kann die Abrechnung für diesen Workspace ändern."
       },
       "checkout": {
         "couldNotOpenDescription": "Die Checkout-Seite konnte nicht geöffnet werden. Bitte versuchen Sie es erneut.",
@@ -1631,6 +1633,10 @@
           "noPassword": "Für dieses Konto ist kein Passwort festgelegt.",
           "generic": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
         }
+      },
+      "planUnavailable": {
+        "title": "Tarif nicht verfügbar",
+        "description": "Ihr Tarif konnte gerade nicht geladen werden. Ihr Zugriff bleibt unverändert."
       }
     },
     "agentConfig": {

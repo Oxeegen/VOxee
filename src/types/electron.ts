@@ -1,5 +1,6 @@
 import type { ModelDefinition } from "../models/ModelRegistry";
 import type { TinfoilCatalogModel } from "../models/tinfoilModels";
+import type { UsageResponse } from "../lib/usageStore";
 
 export type LocalTranscriptionProvider = "whisper" | "nvidia";
 
@@ -1602,26 +1603,13 @@ declare global {
         code?: string;
         messageKey?: string;
       }>;
-      cloudUsage?: () => Promise<{
-        success: boolean;
-        wordsUsed?: number;
-        wordsRemaining?: number;
-        limit?: number;
-        plan?: string;
-        status?: string;
-        isSubscribed?: boolean;
-        isTrial?: boolean;
-        trialDaysLeft?: number | null;
-        currentPeriodEnd?: string | null;
-        billingInterval?: "monthly" | "annual" | null;
-        entitlementSources?: {
-          personal: boolean;
-          workspaceIds: string[];
-        };
-        resetAt?: string;
-        error?: string;
-        code?: string;
-      }>;
+      cloudUsage?: () => Promise<
+        UsageResponse & {
+          success: boolean;
+          error?: string;
+          code?: string;
+        }
+      >;
       cloudCheckout?: (opts?: {
         plan?: "monthly" | "annual";
         tier?: "pro" | "business";

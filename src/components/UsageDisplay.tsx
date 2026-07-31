@@ -1,15 +1,18 @@
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useUsage } from "../hooks/useUsage";
+import { useBillingPortal } from "../hooks/useBillingPortal";
 import { useToast } from "./ui/useToast";
 import { Badge } from "./ui/badge";
 import { Progress } from "./ui/progress";
 import { Button } from "./ui/button";
+import { Skeleton } from "./ui/skeleton";
 import { useSettingsStore } from "../stores/settingsStore";
 
 export default function UsageDisplay() {
   const { t } = useTranslation();
   const usage = useUsage();
+  const { openBillingPortal, isOpening } = useBillingPortal(usage);
   const { toast } = useToast();
   const hasShownApproachingToast = useRef(false);
 
@@ -29,6 +32,26 @@ export default function UsageDisplay() {
   }, [usage?.isApproachingLimit, usage?.wordsUsed, usage?.limit, toast, t]);
 
   if (!usage) return null;
+  // An unresolved entitlement is not a free plan: hold the card's space rather
+  // than claim a "Free" badge and an allowance the account may not be on.
+  if (usage.status !== "success") {
+    return (
+      <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <Skeleton className="h-4 w-28" />
+          <Skeleton className="h-5 w-16 rounded-full" />
+        </div>
+        <div className="space-y-1.5">
+          <Skeleton className="h-2 w-full rounded-full" />
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+        </div>
+        <Skeleton className="h-5 w-32" />
+      </div>
+    );
+  }
 
   // Pro plan or trial — minimal display
   if (usage.isSubscribed) {
@@ -50,7 +73,12 @@ export default function UsageDisplay() {
           {usage.isTrial ? t("usage.unlimitedTrial") : t("usage.unlimited")}
         </p>
         {!usage.isTrial && (
-          <Button variant="outline" size="sm" onClick={() => usage.openBillingPortal()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void openBillingPortal()}
+            disabled={isOpening}
+          >
             {t("usage.manageSubscription")}
           </Button>
         )}

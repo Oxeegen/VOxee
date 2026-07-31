@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { AUTH_URL, signOut, deleteAccount } from "../lib/auth";
+import { useBillingPortal } from "../hooks/useBillingPortal";
 import MicPermissionWarning from "./ui/MicPermissionWarning";
 import MicrophoneSettings from "./ui/MicrophoneSettings";
 import PermissionCard from "./ui/PermissionCard";
@@ -1342,9 +1343,12 @@ export default function SettingsPage({
   }, [isRemovingModels, cachePathHint, showConfirmDialog, showAlertDialog, t]);
 
   const { isSignedIn, isLoaded, user, refetch } = useAuth();
+  // Signed out there is nothing to load and the plan grid is purely
+  // promotional; signed in, no card may claim a plan until usage confirms one.
+  const planStateKnown = !isSignedIn || usage?.status === "success";
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isDeletingAccount, setIsDeletingAccount] = useState(false);
-  const [isOpeningBilling, setIsOpeningBilling] = useState(false);
+  const { openBillingPortal, isOpening: isOpeningBilling } = useBillingPortal(usage);
   const [billingState, setBillingState] = useState<Record<string, boolean>>({
     pro: true,
     business: true,
@@ -1367,16 +1371,6 @@ export default function SettingsPage({
     localStorage.removeItem("onboardingCompleted");
     window.location.reload();
   }, []);
-
-  const handleBillingPortal = useCallback(async () => {
-    const result = await usage.openBillingPortal();
-    if (!result.success) {
-      toast({
-        title: t("settingsPage.account.checkout.couldNotOpenTitle"),
-        description: t("settingsPage.account.checkout.couldNotOpenDescription"),
-      });
-    }
-  }, [usage, toast, t]);
 
   const handleSwitchPlan = useCallback(
     async (plan: "monthly" | "annual", tier: "pro" | "business") => {
@@ -1793,7 +1787,29 @@ export default function SettingsPage({
                 {isSignedIn ? (
                   <div className="space-y-5">
                     <SectionHeader title={t("settingsPage.unifiedBilling.personalPlanTitle")} />
-                    {!usage || !usage.hasLoaded ? (
+                    {usage?.status === "error" ? (
+                      <SettingsPanel>
+                        <SettingsPanelRow>
+                          <SettingsRow
+                            label={t("settingsPage.account.planUnavailable.title")}
+                            description={t("settingsPage.account.planUnavailable.description")}
+                          >
+                            <Button
+                              onClick={() => void usage.retry()}
+                              variant="outline"
+                              size="sm"
+                              disabled={usage.isRetrying}
+                            >
+                              {usage.isRetrying ? (
+                                <Loader2 size={14} className="animate-spin" />
+                              ) : (
+                                t("common.retry")
+                              )}
+                            </Button>
+                          </SettingsRow>
+                        </SettingsPanelRow>
+                      </SettingsPanel>
+                    ) : usage?.status !== "success" ? (
                       <SettingsPanel>
                         <SettingsPanelRow>
                           <div className="flex items-center justify-between">
@@ -1932,23 +1948,7 @@ export default function SettingsPage({
                         <SettingsPanelRow>
                           {usage.isPastDue ? (
                             <Button
-                              onClick={async () => {
-                                setIsOpeningBilling(true);
-                                try {
-                                  const result = await usage.openBillingPortal();
-                                  if (!result.success) {
-                                    toast({
-                                      title: t("settingsPage.account.billing.couldNotOpenTitle"),
-                                      description: t(
-                                        "settingsPage.account.billing.couldNotOpenDescription"
-                                      ),
-                                      variant: "destructive",
-                                    });
-                                  }
-                                } finally {
-                                  setIsOpeningBilling(false);
-                                }
-                              }}
+                              onClick={() => void openBillingPortal()}
                               disabled={isOpeningBilling}
                               size="sm"
                               className="w-full"
@@ -1964,24 +1964,13 @@ export default function SettingsPage({
                             </Button>
                           ) : usage.isPersonallySubscribed && !usage.isTrial ? (
                             <Button
-                              onClick={async () => {
-                                const result = await usage.openBillingPortal();
-                                if (!result.success) {
-                                  toast({
-                                    title: t("settingsPage.account.billing.couldNotOpenTitle"),
-                                    description: t(
-                                      "settingsPage.account.billing.couldNotOpenDescription"
-                                    ),
-                                    variant: "destructive",
-                                  });
-                                }
-                              }}
+                              onClick={() => void openBillingPortal()}
                               variant="outline"
                               size="sm"
                               className="w-full"
-                              disabled={usage.checkoutLoading}
+                              disabled={isOpeningBilling}
                             >
-                              {usage.checkoutLoading
+                              {isOpeningBilling
                                 ? t("settingsPage.account.billing.opening")
                                 : t("settingsPage.account.billing.manageBilling")}
                             </Button>
@@ -2025,7 +2014,7 @@ export default function SettingsPage({
                     <div
                       className={cn(
                         "rounded-md p-2.5 flex flex-col",
-                        !usage?.isPersonallySubscribed && !usage?.isTrial
+                        planStateKnown && !usage?.isPersonallySubscribed && !usage?.isTrial
                           ? "border-2 border-primary/30 bg-primary/3 dark:border-primary/20 dark:bg-primary/5"
                           : "border border-border/50 dark:border-border-subtle/60 bg-card/30 dark:bg-surface-2/30"
                       )}
@@ -2076,20 +2065,23 @@ export default function SettingsPage({
                         </Button>
                       ) : usage?.isPersonallySubscribed && !usage?.isTrial ? (
                         <Button
-                          onClick={handleBillingPortal}
+                          onClick={() => void openBillingPortal()}
                           variant="outline"
                           size="sm"
                           className="mt-2 w-full h-6 text-[10px]"
+                          disabled={isOpeningBilling}
                         >
-                          {t("settingsPage.account.pricing.downgrade")}
+                          {isOpeningBilling
+                            ? t("settingsPage.account.billing.opening")
+                            : t("settingsPage.account.pricing.downgrade")}
                         </Button>
-                      ) : (
+                      ) : planStateKnown ? (
                         <div className="mt-2 text-center">
                           <span className="text-[9px] font-medium text-primary/70">
                             {t("settingsPage.account.pricing.currentPlan")}
                           </span>
                         </div>
-                      )}
+                      ) : null}
                     </div>
 
                     <div
@@ -2173,7 +2165,7 @@ export default function SettingsPage({
                             t("settingsPage.account.pricing.downgrade")
                           )}
                         </Button>
-                      ) : (
+                      ) : planStateKnown ? (
                         <Button
                           onClick={() =>
                             handleCheckout(billingState.pro ? "annual" : "monthly", "pro")
@@ -2188,7 +2180,7 @@ export default function SettingsPage({
                             t("settingsPage.account.pricing.pro.cta")
                           )}
                         </Button>
-                      )}
+                      ) : null}
                     </div>
 
                     <div className="rounded-md border-2 border-primary/50 bg-primary/8 dark:border-primary/40 dark:bg-primary/10 p-2.5 flex flex-col relative">

@@ -1434,7 +1434,9 @@
         "couldNotOpenTitle": "Couldn't open billing",
         "manageBilling": "Manage Billing",
         "opening": "Opening...",
-        "updatePaymentMethod": "Update Payment Method"
+        "updatePaymentMethod": "Update Payment Method",
+        "contactOwnerTitle": "Contact your workspace owner",
+        "contactOwnerDescription": "Only the workspace owner can update billing for this workspace."
       },
       "checkout": {
         "couldNotOpenDescription": "We had trouble opening the checkout page. Please try again.",
@@ -1631,6 +1633,10 @@
           "noPassword": "No password is set for this account.",
           "generic": "Something went wrong. Please try again."
         }
+      },
+      "planUnavailable": {
+        "title": "Plan unavailable",
+        "description": "We couldn't load your plan right now. Your access is unchanged."
       }
     },
     "agentConfig": {

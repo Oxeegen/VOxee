@@ -1156,7 +1156,9 @@
         "couldNotOpenTitle": "无法打开账单",
         "manageBilling": "管理账单",
         "opening": "正在打开...",
-        "updatePaymentMethod": "更新支付方式"
+        "updatePaymentMethod": "更新支付方式",
+        "contactOwnerTitle": "请联系工作区所有者",
+        "contactOwnerDescription": "只有工作区所有者才能更新该工作区的账单。"
       },
       "checkout": {
         "couldNotOpenDescription": "打开结账页面时出错，请重试。",
@@ -1353,6 +1355,10 @@
           "noPassword": "此账户未设置密码。",
           "generic": "出了点问题，请重试。"
         }
+      },
+      "planUnavailable": {
+        "title": "无法获取方案",
+        "description": "暂时无法加载你的方案，你的使用权限不受影响。"
       }
     },
     "agentConfig": {

@@ -1434,7 +1434,9 @@
         "couldNotOpenTitle": "Impossible d'ouvrir la facturation",
         "manageBilling": "Gérer la facturation",
         "opening": "Ouverture...",
-        "updatePaymentMethod": "Mettre à jour le moyen de paiement"
+        "updatePaymentMethod": "Mettre à jour le moyen de paiement",
+        "contactOwnerTitle": "Contactez le propriétaire de l'espace de travail",
+        "contactOwnerDescription": "Seul le propriétaire de l'espace de travail peut modifier sa facturation."
       },
       "checkout": {
         "couldNotOpenDescription": "Nous avons eu un problème pour ouvrir la page de paiement. Veuillez réessayer.",
@@ -1631,6 +1633,10 @@
           "noPassword": "Aucun mot de passe n'est défini pour ce compte.",
           "generic": "Une erreur est survenue. Veuillez réessayer."
         }
+      },
+      "planUnavailable": {
+        "title": "Forfait indisponible",
+        "description": "Nous n'avons pas pu charger votre forfait pour le moment. Votre accès reste inchangé."
       }
     },
     "agentConfig": {

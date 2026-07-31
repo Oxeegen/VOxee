@@ -1204,7 +1204,9 @@
         "couldNotOpenTitle": "No se pudo abrir facturación",
         "manageBilling": "Administrar facturación",
         "opening": "Abriendo...",
-        "updatePaymentMethod": "Actualizar método de pago"
+        "updatePaymentMethod": "Actualizar método de pago",
+        "contactOwnerTitle": "Contacta al propietario del espacio de trabajo",
+        "contactOwnerDescription": "Solo el propietario del espacio de trabajo puede actualizar su facturación."
       },
       "checkout": {
         "couldNotOpenDescription": "Tuvimos problemas al abrir la página de pago. Inténtalo de nuevo.",
@@ -1401,6 +1403,10 @@
           "noPassword": "Esta cuenta no tiene una contraseña configurada.",
           "generic": "Algo salió mal. Inténtalo de nuevo."
         }
+      },
+      "planUnavailable": {
+        "title": "Plan no disponible",
+        "description": "No pudimos cargar tu plan ahora mismo. Tu acceso no ha cambiado."
       }
     },
     "agentConfig": {

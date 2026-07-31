@@ -1156,7 +1156,9 @@
         "couldNotOpenTitle": "請求を開けませんでした",
         "manageBilling": "請求を管理",
         "opening": "開いています...",
-        "updatePaymentMethod": "お支払い方法を更新"
+        "updatePaymentMethod": "お支払い方法を更新",
+        "contactOwnerTitle": "ワークスペースのオーナーにご連絡ください",
+        "contactOwnerDescription": "このワークスペースの請求を更新できるのはオーナーのみです。"
       },
       "checkout": {
         "couldNotOpenDescription": "購入ページを開く際に問題が発生しました。もう一度お試しください。",
@@ -1353,6 +1355,10 @@
           "noPassword": "このアカウントにはパスワードが設定されていません。",
           "generic": "問題が発生しました。もう一度お試しください。"
         }
+      },
+      "planUnavailable": {
+        "title": "プランを取得できません",
+        "description": "現在プランを読み込めませんでした。ご利用の権限は変わりません。"
       }
     },
     "agentConfig": {

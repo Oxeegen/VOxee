@@ -1135,7 +1135,9 @@
         "couldNotOpenTitle": "Não foi possível abrir cobrança",
         "manageBilling": "Gerenciar cobrança",
         "opening": "Abrindo...",
-        "updatePaymentMethod": "Atualizar forma de pagamento"
+        "updatePaymentMethod": "Atualizar forma de pagamento",
+        "contactOwnerTitle": "Fale com o proprietário do workspace",
+        "contactOwnerDescription": "Apenas o proprietário do workspace pode atualizar a cobrança dele."
       },
       "checkout": {
         "couldNotOpenDescription": "Tivemos dificuldade em abrir a página de checkout. Tente novamente.",
@@ -1332,6 +1334,10 @@
           "noPassword": "Nenhuma senha está definida para esta conta.",
           "generic": "Algo deu errado. Tente novamente."
         }
+      },
+      "planUnavailable": {
+        "title": "Plano indisponível",
+        "description": "Não conseguimos carregar seu plano agora. Seu acesso permanece o mesmo."
       }
     },
     "agentConfig": {

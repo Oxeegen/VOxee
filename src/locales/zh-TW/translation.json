@@ -1156,7 +1156,9 @@
         "couldNotOpenTitle": "無法開啟帳單頁面",
         "manageBilling": "管理帳單",
         "opening": "開啟中...",
-        "updatePaymentMethod": "更新付款方式"
+        "updatePaymentMethod": "更新付款方式",
+        "contactOwnerTitle": "請聯絡工作區擁有者",
+        "contactOwnerDescription": "只有工作區擁有者才能更新該工作區的帳單。"
       },
       "checkout": {
         "couldNotOpenDescription": "開啟結帳頁面時發生問題。請再試一次。",
@@ -1353,6 +1355,10 @@
           "noPassword": "此帳戶尚未設定密碼。",
           "generic": "發生錯誤，請再試一次。"
         }
+      },
+      "planUnavailable": {
+        "title": "無法取得方案",
+        "description": "目前無法載入你的方案，你的使用權限不受影響。"
       }
     },
     "agentConfig": {
