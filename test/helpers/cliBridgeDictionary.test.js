@@ -113,21 +113,23 @@ test("POST /v1/dictionary/update removes only the named words", (t) => {
   assert.deepEqual(ctx.db.getDictionary(), ["OpenWhispr", "Bob"]);
 });
 
-test("POST /v1/dictionary/update broadcasts the new list to renderers", (t) => {
+test("POST /v1/dictionary/update broadcasts the new list to renderers", async (t) => {
   const ctx = createBridge(t);
   if (!ctx) return;
 
+  // Earlier tests' deferred broadcasts land in the shared capture array only
+  // once the runner first yields to the immediate queue — which is in this
+  // test. Drain them before counting, so only this test's broadcast remains.
+  await new Promise((resolve) => setImmediate(resolve));
+  ctx.broadcasts.length = 0;
+
   ctx.db.setDictionary(["OpenWhispr"]);
   call(ctx.bridge, "POST", "/v1/dictionary/update", { add: ["Alice"] });
+  await new Promise((resolve) => setImmediate(resolve));
 
-  return new Promise((resolve) => {
-    setImmediate(() => {
-      assert.equal(ctx.broadcasts.length, 1);
-      assert.equal(ctx.broadcasts[0].channel, "dictionary-updated");
-      assert.deepEqual(ctx.broadcasts[0].payload, ["OpenWhispr", "Alice"]);
-      resolve();
-    });
-  });
+  assert.equal(ctx.broadcasts.length, 1);
+  assert.equal(ctx.broadcasts[0].channel, "dictionary-updated");
+  assert.deepEqual(ctx.broadcasts[0].payload, ["OpenWhispr", "Alice"]);
 });
 
 test("POST /v1/dictionary/update rejects a non-array field", (t) => {
