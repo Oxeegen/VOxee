@@ -107,7 +107,7 @@ import { syncService } from "../services/SyncService.js";
 import { formatBytes } from "../utils/formatBytes";
 import { clearMissingLocalModelSelections, useSettingsStore } from "../stores/settingsStore";
 import { useWorkspaceStore } from "../stores/workspaceStore";
-import { usePolicyStore, enforceModeOptions } from "../stores/policyStore";
+import { usePolicyStore, enforceModeOptions, isModeAllowed } from "../stores/policyStore";
 import { canManageSystemAudioInApp } from "../utils/systemAudioAccess";
 import WorkspaceSection from "./settings/WorkspaceSection";
 import WorkspaceBillingOverview from "./settings/WorkspaceBillingOverview";
@@ -303,10 +303,15 @@ function TranscriptionSection({
     ],
     "transcription",
     { managed: policyManaged, policy: policyDoc },
-    t("settingsPage.managedByOrg", "Managed by your organization"),
+    t("common.managedByOrg"),
   );
 
   const handleTranscriptionModeSelect = (mode: InferenceMode) => {
+    // "Disabled" mode options still fire onSelect (the sign-in gate relies on
+    // that to start onboarding), so policy must be enforced here, not in the UI.
+    if (!isModeAllowed({ managed: policyManaged, policy: policyDoc }, "transcription", mode)) {
+      return;
+    }
     if (mode === "openwhispr" && !isSignedIn) {
       startOnboarding();
       return;

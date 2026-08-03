@@ -144,6 +144,7 @@
     "cancel": "取消",
     "recommended": "推薦",
     "active": "使用中",
+    "managedByOrg": "由您的組織管理",
     "freeAccountRequired": "需要免費帳戶",
     "cloud": "雲端",
     "local": "本機",
@@ -1071,6 +1072,7 @@
     "defaultTestInputTranslate": "今天天氣真好，要不要出去走走？"
   },
   "settingsModal": {
+    "managedByOrg": "部分設定由您的組織管理。",
     "groups": {
       "account": "帳戶",
       "app": "應用程式",

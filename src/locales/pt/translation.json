@@ -123,6 +123,7 @@
     "cancel": "Cancelar",
     "recommended": "Recomendado",
     "active": "Ativo",
+    "managedByOrg": "Gerenciado pela sua organização",
     "freeAccountRequired": "Conta gratuita necessária",
     "cloud": "Nuvem",
     "local": "Local",
@@ -1050,6 +1051,7 @@
     "defaultTestInputTranslate": "O tempo está lindo hoje, quer dar um passeio?"
   },
   "settingsModal": {
+    "managedByOrg": "Algumas configurações são gerenciadas pela sua organização.",
     "groups": {
       "account": "Conta",
       "app": "Aplicativo",

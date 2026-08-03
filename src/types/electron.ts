@@ -737,7 +737,6 @@ declare global {
         dictation: { mode: string };
         notes: { mode: string };
         streamingProvider: string;
-        managed?: boolean;
       } | null>;
 
       // Org policy (see src/types/policy.ts)

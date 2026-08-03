@@ -144,6 +144,7 @@
     "cancel": "Cancel",
     "recommended": "Recommended",
     "active": "Active",
+    "managedByOrg": "Managed by your organization",
     "freeAccountRequired": "Free account required",
     "cloud": "Cloud",
     "local": "Local",
@@ -1159,6 +1160,7 @@
     "defaultTestInputTranslate": "The weather is beautiful today, want to go for a walk?"
   },
   "settingsModal": {
+    "managedByOrg": "Some settings are managed by your organization.",
     "groups": {
       "account": "Account",
       "app": "App",

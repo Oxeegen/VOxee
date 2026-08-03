@@ -144,6 +144,7 @@
     "cancel": "Annulla",
     "recommended": "Consigliato",
     "active": "Attivo",
+    "managedByOrg": "Gestito dalla tua organizzazione",
     "freeAccountRequired": "Account gratuito richiesto",
     "cloud": "Cloud",
     "local": "Locale",
@@ -1071,6 +1072,7 @@
     "defaultTestInputTranslate": "Che bella giornata oggi, ti va di fare due passi?"
   },
   "settingsModal": {
+    "managedByOrg": "Alcune impostazioni sono gestite dalla tua organizzazione.",
     "groups": {
       "account": "Account",
       "app": "App",

@@ -164,7 +164,7 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
     >
       {policyManaged && (
         <div className="mx-4 mt-4 rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-200">
-          {t("settingsModal.managedByOrg", "Some settings are managed by your organization.")}
+          {t("settingsModal.managedByOrg")}
         </div>
       )}
       <SettingsPage

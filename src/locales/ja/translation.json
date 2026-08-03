@@ -144,6 +144,7 @@
     "cancel": "キャンセル",
     "recommended": "推奨",
     "active": "有効",
+    "managedByOrg": "組織によって管理されています",
     "freeAccountRequired": "無料アカウントが必要です",
     "cloud": "クラウド",
     "local": "ローカル",
@@ -1071,6 +1072,7 @@
     "defaultTestInputTranslate": "今日はいい天気ですね、散歩に行きませんか？"
   },
   "settingsModal": {
+    "managedByOrg": "一部の設定は組織によって管理されています。",
     "groups": {
       "account": "アカウント",
       "app": "アプリ",

@@ -7,6 +7,7 @@ import {
   selectResolvedLLMConfig,
   setResolvedLLMConfig,
 } from "../../stores/settingsStore";
+import { usePolicyStore, enforceModeOptions, isModeAllowed } from "../../stores/policyStore";
 import { InferenceModeSelector } from "../ui/SettingsSection";
 import type { InferenceModeOption } from "../ui/SettingsSection";
 import ReasoningModelSelector from "../ReasoningModelSelector";
@@ -15,29 +16,7 @@ import OpenAICompatiblePanel from "../OpenAICompatiblePanel";
 import { Toggle } from "../ui/toggle";
 import type { InferenceMode } from "../../types/electron";
 import type { InferenceScope } from "../../config/inferenceScopes";
-import {
-  modelRegistry,
-  isEnterpriseProvider,
-  getCloudModel,
-  getLocalModel,
-} from "../../models/ModelRegistry";
-
-function isProviderValidForMode(provider: string, mode: InferenceMode): boolean {
-  switch (mode) {
-    case "providers":
-      return (
-        provider === "custom" ||
-        provider === "openrouter" ||
-        modelRegistry.getCloudProviders().some((p) => p.id === provider)
-      );
-    case "local":
-      return modelRegistry.getAllProviders().some((p) => p.id === provider);
-    case "enterprise":
-      return isEnterpriseProvider(provider);
-    default:
-      return true;
-  }
-}
+import { isProviderValidForMode, getCloudModel, getLocalModel } from "../../models/ModelRegistry";
 
 const MODE_LABEL_PREFIX: Record<InferenceScope, string> = {
   dictationCleanup: "settingsPage.aiModels.modes",
@@ -63,42 +42,49 @@ export default function InferenceConfigEditor({ scope, onModeChange }: Inference
   const { t } = useTranslation();
   const config = useSettingsStore(useShallow((s) => selectResolvedLLMConfig(s, scope)));
   const isSignedIn = useSettingsStore((s) => s.isSignedIn);
+  const policyManaged = usePolicyStore((s) => s.managed);
+  const policyDoc = usePolicyStore((s) => s.policy);
 
   const prefix = MODE_LABEL_PREFIX[scope];
-  const modes: InferenceModeOption[] = [
-    {
-      id: "openwhispr",
-      label: t(`${prefix}.openwhispr`),
-      description: t(`${prefix}.openwhisprDesc`),
-      icon: <Cloud className="w-4 h-4" />,
-      disabled: !isSignedIn,
-      badge: !isSignedIn ? t("common.freeAccountRequired") : undefined,
-    },
-    {
-      id: "providers",
-      label: t(`${prefix}.providers`),
-      description: t(`${prefix}.providersDesc`),
-      icon: <Key className="w-4 h-4" />,
-    },
-    {
-      id: "local",
-      label: t(`${prefix}.local`),
-      description: t(`${prefix}.localDesc`),
-      icon: <Cpu className="w-4 h-4" />,
-    },
-    {
-      id: "self-hosted",
-      label: t(`${prefix}.selfHosted`),
-      description: t(`${prefix}.selfHostedDesc`),
-      icon: <Network className="w-4 h-4" />,
-    },
-    {
-      id: "enterprise",
-      label: t(`${prefix}.enterprise`),
-      description: t(`${prefix}.enterpriseDesc`),
-      icon: <Building2 className="w-4 h-4" />,
-    },
-  ];
+  const modes: InferenceModeOption[] = enforceModeOptions(
+    [
+      {
+        id: "openwhispr",
+        label: t(`${prefix}.openwhispr`),
+        description: t(`${prefix}.openwhisprDesc`),
+        icon: <Cloud className="w-4 h-4" />,
+        disabled: !isSignedIn,
+        badge: !isSignedIn ? t("common.freeAccountRequired") : undefined,
+      },
+      {
+        id: "providers",
+        label: t(`${prefix}.providers`),
+        description: t(`${prefix}.providersDesc`),
+        icon: <Key className="w-4 h-4" />,
+      },
+      {
+        id: "local",
+        label: t(`${prefix}.local`),
+        description: t(`${prefix}.localDesc`),
+        icon: <Cpu className="w-4 h-4" />,
+      },
+      {
+        id: "self-hosted",
+        label: t(`${prefix}.selfHosted`),
+        description: t(`${prefix}.selfHostedDesc`),
+        icon: <Network className="w-4 h-4" />,
+      },
+      {
+        id: "enterprise",
+        label: t(`${prefix}.enterprise`),
+        description: t(`${prefix}.enterpriseDesc`),
+        icon: <Building2 className="w-4 h-4" />,
+      },
+    ],
+    "llm",
+    { managed: policyManaged, policy: policyDoc },
+    t("common.managedByOrg")
+  );
 
   const setField = useCallback(
     <K extends keyof Omit<typeof config, "scope">>(field: K) =>
@@ -110,6 +96,11 @@ export default function InferenceConfigEditor({ scope, onModeChange }: Inference
 
   const handleModeSelect = useCallback(
     (mode: InferenceMode) => {
+      // "Disabled" mode options still fire onSelect (the sign-in gate relies on
+      // that to start onboarding), so policy must be enforced here, not in the UI.
+      if (!isModeAllowed({ managed: policyManaged, policy: policyDoc }, "llm", mode)) {
+        return;
+      }
       if (mode === "openwhispr" && !isSignedIn) {
         startCloudOnboarding();
         return;
@@ -132,7 +123,7 @@ export default function InferenceConfigEditor({ scope, onModeChange }: Inference
 
       onModeChange?.(mode);
     },
-    [scope, config.mode, config.provider, isSignedIn, onModeChange]
+    [scope, config.mode, config.provider, isSignedIn, onModeChange, policyManaged, policyDoc]
   );
 
   const setMode = setField("mode");
