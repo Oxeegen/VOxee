@@ -2859,26 +2859,6 @@
     "searchDescription": "Поиск по всем беседам",
     "newChatEmpty": "Спросите о заметках, транскрипциях или о чём угодно"
   },
-  "usage": {
-    "approachingLimit": "Приближается недельный лимит",
-    "approachingLimitDescription": "На этой неделе использовано {{wordsUsed}} / {{limit}} слов.",
-    "yourPlan": "Ваш тариф",
-    "trial": "Пробный период ({{days}} дн.)",
-    "trial_other": "Пробный период ({{days}} дн.)",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "Без ограничений в пробный период",
-    "unlimited": "Без ограничений",
-    "manageSubscription": "Управление подпиской",
-    "weeklyUsage": "За неделю",
-    "limitReached": "Лимит достигнут",
-    "free": "Бесплатно",
-    "wordsRemaining": "Осталось {{remaining}} слов",
-    "rollingLimit": "Скользящий недельный лимит",
-    "upgradeToPro": "Перейти на Pro",
-    "useYourOwnKey": "Свой API-ключ",
-    "upgradeUnlimited": "Pro — без ограничений"
-  },
   "support": {
     "documentation": "Документация",
     "joinDiscord": "Присоединиться к Discord",

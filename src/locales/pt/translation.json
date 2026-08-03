@@ -2829,26 +2829,6 @@
     "searchDescription": "Pesquisar em todas as conversas",
     "newChatEmpty": "Pergunte sobre suas notas, transcrições ou qualquer coisa"
   },
-  "usage": {
-    "approachingLimit": "Próximo do limite semanal",
-    "approachingLimitDescription": "Você usou {{wordsUsed}} de {{limit}} palavras gratuitas esta semana.",
-    "yourPlan": "Seu plano",
-    "trial": "Teste ({{days}} dia restante)",
-    "trial_other": "Teste ({{days}} dias restantes)",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "Transcrições ilimitadas durante o seu período de teste",
-    "unlimited": "Transcrições ilimitadas",
-    "manageSubscription": "Gerenciar assinatura",
-    "weeklyUsage": "Uso semanal",
-    "limitReached": "Limite atingido",
-    "free": "Grátis",
-    "wordsRemaining": "{{remaining}} palavras restantes",
-    "rollingLimit": "Limite semanal contínuo",
-    "upgradeToPro": "Fazer upgrade para Pro",
-    "useYourOwnKey": "Usar sua própria chave API",
-    "upgradeUnlimited": "Fazer upgrade para Pro — transcrições ilimitadas"
-  },
   "support": {
     "documentation": "Documentação",
     "joinDiscord": "Entrar no Discord",

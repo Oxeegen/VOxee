@@ -2829,26 +2829,6 @@
     "searchDescription": "搜尋所有對話",
     "newChatEmpty": "詢問關於筆記、轉錄或其他任何內容"
   },
-  "usage": {
-    "approachingLimit": "即將達到每週上限",
-    "approachingLimitDescription": "你本週已使用 {{wordsUsed}} / {{limit}} 個免費字數。",
-    "yourPlan": "你的方案",
-    "trial": "試用（剩餘 {{days}} 天）",
-    "trial_other": "試用（剩餘 {{days}} 天）",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "試用期間無限轉錄",
-    "unlimited": "無限轉錄",
-    "manageSubscription": "管理訂閱",
-    "weeklyUsage": "每週用量",
-    "limitReached": "已達上限",
-    "free": "免費",
-    "wordsRemaining": "剩餘 {{remaining}} 字",
-    "rollingLimit": "滾動式每週額度",
-    "upgradeToPro": "升級至 Pro",
-    "useYourOwnKey": "使用自己的 API Key",
-    "upgradeUnlimited": "升級至 Pro — 無限轉錄"
-  },
   "support": {
     "documentation": "文件",
     "joinDiscord": "加入 Discord",

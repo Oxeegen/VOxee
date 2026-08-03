@@ -26,7 +26,11 @@ export function useBillingPortal(usage: UseUsageResult | null): UseBillingPortal
     if (!usage) return;
     setIsOpening(true);
     try {
-      const result = await usage.openBillingPortal();
+      // A rejection (rather than a coded refusal) has no self-serve copy; it
+      // falls through to the generic toast instead of escaping the click handler.
+      const result: { success: boolean; code?: string } = await usage
+        .openBillingPortal()
+        .catch(() => ({ success: false }));
       if (result.success) return;
       const copy = billingPortalErrorCopy(result.code);
       toast({

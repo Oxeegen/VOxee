@@ -2829,26 +2829,6 @@
     "searchDescription": "搜索所有对话",
     "newChatEmpty": "询问关于笔记、转录或其他任何内容"
   },
-  "usage": {
-    "approachingLimit": "即将达到周限额",
-    "approachingLimitDescription": "你本周已使用 {{wordsUsed}} / {{limit}} 个免费词数。",
-    "yourPlan": "你的套餐",
-    "trial": "试用期（剩余 {{days}} 天）",
-    "trial_other": "试用期（剩余 {{days}} 天）",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "试用期间无限转录",
-    "unlimited": "无限转录",
-    "manageSubscription": "管理订阅",
-    "weeklyUsage": "每周用量",
-    "limitReached": "已达上限",
-    "free": "免费版",
-    "wordsRemaining": "剩余 {{remaining}} 个词",
-    "rollingLimit": "滚动周限额",
-    "upgradeToPro": "升级到 Pro",
-    "useYourOwnKey": "使用自己的 API Key",
-    "upgradeUnlimited": "升级到 Pro — 无限转录"
-  },
   "support": {
     "documentation": "文档",
     "joinDiscord": "加入 Discord",

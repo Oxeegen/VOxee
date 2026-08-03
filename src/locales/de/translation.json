@@ -2471,26 +2471,6 @@
       "playSignal": "Signal abspielen"
     }
   },
-  "usage": {
-    "approachingLimit": "Wochenlimit fast erreicht",
-    "approachingLimitDescription": "Du hast diese Woche {{wordsUsed}} von {{limit}} kostenlosen Wörtern verwendet.",
-    "yourPlan": "Dein Tarif",
-    "trial": "Testphase (noch {{days}} Tag)",
-    "trial_other": "Testphase (noch {{days}} Tage)",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "Unbegrenzte Transkriptionen während deiner Testphase",
-    "unlimited": "Unbegrenzte Transkriptionen",
-    "manageSubscription": "Abonnement verwalten",
-    "weeklyUsage": "Wöchentliche Nutzung",
-    "limitReached": "Limit erreicht",
-    "free": "Kostenlos",
-    "wordsRemaining": "Noch {{remaining}} Wörter",
-    "rollingLimit": "Rollierendes Wochenlimit",
-    "upgradeToPro": "Auf Pro upgraden",
-    "useYourOwnKey": "Eigenen API-Schlüssel verwenden",
-    "upgradeUnlimited": "Auf Pro upgraden – unbegrenzte Transkriptionen"
-  },
   "notes": {
     "mutationErrors": {
       "folderNameRequired": "Gib einen Ordnernamen ein.",

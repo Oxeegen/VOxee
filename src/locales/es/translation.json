@@ -2877,26 +2877,6 @@
     "searchDescription": "Buscar en todas tus conversaciones",
     "newChatEmpty": "Pregunta sobre tus notas, transcripciones o lo que quieras"
   },
-  "usage": {
-    "approachingLimit": "Cerca del límite semanal",
-    "approachingLimitDescription": "Has usado {{wordsUsed}} de {{limit}} palabras gratuitas esta semana.",
-    "yourPlan": "Tu plan",
-    "trial": "Prueba (queda {{days}} día)",
-    "trial_other": "Prueba (quedan {{days}} días)",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "Transcripciones ilimitadas durante tu período de prueba",
-    "unlimited": "Transcripciones ilimitadas",
-    "manageSubscription": "Gestionar suscripción",
-    "weeklyUsage": "Uso semanal",
-    "limitReached": "Límite alcanzado",
-    "free": "Gratis",
-    "wordsRemaining": "{{remaining}} palabras restantes",
-    "rollingLimit": "Límite semanal renovable",
-    "upgradeToPro": "Actualizar a Pro",
-    "useYourOwnKey": "Usar tu propia clave API",
-    "upgradeUnlimited": "Actualizar a Pro — transcripciones ilimitadas"
-  },
   "support": {
     "documentation": "Documentación",
     "joinDiscord": "Unirse a Discord",

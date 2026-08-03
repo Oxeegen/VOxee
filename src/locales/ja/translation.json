@@ -2829,26 +2829,6 @@
     "searchDescription": "すべての会話を検索",
     "newChatEmpty": "ノートや文字起こし、その他なんでも聞いてください"
   },
-  "usage": {
-    "approachingLimit": "週間制限に近づいています",
-    "approachingLimitDescription": "今週の無料枠 {{limit}} 語のうち {{wordsUsed}} 語を使用しました。",
-    "yourPlan": "現在のプラン",
-    "trial": "トライアル（残り{{days}}日）",
-    "trial_other": "トライアル（残り{{days}}日）",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "トライアル期間中は無制限で文字起こし可能",
-    "unlimited": "無制限の文字起こし",
-    "manageSubscription": "サブスクリプションを管理",
-    "weeklyUsage": "週間使用量",
-    "limitReached": "制限に達しました",
-    "free": "無料",
-    "wordsRemaining": "残り{{remaining}}語",
-    "rollingLimit": "週間制限（ローリング方式）",
-    "upgradeToPro": "Proにアップグレード",
-    "useYourOwnKey": "自分のAPIキーを使用",
-    "upgradeUnlimited": "Proにアップグレード — 無制限の文字起こし"
-  },
   "support": {
     "documentation": "ドキュメント",
     "joinDiscord": "Discord に参加",

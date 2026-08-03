@@ -2471,26 +2471,6 @@
       "playSignal": "Lire le signal"
     }
   },
-  "usage": {
-    "approachingLimit": "Limite hebdomadaire bientôt atteinte",
-    "approachingLimitDescription": "Vous avez utilisé {{wordsUsed}} de vos {{limit}} mots gratuits cette semaine.",
-    "yourPlan": "Votre abonnement",
-    "trial": "Essai ({{days}} jour restant)",
-    "trial_other": "Essai ({{days}} jours restants)",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "Transcriptions illimitées pendant votre période d'essai",
-    "unlimited": "Transcriptions illimitées",
-    "manageSubscription": "Gérer l'abonnement",
-    "weeklyUsage": "Utilisation hebdomadaire",
-    "limitReached": "Limite atteinte",
-    "free": "Gratuit",
-    "wordsRemaining": "{{remaining}} mots restants",
-    "rollingLimit": "Limite hebdomadaire glissante",
-    "upgradeToPro": "Passer à Pro",
-    "useYourOwnKey": "Utiliser votre propre clé API",
-    "upgradeUnlimited": "Passer à Pro — transcriptions illimitées"
-  },
   "notes": {
     "mutationErrors": {
       "folderNameRequired": "Saisissez un nom de dossier.",

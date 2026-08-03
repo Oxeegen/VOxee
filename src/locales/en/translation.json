@@ -2471,26 +2471,6 @@
       "playSignal": "Play signal"
     }
   },
-  "usage": {
-    "approachingLimit": "Approaching Weekly Limit",
-    "approachingLimitDescription": "You've used {{wordsUsed}} of {{limit}} free words this week.",
-    "yourPlan": "Your Plan",
-    "trial": "Trial ({{days}} day left)",
-    "trial_other": "Trial ({{days}} days left)",
-    "pro": "Pro",
-    "business": "Business",
-    "unlimitedTrial": "Unlimited transcriptions during your trial",
-    "unlimited": "Unlimited transcriptions",
-    "manageSubscription": "Manage Subscription",
-    "weeklyUsage": "Weekly Usage",
-    "limitReached": "Limit reached",
-    "free": "Free",
-    "wordsRemaining": "{{remaining}} words remaining",
-    "rollingLimit": "Rolling weekly limit",
-    "upgradeToPro": "Upgrade to Pro",
-    "useYourOwnKey": "Use Your Own Key",
-    "upgradeUnlimited": "Upgrade to Pro — unlimited transcriptions"
-  },
   "notes": {
     "mutationErrors": {
       "folderNameRequired": "Enter a folder name.",
