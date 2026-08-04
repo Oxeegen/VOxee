@@ -15,6 +15,7 @@
     "main.js",
     "preload.js",
     "package.json",
+    "brand/**/*",
     "node_modules/**/*",
     "src/dist/**/*",
     "src/helpers/**/*",
