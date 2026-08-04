@@ -4016,12 +4016,15 @@ class IPCHandlers {
             throw new Error("No model specified for Anthropic API call");
           }
 
+          // Sonnet 5 / Opus 4.7+ dropped `temperature`; renderer derives
+          // support from the model registry and we honor that here.
+          const useTemperature = config?.supportsTemperature !== false;
           const requestBody = {
             model: modelId,
             messages: [{ role: "user", content: userPrompt }],
             system: systemPrompt,
             max_tokens: config?.maxTokens || Math.max(100, Math.min(text.length * 2, 4096)),
-            temperature: config?.temperature || 0.3,
+            ...(useTemperature ? { temperature: config?.temperature ?? 0.3 } : {}),
           };
 
           const response = await proxyFetch("https://api.anthropic.com/v1/messages", {

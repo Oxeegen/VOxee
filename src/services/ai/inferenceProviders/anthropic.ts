@@ -1,4 +1,5 @@
 import type { InferenceProvider } from "./types";
+import { getCloudModel } from "../../../models/ModelRegistry";
 import { wrapCleanupTranscript } from "../../../config/prompts";
 import logger from "../../../utils/logger";
 
@@ -23,6 +24,9 @@ export const anthropicProvider: InferenceProvider = {
       {
         ...config,
         systemPrompt,
+        // Sonnet 5 / Opus 4.7+ reject `temperature`; the main-process handler
+        // omits it when the registry says the model dropped it.
+        supportsTemperature: getCloudModel(model)?.supportsTemperature ?? true,
       }
     );
 

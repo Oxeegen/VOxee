@@ -9,6 +9,11 @@ const MAX_SELECTION_EDIT_CODE_POINTS = 6000;
 // re-verifying — the accepted cost of failing closed rather than pasting blind.
 const COPY_TIMEOUT_MS = 1200;
 const CLIPBOARD_POLL_MS = 20;
+// The AT-SPI desktop scan takes ~600ms idle on KDE Wayland and over 1s under
+// recording-start load or through Flatpak's xdg-dbus-proxy; a tighter timeout
+// kills the probe with the target already on stdout and the capture falls
+// back to standalone dictation, pasting over the selection.
+const ATSPI_TARGET_TIMEOUT_MS = 2000;
 
 // Editors that copy the whole current line when Ctrl+C lands with an empty
 // selection (VS Code's editor.emptySelectionClipboard, Scintilla, JetBrains,
@@ -95,37 +100,54 @@ class SelectionManager {
     this.now = now;
     this.sessions = new Map();
     this.lastTarget = null;
+    this._captureTargetPromise = null;
   }
 
   async captureTarget() {
     if (this.platform === "darwin") return;
     this.lastTarget = null;
+    const probe = this._probeTarget();
+    this._captureTargetPromise = probe;
+    const target = await probe;
+    // A newer toggle press may have started its own probe while this one ran;
+    // only the latest probe's result may land in lastTarget.
+    if (this._captureTargetPromise === probe) {
+      this.lastTarget = target;
+      this._captureTargetPromise = null;
+    }
+  }
+
+  async _probeTarget() {
     if (this.platform === "win32") {
       const binary = this.clipboardManager.resolveWindowsFastPasteBinary();
-      if (!binary) {
-        this.lastTarget = null;
-        return;
-      }
+      if (!binary) return null;
       const result = await runSpawn(binary, ["--detect-only"], { timeout: 700 });
       const match = result.stdout.match(/TARGET\s+(\S+)/);
-      this.lastTarget =
-        result.success && match
-          ? {
-              kind: "win-hwnd",
-              id: match[1],
-              windowClass: result.stdout.match(/^WINDOW_CLASS (.+)$/m)?.[1]?.trim() || null,
-              exeName: result.stdout.match(/^EXE_NAME (.+)$/m)?.[1]?.trim() || null,
-            }
-          : null;
-      return;
+      return result.success && match
+        ? {
+            kind: "win-hwnd",
+            id: match[1],
+            windowClass: result.stdout.match(/^WINDOW_CLASS (.+)$/m)?.[1]?.trim() || null,
+            exeName: result.stdout.match(/^EXE_NAME (.+)$/m)?.[1]?.trim() || null,
+          }
+        : null;
     }
     if (this.platform === "linux") {
-      this.lastTarget = await this._getLinuxTarget();
+      return this._getLinuxTarget();
     }
+    return null;
   }
 
   async captureSelectedText() {
     return this.clipboardManager.runClipboardOperation(async () => {
+      // captureTarget() fires on every toggle press, including stop. Fast
+      // cloud transcription can get here before the stop-press probe lands
+      // (~1s on Wayland AT-SPI), when lastTarget is still nulled from the
+      // probe's start — so wait for the latest probe instead of failing with
+      // target_unavailable while the answer is in flight.
+      while (this._captureTargetPromise) {
+        await this._captureTargetPromise;
+      }
       this._pruneSessions();
       const expectedTarget =
         this.platform === "darwin" && this.textEditMonitor?.lastTargetPid
@@ -261,6 +283,13 @@ class SelectionManager {
     if (!target) return { status: "unavailable", code: "target_unavailable" };
     if (expectedTarget && !this._sameTarget(target, expectedTarget)) {
       return { status: "target_changed" };
+    }
+    // Replacement text typed into a shell executes on its embedded newlines,
+    // so a terminal selection reads as no selection and the command keeps the
+    // pre-selection-editing behavior of typing at the cursor. AT-SPI targets
+    // carry no window class here; the helper binary applies the same rule.
+    if (this.clipboardManager.isLinuxTerminalWindowClass?.(target.windowClass)) {
+      return { status: "none", target };
     }
 
     const binary = this.clipboardManager.resolveLinuxFastPasteBinary();
@@ -404,7 +433,9 @@ class SelectionManager {
   async _getLinuxAtspiTarget() {
     const binary = this.clipboardManager.resolveLinuxFastPasteBinary();
     if (!binary) return null;
-    const result = await runSpawn(binary, ["--atspi-target"], { timeout: 700 });
+    const result = await runSpawn(binary, ["--atspi-target"], {
+      timeout: ATSPI_TARGET_TIMEOUT_MS,
+    });
     const match = result.stdout.match(/^TARGET\s+ATSPI\s+(\d+)$/m);
     return result.success && match ? { kind: "atspi-pid", id: match[1] } : null;
   }

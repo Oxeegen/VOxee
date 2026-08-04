@@ -494,6 +494,22 @@ static int print_atspi_selection(void) {
     AtspiAccessible *app = NULL;
     AtspiAccessible *win = find_active_atspi_window(&app);
     int pid = app ? atspi_active_pid(app) : 0;
+
+    /* Replacement text typed back into a shell executes on its embedded
+     * newlines, so a terminal's selection is reported as no selection and the
+     * command falls back to standalone dictation. */
+    if (pid && app) {
+        char *app_name = atspi_accessible_get_name(app, NULL);
+        int terminal = app_name ? is_terminal(app_name) : 0;
+        g_free(app_name);
+        if (terminal) {
+            if (win) g_object_unref(win);
+            g_object_unref(app);
+            printf("ATSPI_NONE %d\n", pid);
+            return 0;
+        }
+    }
+
     AtspiAccessible *focused = win ? find_focused_text(win, 0) : NULL;
     if (win) g_object_unref(win);
     if (app) g_object_unref(app);

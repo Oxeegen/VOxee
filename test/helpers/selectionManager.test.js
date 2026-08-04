@@ -247,6 +247,77 @@ test("does not overwrite a clipboard value copied while capture is in flight", a
   assert.equal(writes.at(-1), "new user clipboard");
 });
 
+// captureTarget() fires on every toggle press, including stop, and the AT-SPI
+// probe can outlive fast cloud transcription. Reading lastTarget before the
+// stop-press probe lands must wait for it instead of failing closed.
+test("captureSelectedText awaits an in-flight target probe before reading lastTarget", async () => {
+  const clipboardManager = { runClipboardOperation: (operation) => operation() };
+  const manager = new SelectionManager({
+    clipboardManager,
+    textEditMonitor: {},
+    platform: "linux",
+    now: () => 1000,
+  });
+  let resolveProbe;
+  manager._getLinuxTarget = () => new Promise((resolve) => (resolveProbe = resolve));
+  manager._readCurrentSelection = async (expectedTarget) =>
+    expectedTarget
+      ? { status: "selected", text: "picked", target: expectedTarget }
+      : { status: "unavailable", code: "target_unavailable" };
+
+  const probe = manager.captureTarget();
+  const read = manager.captureSelectedText();
+  resolveProbe({ kind: "atspi-pid", id: "2524568" });
+  await probe;
+
+  const result = await read;
+  assert.equal(result.status, "selected");
+  assert.equal(result.text, "picked");
+});
+
+test("a superseded probe never overwrites the newer probe's target", async () => {
+  const clipboardManager = { runClipboardOperation: (operation) => operation() };
+  const manager = new SelectionManager({
+    clipboardManager,
+    textEditMonitor: {},
+    platform: "linux",
+    now: () => 1000,
+  });
+  const resolvers = [];
+  manager._getLinuxTarget = () => new Promise((resolve) => resolvers.push(resolve));
+
+  const first = manager.captureTarget();
+  const second = manager.captureTarget();
+  resolvers[1]({ kind: "atspi-pid", id: "2" });
+  await second;
+  resolvers[0]({ kind: "atspi-pid", id: "1" });
+  await first;
+
+  assert.deepEqual(manager.lastTarget, { kind: "atspi-pid", id: "2" });
+});
+
+// Replacement text typed into a shell executes on its embedded newlines, so a
+// terminal target must read as no selection (standalone dictation), not as an
+// editable selection.
+test("a terminal target reads as no selection", async () => {
+  const clipboardManager = {
+    runClipboardOperation: (operation) => operation(),
+    isLinuxTerminalWindowClass: (windowClass) => windowClass === "konsole",
+  };
+  const manager = new SelectionManager({
+    clipboardManager,
+    textEditMonitor: {},
+    platform: "linux",
+    now: () => 1000,
+  });
+  const terminalTarget = { kind: "kde-window", id: "9", windowClass: "konsole" };
+  manager._getLinuxTarget = async () => terminalTarget;
+
+  const result = await manager._readLinuxSelection(null);
+  assert.equal(result.status, "none");
+  assert.deepEqual(result.target, terminalTarget);
+});
+
 test("empty replacement output is rejected without consuming a paste", async () => {
   const { manager, pastes } = makeHarness({ selections: ["original"] });
   const capture = await manager.captureSelectedText();
