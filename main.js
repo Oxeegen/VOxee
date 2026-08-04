@@ -27,6 +27,14 @@ const http = require("http");
 const tls = require("tls");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
+// Brand identity (fork customization). Read the JSON source of truth directly
+// (main process is CommonJS). app.setName() MUST run before any
+// getPath("userData") so this fork's data lands in %APPDATA%/<Product> instead
+// of the upstream OpenWhispr folder — otherwise data is not isolated.
+const brandConfig = require("./brand/config/brand.config.json");
+const BRAND_NAME = brandConfig.productName;
+app.setName(BRAND_NAME);
+
 // Extend Node's TLS trust with the OS store so ws and https.get see corporate
 // CAs that Chromium already trusts.
 try {
@@ -47,7 +55,7 @@ const DEFAULT_OAUTH_PROTOCOL_BY_CHANNEL = {
   staging: "openwhispr-staging",
   production: "openwhispr",
 };
-const BASE_WINDOWS_APP_ID = "com.gizmolabs.openwhispr";
+const BASE_WINDOWS_APP_ID = brandConfig.appId;
 const DEFAULT_AUTH_BRIDGE_PORT = 5199;
 
 function isElectronBinaryExec() {
@@ -86,7 +94,7 @@ function configureChannelUserDataPath() {
     return;
   }
 
-  const isolatedPath = path.join(app.getPath("appData"), `OpenWhispr-${APP_CHANNEL}`);
+  const isolatedPath = path.join(app.getPath("appData"), `${BRAND_NAME}-${APP_CHANNEL}`);
   app.setPath("userData", isolatedPath);
 }
 
@@ -237,8 +245,8 @@ if (!gotSingleInstanceLock) {
 const isLiveWindow = (window) => window && !window.isDestroyed();
 
 // Ensure macOS menus use the proper casing for the app name
-if (process.platform === "darwin" && app.getName() !== "OpenWhispr") {
-  app.setName("OpenWhispr");
+if (process.platform === "darwin" && app.getName() !== BRAND_NAME) {
+  app.setName(BRAND_NAME);
 }
 
 // Add global error handling for uncaught exceptions
