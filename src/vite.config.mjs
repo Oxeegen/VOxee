@@ -50,6 +50,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "."),
+        "@brand": path.resolve(__dirname, "..", "brand"),
       },
     },
     server: {
