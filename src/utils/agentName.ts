@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { getSettings, useSettingsStore } from "../stores/settingsStore";
 import { agentNameDictionaryChanges } from "../helpers/agentNameDictionary";
+import { BRAND } from "@brand/config/brand";
 
 const AGENT_NAME_KEY = "agentName";
-const DEFAULT_AGENT_NAME = "OpenWhispr";
+const DEFAULT_AGENT_NAME = BRAND.agentName;
 
 export const getAgentName = (): string => {
   return localStorage.getItem(AGENT_NAME_KEY) || DEFAULT_AGENT_NAME;

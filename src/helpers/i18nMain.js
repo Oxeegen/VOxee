@@ -1,5 +1,18 @@
 const i18next = require("i18next");
 
+const brandConfig = require("../../brand/config/brand.config.json");
+
+// Runtime rebrand of the product name (see src/i18n.ts for rationale).
+const brandNamePostProcessor = {
+  type: "postProcessor",
+  name: "brandName",
+  process(value) {
+    return typeof value === "string"
+      ? value.replace(/OpenWhispr/g, brandConfig.productName)
+      : value;
+  },
+};
+
 const enTranslation = require("../locales/en/translation.json");
 const esTranslation = require("../locales/es/translation.json");
 const frTranslation = require("../locales/fr/translation.json");
@@ -41,7 +54,7 @@ function normalizeUiLanguage(language) {
 
 const i18nMain = i18next.createInstance();
 
-void i18nMain.init({
+void i18nMain.use(brandNamePostProcessor).init({
   initAsync: false,
   resources: {
     en: {
@@ -92,6 +105,7 @@ void i18nMain.init({
   interpolation: {
     escapeValue: false,
   },
+  postProcess: ["brandName"],
   returnEmptyString: false,
   returnNull: false,
 });
