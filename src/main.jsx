@@ -9,7 +9,11 @@ import { ToastProvider } from "./components/ui/Toast.tsx";
 import { SettingsProvider } from "./hooks/useSettings";
 
 import i18n from "./i18n";
+import { installDebugFetch } from "@brand/utils/debugFetch";
 import "./index.css";
+
+// Capture model HTTP exchanges for the debug panel (no-op unless DEBUG_MODE).
+installDebugFetch();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

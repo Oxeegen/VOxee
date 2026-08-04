@@ -85,6 +85,8 @@ import InferenceConfigEditor from "./settings/InferenceConfigEditor";
 import { MeetingTranscriptionPanel } from "./settings/MeetingSettings";
 import { BRAND } from "@brand/config/brand";
 import BrandTranscriptionSection from "@brand/components/settings/BrandTranscriptionSection";
+import { DEBUG_MODE } from "@brand/config/debug";
+import DebugLogsPanel from "@brand/components/settings/DebugLogsPanel";
 import { UploadTranscriptionPanel } from "./settings/UploadSettings";
 import LanguageSelector from "./ui/LanguageSelector";
 import { Skeleton } from "./ui/skeleton";
@@ -3944,6 +3946,12 @@ EOF`,
             <div className="border-t border-border/40 pt-6">
               <DeveloperSection />
             </div>
+
+            {DEBUG_MODE && (
+              <div className="border-t border-border/40 pt-6">
+                <DebugLogsPanel />
+              </div>
+            )}
 
             {/* Data Management */}
             <div className="border-t border-border/40 pt-6">

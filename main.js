@@ -275,6 +275,8 @@ const DiarizationManager = require("./src/helpers/diarization");
 const TrayManager = require("./src/helpers/tray");
 const dockManager = require("./src/helpers/dockManager");
 const IPCHandlers = require("./src/helpers/ipcHandlers");
+// Debug HTTP-exchange logger IPC (self-registered to keep ipcHandlers.js clean).
+require("./brand/helpers/httpExchangeLog").registerHttpDebugIpc(ipcMain);
 const CliBridge = require("./src/helpers/cliBridge");
 const UpdateManager = require("./src/updater");
 const GlobeKeyManager = require("./src/helpers/globeKeyManager");
