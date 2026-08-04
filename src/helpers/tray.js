@@ -157,6 +157,19 @@ class TrayManager {
 
     const candidatePaths = [];
 
+    // Brand tray icons (repo-root brand/assets). Tried first; if the raster
+    // files haven't been dropped in yet, the upstream src/assets icons below
+    // are used instead — nothing breaks.
+    const brandFile =
+      platform === "darwin" ? "voxeeTemplate@3x.png" : platform === "win32" ? "voxee.ico" : "voxee.png";
+    candidatePaths.push(
+      path.join(__dirname, "..", "..", "brand", "assets", brandFile),
+      path.join(__dirname, "..", "..", "brand", "assets", "voxee.png"),
+      path.join(process.resourcesPath, "brand", "assets", brandFile),
+      path.join(process.resourcesPath, "brand", "assets", "voxee.png"),
+      path.join(app.getAppPath(), "brand", "assets", brandFile)
+    );
+
     if (platform === "darwin") {
       if (isDevelopment) {
         candidatePaths.push(path.join(__dirname, "..", "assets", "iconTemplate@3x.png"));
