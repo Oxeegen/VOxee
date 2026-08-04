@@ -61,3 +61,27 @@ test("returns false for non-self-hosted mode even with URL configured", async ()
     false
   );
 });
+
+test("returns false for self-hosted mode with a configured API key (org endpoint)", async () => {
+  const { shouldSkipTranscriptionApiKey } = await import("../../src/helpers/transcriptionAuth.js");
+  assert.equal(
+    shouldSkipTranscriptionApiKey({
+      transcriptionMode: "self-hosted",
+      remoteTranscriptionUrl: "",
+      customTranscriptionApiKey: "sk-org-abc",
+    }),
+    false
+  );
+});
+
+test("returns true for self-hosted mode with a whitespace-only API key", async () => {
+  const { shouldSkipTranscriptionApiKey } = await import("../../src/helpers/transcriptionAuth.js");
+  assert.equal(
+    shouldSkipTranscriptionApiKey({
+      transcriptionMode: "self-hosted",
+      remoteTranscriptionUrl: "http://localhost:8000/v1",
+      customTranscriptionApiKey: "   ",
+    }),
+    true
+  );
+});

@@ -4733,9 +4733,13 @@ class IPCHandlers {
             formData.append("language", language);
           }
 
+          const selfHostedKey = this.environmentManager.getCustomTranscriptionKey();
           const response = await proxyFetch(selfHostedRoute.endpoint, {
             method: "POST",
             body: formData,
+            ...(selfHostedKey
+              ? { headers: { Authorization: `Bearer ${selfHostedKey}` } }
+              : {}),
           });
           if (!response.ok) {
             const errorText = await response.text();
@@ -7772,7 +7776,13 @@ class IPCHandlers {
               AUDIO_MIME_TYPES[ext] || "audio/mpeg",
               { model: selfHostedRoute.model, language }
             );
-            const data = await postMultipart(new URL(selfHostedRoute.endpoint), body, boundary);
+            const selfHostedKey = this.environmentManager.getCustomTranscriptionKey();
+            const data = await postMultipart(
+              new URL(selfHostedRoute.endpoint),
+              body,
+              boundary,
+              selfHostedKey ? { Authorization: `Bearer ${selfHostedKey}` } : {}
+            );
             if (data.statusCode !== 200) {
               throw new Error(
                 data.data?.error?.message ||
