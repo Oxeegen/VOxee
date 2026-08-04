@@ -1,5 +1,11 @@
 const { autoUpdater } = require("electron-updater");
 
+// Brand-configurable update feed. null (brand default) disables update checks
+// entirely; otherwise a generic electron-updater server URL.
+const brandConfig = require("../brand/config/brand.config.json");
+const UPDATE_FEED_URL =
+  (brandConfig.update && brandConfig.update.feedUrl) || process.env.OXEE_UPDATE_URL || null;
+
 class UpdateManager {
   constructor() {
     this.updateAvailable = false;
@@ -26,11 +32,14 @@ class UpdateManager {
       return;
     }
 
+    if (!UPDATE_FEED_URL) {
+      // Updates disabled for this brand build — no feed, no network checks.
+      return;
+    }
+
     autoUpdater.setFeedURL({
-      provider: "github",
-      owner: "OpenWhispr",
-      repo: "openwhispr",
-      private: false,
+      provider: "generic",
+      url: UPDATE_FEED_URL,
     });
 
     // Use arch-specific update channel on macOS to prevent arm64/x64
@@ -170,6 +179,10 @@ class UpdateManager {
         };
       }
 
+      if (!UPDATE_FEED_URL) {
+        return { updateAvailable: false, message: "Updates are disabled" };
+      }
+
       console.log("🔍 Checking for updates...");
       this._suppressNotification = true;
       const result = await autoUpdater.checkForUpdates();
@@ -203,6 +216,10 @@ class UpdateManager {
           success: false,
           message: "Update downloads are disabled in development mode",
         };
+      }
+
+      if (!UPDATE_FEED_URL) {
+        return { success: false, message: "Updates are disabled" };
       }
 
       if (this.isDownloading) {
@@ -285,6 +302,7 @@ class UpdateManager {
         updateAvailable: this.updateAvailable,
         updateDownloaded: this.updateDownloaded,
         isDevelopment: process.env.NODE_ENV === "development",
+        updatesEnabled: UPDATE_FEED_URL !== null,
       };
     } catch (error) {
       console.error("❌ Error getting update status:", error);
@@ -302,6 +320,9 @@ class UpdateManager {
   }
 
   checkForUpdatesOnStartup() {
+    if (!UPDATE_FEED_URL) {
+      return;
+    }
     if (process.env.NODE_ENV !== "development") {
       setTimeout(() => {
         console.log("🔄 Checking for updates on startup...");

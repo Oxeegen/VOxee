@@ -3765,6 +3765,7 @@ EOF`,
         return (
           <div className="space-y-6">
             {/* Software Updates */}
+            {updateStatus.updatesEnabled && (
             <div>
               <SectionHeader title={t("settingsPage.general.updates.title")} />
               <SettingsPanel>
@@ -3937,6 +3938,7 @@ EOF`,
                 </SettingsPanelRow>
               </SettingsPanel>
             </div>
+            )}
 
             {/* Developer Tools */}
             <div className="border-t border-border/40 pt-6">
