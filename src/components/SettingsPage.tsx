@@ -83,6 +83,8 @@ import DictationAgentSettings from "./settings/DictationAgentSettings";
 import DictationTranslationSettings from "./settings/DictationTranslationSettings";
 import InferenceConfigEditor from "./settings/InferenceConfigEditor";
 import { MeetingTranscriptionPanel } from "./settings/MeetingSettings";
+import { BRAND } from "@brand/config/brand";
+import BrandTranscriptionSection from "@brand/components/settings/BrandTranscriptionSection";
 import { UploadTranscriptionPanel } from "./settings/UploadSettings";
 import LanguageSelector from "./ui/LanguageSelector";
 import { Skeleton } from "./ui/skeleton";
@@ -367,6 +369,20 @@ function TranscriptionSection({
       variant="settings"
     />
   );
+
+  if (!BRAND.showAccount) {
+    return (
+      <div className="space-y-4">
+        <BrandTranscriptionSection
+          url={remoteTranscriptionUrl}
+          setUrl={setRemoteTranscriptionUrl}
+          model={remoteTranscriptionModel}
+          setModel={setRemoteTranscriptionModel}
+        />
+        <GpuDeviceSelector purpose="transcription" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

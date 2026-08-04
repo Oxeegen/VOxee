@@ -7,6 +7,8 @@ import type { InferenceModeOption } from "../ui/SettingsSection";
 import TranscriptionModelPicker from "../TranscriptionModelPicker";
 import type { InferenceMode } from "../../types/electron";
 import { useStartOnboarding } from "../../hooks/useStartOnboarding";
+import { BRAND } from "@brand/config/brand";
+import BrandTranscriptionSection from "@brand/components/settings/BrandTranscriptionSection";
 
 export function UploadTranscriptionPanel() {
   const { t } = useTranslation();
@@ -30,6 +32,11 @@ export function UploadTranscriptionPanel() {
     uploadCloudTranscriptionBaseUrl,
     setUploadCloudTranscriptionBaseUrl,
     setUploadCloudTranscriptionMode,
+    // Upload self-hosted reuses the shared base transcription endpoint/model.
+    remoteTranscriptionUrl,
+    setRemoteTranscriptionUrl,
+    remoteTranscriptionModel,
+    setRemoteTranscriptionModel,
   } = useSettingsStore();
 
   const transcriptionModes: InferenceModeOption[] = [
@@ -97,6 +104,17 @@ export function UploadTranscriptionPanel() {
       variant="settings"
     />
   );
+
+  if (!BRAND.showAccount) {
+    return (
+      <BrandTranscriptionSection
+        url={remoteTranscriptionUrl}
+        setUrl={setRemoteTranscriptionUrl}
+        model={remoteTranscriptionModel}
+        setModel={setRemoteTranscriptionModel}
+      />
+    );
+  }
 
   return (
     <div className="space-y-3">
