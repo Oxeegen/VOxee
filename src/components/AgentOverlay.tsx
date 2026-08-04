@@ -5,6 +5,7 @@ import { AgentTitleBar } from "./agent/AgentTitleBar";
 import { AgentChat } from "./agent/AgentChat";
 import { AgentInput } from "./agent/AgentInput";
 import AudioManager from "../helpers/audioManager";
+import { usePolicyStore, isAgentAllowed } from "../stores/policyStore";
 import { useChatPersistence } from "./chat/useChatPersistence";
 import { useChatStreaming } from "./chat/useChatStreaming";
 import { useChatMessageSender } from "./chat/useChatMessageSender";
@@ -192,6 +193,22 @@ export default function AgentOverlay() {
   const handleClose = useCallback(() => {
     window.electronAPI?.hideAgentOverlay?.();
   }, []);
+
+  // The overlay is its own BrowserWindow, so this renderer has to fetch the
+  // policy itself — the control panel's fetch lives in a different context.
+  const policyManaged = usePolicyStore((s) => s.managed);
+  const policyDoc = usePolicyStore((s) => s.policy);
+  const agentAllowed = isAgentAllowed({ managed: policyManaged, policy: policyDoc });
+
+  useEffect(() => {
+    void usePolicyStore.getState().fetchPolicy();
+  }, []);
+
+  useEffect(() => {
+    if (!agentAllowed) window.electronAPI?.hideAgentOverlay?.();
+  }, [agentAllowed]);
+
+  if (!agentAllowed) return null;
 
   return (
     <div className="agent-overlay-window w-screen h-screen bg-transparent relative">

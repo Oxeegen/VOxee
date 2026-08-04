@@ -324,6 +324,10 @@
     }
   },
   "controlPanel": {
+    "updateRequiredByOrg": {
+      "title": "アップデートが必要です",
+      "description": "組織では OpenWhispr {{version}} 以降が必要です。アプリを更新してください。"
+    },
     "update": {
       "readyTitle": "アップデートの準備完了",
       "readyDescription": "「アップデートをインストール」をクリックして最新バージョンで再起動します。",

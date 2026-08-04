@@ -66,3 +66,58 @@ test("rejects non-array allowlists the renderer dereferences", () => {
     assert.equal(isValidPolicyShape(policy), false, `${scope}.${field} missing`);
   }
 });
+
+test("rejects missing or mistyped feature flags", () => {
+  for (const field of ["agentEnabled", "webSearchEnabled"]) {
+    const policy = validPolicy();
+    policy.features[field] = "true";
+    assert.equal(isValidPolicyShape(policy), false, `features.${field} as string`);
+    delete policy.features[field];
+    assert.equal(isValidPolicyShape(policy), false, `features.${field} missing`);
+  }
+  const policy = validPolicy();
+  delete policy.features;
+  assert.equal(isValidPolicyShape(policy), false, "features missing");
+});
+
+test("rejects unknown sharing and local-history modes", () => {
+  const badSharing = validPolicy();
+  badSharing.sharing.externalLinkSharing = "everyone";
+  assert.equal(isValidPolicyShape(badSharing), false);
+
+  const noSharing = validPolicy();
+  delete noSharing.sharing;
+  assert.equal(isValidPolicyShape(noSharing), false);
+
+  const badHistory = validPolicy();
+  badHistory.dataRetention.localHistoryMode = "sometimes";
+  assert.equal(isValidPolicyShape(badHistory), false);
+});
+
+test("rejects mistyped retention fields", () => {
+  const badBackup = validPolicy();
+  badBackup.dataRetention.cloudBackupAllowed = "no";
+  assert.equal(isValidPolicyShape(badBackup), false);
+
+  const badDays = validPolicy();
+  badDays.dataRetention.audioRetentionMaxDays = "30";
+  assert.equal(isValidPolicyShape(badDays), false);
+
+  const cappedDays = validPolicy();
+  cappedDays.dataRetention.audioRetentionMaxDays = 30;
+  assert.equal(isValidPolicyShape(cappedDays), true);
+});
+
+test("accepts null or string minAppVersion, rejects other types", () => {
+  const versioned = validPolicy();
+  versioned.minAppVersion = "1.8.0";
+  assert.equal(isValidPolicyShape(versioned), true);
+
+  const badVersion = validPolicy();
+  badVersion.minAppVersion = 1.8;
+  assert.equal(isValidPolicyShape(badVersion), false);
+
+  const noVersion = validPolicy();
+  delete noVersion.minAppVersion;
+  assert.equal(isValidPolicyShape(noVersion), false);
+});

@@ -31,6 +31,8 @@ import {
   clearTranscriptions as clearStore,
 } from "../stores/transcriptionStore";
 import { useSettingsStore } from "../stores/settingsStore";
+import { usePolicyStore, isAgentAllowed } from "../stores/policyStore";
+import { compareAppVersions } from "../utils/version";
 import {
   useIsMeetingMode,
   useIsNarrowWindow,
@@ -166,8 +168,24 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
     isInstalling,
     downloadUpdate,
     installUpdate,
+    getAppVersion,
     error: updateError,
   } = useUpdater();
+
+  const policyMinAppVersion = usePolicyStore((s) =>
+    s.managed ? (s.policy?.minAppVersion ?? null) : null
+  );
+  const agentAllowedByPolicy = usePolicyStore((s) =>
+    isAgentAllowed({ managed: s.managed, policy: s.policy })
+  );
+  const [appVersion, setAppVersion] = useState<string | null>(null);
+  useEffect(() => {
+    if (!policyMinAppVersion) return;
+    void getAppVersion().then((version: string | null) => setAppVersion(version));
+  }, [policyMinAppVersion, getAppVersion]);
+  const updateRequiredByOrg = Boolean(
+    policyMinAppVersion && appVersion && compareAppVersions(appVersion, policyMinAppVersion) < 0
+  );
 
   const {
     confirmDialog,
@@ -1005,6 +1023,27 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             )}
           </div>
           <div className="flex-1 overflow-y-auto pt-1">
+            {updateRequiredByOrg && (
+              <div className="max-w-3xl mx-auto w-full mb-3">
+                <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 p-3">
+                  <div className="flex items-start gap-3">
+                    <div className="shrink-0 w-8 h-8 rounded-md bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+                      <AlertTriangle size={16} className="text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-amber-900 dark:text-amber-200 mb-0.5">
+                        {t("controlPanel.updateRequiredByOrg.title")}
+                      </p>
+                      <p className="text-xs text-amber-700 dark:text-amber-300/80">
+                        {t("controlPanel.updateRequiredByOrg.description", {
+                          version: policyMinAppVersion,
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {usage?.isPastDue && activeView === "home" && (
               <div className="max-w-3xl mx-auto w-full mb-3">
                 <div className="rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/50 p-3">
@@ -1105,7 +1144,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                 }}
               />
             )}
-            {activeView === "chat" && (
+            {activeView === "chat" && agentAllowedByPolicy && (
               <Suspense fallback={null}>
                 <ChatView />
               </Suspense>

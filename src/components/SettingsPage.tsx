@@ -107,7 +107,14 @@ import { syncService } from "../services/SyncService.js";
 import { formatBytes } from "../utils/formatBytes";
 import { clearMissingLocalModelSelections, useSettingsStore } from "../stores/settingsStore";
 import { useWorkspaceStore } from "../stores/workspaceStore";
-import { usePolicyStore, enforceModeOptions, isModeAllowed } from "../stores/policyStore";
+import {
+  usePolicyStore,
+  enforceModeOptions,
+  isModeAllowed,
+  lockedLocalHistoryValue,
+  isCloudBackupAllowed,
+  maxAudioRetentionDays,
+} from "../stores/policyStore";
 import { canManageSystemAudioInApp } from "../utils/systemAudioAccess";
 import WorkspaceSection from "./settings/WorkspaceSection";
 import WorkspaceBillingOverview from "./settings/WorkspaceBillingOverview";
@@ -862,6 +869,13 @@ export default function SettingsPage({
   const setVoiceAgentKey = useSettingsStore((s) => s.setVoiceAgentKey);
   const translationKey = useSettingsStore((s) => s.translationKey);
   const setTranslationKey = useSettingsStore((s) => s.setTranslationKey);
+
+  const settingsPolicyManaged = usePolicyStore((s) => s.managed);
+  const settingsPolicyDoc = usePolicyStore((s) => s.policy);
+  const settingsPolicyState = { managed: settingsPolicyManaged, policy: settingsPolicyDoc };
+  const historyLockedByPolicy = lockedLocalHistoryValue(settingsPolicyState) !== null;
+  const cloudBackupPolicyAllowed = isCloudBackupAllowed(settingsPolicyState);
+  const audioRetentionCap = maxAudioRetentionDays(settingsPolicyState);
 
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
@@ -3522,10 +3536,15 @@ EOF`,
                     <SettingsPanelRow>
                       <SettingsRow
                         label={t("settingsPage.privacy.cloudBackup")}
-                        description={t("settingsPage.privacy.cloudBackupDescription")}
+                        description={
+                          cloudBackupPolicyAllowed
+                            ? t("settingsPage.privacy.cloudBackupDescription")
+                            : t("common.managedByOrg")
+                        }
                       >
                         <Toggle
                           checked={cloudBackupEnabled}
+                          disabled={!cloudBackupPolicyAllowed}
                           onChange={(v) => {
                             setCloudBackupEnabled(v);
                             if (v) {
@@ -3624,12 +3643,20 @@ EOF`,
                   >
                     <select
                       value={audioRetentionDays}
-                      onChange={(e) => setAudioRetentionDays(parseInt(e.target.value, 10))}
+                      onChange={(e) => {
+                        const days = parseInt(e.target.value, 10);
+                        if (audioRetentionCap !== null && days > audioRetentionCap) return;
+                        setAudioRetentionDays(days);
+                      }}
                       className={RETENTION_SELECT_CLASS}
                     >
                       <option value={0}>{t("settingsPage.privacy.audioRetentionDisabled")}</option>
                       {RETENTION_DAY_OPTIONS.map((days) => (
-                        <option key={days} value={days}>
+                        <option
+                          key={days}
+                          value={days}
+                          disabled={audioRetentionCap !== null && days > audioRetentionCap}
+                        >
                           {t("settingsPage.privacy.retentionDays", { count: days })}
                         </option>
                       ))}
@@ -3668,9 +3695,17 @@ EOF`,
                 <SettingsPanelRow>
                   <SettingsRow
                     label={t("settingsPage.privacy.dataRetention")}
-                    description={t("settingsPage.privacy.dataRetentionDescription")}
+                    description={
+                      historyLockedByPolicy
+                        ? t("common.managedByOrg")
+                        : t("settingsPage.privacy.dataRetentionDescription")
+                    }
                   >
-                    <Toggle checked={dataRetentionEnabled} onChange={setDataRetentionEnabled} />
+                    <Toggle
+                      checked={dataRetentionEnabled}
+                      disabled={historyLockedByPolicy}
+                      onChange={setDataRetentionEnabled}
+                    />
                   </SettingsRow>
                 </SettingsPanelRow>
                 <SettingsPanelRow>

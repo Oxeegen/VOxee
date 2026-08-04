@@ -30,6 +30,7 @@ import {
 } from "../../stores/noteStore";
 import { useToast } from "../ui/useToast";
 import MemberAvatar from "../MemberAvatar";
+import { usePolicyStore, isShareVisibilityAllowed } from "../../stores/policyStore";
 import { emailDomain, isPersonalEmailDomain } from "../../utils/personalEmailDomains";
 import { EMAIL_REGEX } from "../../utils/validation";
 import type {
@@ -90,8 +91,18 @@ export default function ShareNoteDialog({ open, onOpenChange, note }: ShareNoteD
     localIsSharedRef.current = Boolean(note.is_shared);
   }, [note.is_shared]);
 
+  const policyManaged = usePolicyStore((s) => s.managed);
+  const policyDoc = usePolicyStore((s) => s.policy);
+  const visibilityAllowed = useCallback(
+    (visibility: ShareVisibility) =>
+      isShareVisibilityAllowed({ managed: policyManaged, policy: policyDoc }, visibility),
+    [policyManaged, policyDoc]
+  );
+
   const ownerDomain = useMemo(() => emailDomain(ownerEmail), [ownerEmail]);
-  const showDomainOption = Boolean(ownerDomain && !isPersonalEmailDomain(ownerDomain));
+  const showDomainOption = Boolean(
+    ownerDomain && !isPersonalEmailDomain(ownerDomain) && visibilityAllowed("domain")
+  );
 
   const share = cached?.share ?? null;
   const access = cached?.access;
@@ -230,6 +241,7 @@ export default function ShareNoteDialog({ open, onOpenChange, note }: ShareNoteD
   const applyVisibility = useCallback(
     async (next: ShareVisibility): Promise<ShareMutationResponse | null> => {
       if (!cloudId || !canManageSharing) return null;
+      if (!visibilityAllowed(next)) return null;
       const previous = getShareCacheEntry(cloudId);
       if (!previous || previous.share.visibility === next) return null;
       setSavingVisibility(true);
@@ -297,7 +309,7 @@ export default function ShareNoteDialog({ open, onOpenChange, note }: ShareNoteD
         setSavingVisibility(false);
       }
     },
-    [cloudId, canManageSharing, ownerDomain, note.id, t, toast]
+    [cloudId, canManageSharing, ownerDomain, note.id, t, toast, visibilityAllowed]
   );
 
   const copyLink = useCallback(
@@ -838,6 +850,7 @@ export default function ShareNoteDialog({ open, onOpenChange, note }: ShareNoteD
                 value={share?.visibility ?? "private"}
                 ownerDomain={ownerDomain}
                 showDomainOption={showDomainOption}
+                showLinkOption={visibilityAllowed("link")}
                 disabled={loading || !share || !canManageSharing || savingVisibility || linkBusy}
                 onChange={(v) => void applyVisibility(v)}
               />

@@ -324,6 +324,10 @@
     }
   },
   "controlPanel": {
+    "updateRequiredByOrg": {
+      "title": "Aggiornamento richiesto",
+      "description": "La tua organizzazione richiede OpenWhispr {{version}} o versioni successive. Aggiorna l'app."
+    },
     "update": {
       "readyTitle": "Aggiornamento pronto da installare",
       "readyDescription": "Fai clic su 'Installa aggiornamento' per riavviare con l'ultima versione.",

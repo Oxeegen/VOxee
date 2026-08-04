@@ -14,6 +14,7 @@ interface ShareVisibilityMenuProps {
   value: ShareVisibility;
   ownerDomain: string;
   showDomainOption: boolean;
+  showLinkOption?: boolean;
   disabled?: boolean;
   onChange: (visibility: ShareVisibility) => void;
 }
@@ -22,6 +23,7 @@ export default function ShareVisibilityMenu({
   value,
   ownerDomain,
   showDomainOption,
+  showLinkOption = true,
   disabled,
   onChange,
 }: ShareVisibilityMenuProps) {
@@ -63,12 +65,14 @@ export default function ShareVisibilityMenu({
           active={value === "invited"}
           onSelect={() => onChange("invited")}
         />
-        <VisibilityItem
-          icon={<Globe size={13} className="text-foreground/50" />}
-          label={t("noteEditor.share.dialog.visibility.link")}
-          active={value === "link"}
-          onSelect={() => onChange("link")}
-        />
+        {showLinkOption && (
+          <VisibilityItem
+            icon={<Globe size={13} className="text-foreground/50" />}
+            label={t("noteEditor.share.dialog.visibility.link")}
+            active={value === "link"}
+            onSelect={() => onChange("link")}
+          />
+        )}
         {showDomainOption && (
           <VisibilityItem
             icon={<Building2 size={13} className="text-foreground/50" />}

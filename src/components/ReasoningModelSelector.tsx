@@ -24,6 +24,7 @@ import { getRemoteProviderIcon } from "../utils/providerIcons";
 import { GetApiKeyLink } from "./ui/GetApiKeyLink";
 import { getCachedPlatform } from "../utils/platform";
 import { useSettingsStore } from "../stores/settingsStore";
+import { usePolicyStore, isProviderAllowed } from "../stores/policyStore";
 
 type CloudModelOption = {
   value: string;
@@ -348,10 +349,17 @@ export default function ReasoningModelSelector({
     loading: tinfoilModelsLoading,
     error: tinfoilModelsError,
   } = useTinfoilModels(selectedCloudProvider === "tinfoil");
+  const policyManaged = usePolicyStore((s) => s.managed);
+  const policyDoc = usePolicyStore((s) => s.policy);
+  const providerAllowed = useCallback(
+    (providerId: string) =>
+      isProviderAllowed({ managed: policyManaged, policy: policyDoc }, "llm", providerId),
+    [policyManaged, policyDoc]
+  );
 
   const effectiveMode = mode || selectedMode;
 
-  const cloudProviders = CLOUD_PROVIDER_IDS.map((id) => ({
+  const cloudProviders = CLOUD_PROVIDER_IDS.filter(providerAllowed).map((id) => ({
     id,
     name:
       id === "custom"
@@ -467,8 +475,15 @@ export default function ReasoningModelSelector({
 
     if (newMode === "cloud") {
       window.electronAPI?.llamaServerStop?.();
-      setLocalReasoningProvider(selectedCloudProvider);
-      selectDefaultModelForProvider(selectedCloudProvider);
+      // The remembered cloud provider may have become policy-disallowed while
+      // the user was in local mode — fall back to the first allowed one.
+      const nextProvider = providerAllowed(selectedCloudProvider)
+        ? selectedCloudProvider
+        : cloudProviders[0]?.id;
+      if (!nextProvider) return;
+      if (nextProvider !== selectedCloudProvider) setSelectedCloudProvider(nextProvider);
+      setLocalReasoningProvider(nextProvider);
+      selectDefaultModelForProvider(nextProvider);
     } else {
       setLocalReasoningProvider(selectedLocalProvider);
       const downloaded = await loadDownloadedModels();
@@ -486,6 +501,7 @@ export default function ReasoningModelSelector({
   };
 
   const handleCloudProviderChange = (provider: string) => {
+    if (!providerAllowed(provider)) return;
     setSelectedCloudProvider(provider);
     setLocalReasoningProvider(provider);
     selectDefaultModelForProvider(provider);

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import ReasoningService, { type AgentStreamChunk } from "../../services/ReasoningService";
 import { isEnterpriseProvider } from "../../models/ModelRegistry";
 import { getSettings } from "../../stores/settingsStore";
+import { usePolicyStore, isWebSearchAllowed } from "../../stores/policyStore";
 import { getAgentSystemPrompt } from "../../config/prompts";
 import { createToolRegistry } from "../../services/tools";
 import type { ToolRegistry } from "../../services/tools/ToolRegistry";
@@ -131,7 +132,8 @@ export function useChatStreaming({
       let registry: ToolRegistry | null = null;
       if (supportsTools) {
         const scopeKey = scope ? `${scope.spaceId}:${scope.folderId ?? ""}` : "";
-        const cacheKey = `${settings.isSignedIn}-${settings.gcalConnected}-${settings.cloudBackupEnabled}-${scopeKey}`;
+        const webSearchEnabled = isWebSearchAllowed(usePolicyStore.getState());
+        const cacheKey = `${settings.isSignedIn}-${settings.gcalConnected}-${settings.cloudBackupEnabled}-${scopeKey}-${webSearchEnabled}`;
         if (toolRegistryRef.current?.key === cacheKey) {
           registry = toolRegistryRef.current.registry;
         } else {
@@ -140,6 +142,7 @@ export function useChatStreaming({
             gcalConnected: settings.gcalConnected,
             cloudBackupEnabled: settings.cloudBackupEnabled,
             searchScope: scope,
+            webSearchEnabled,
           });
           toolRegistryRef.current = { key: cacheKey, registry };
         }
