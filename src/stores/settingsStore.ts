@@ -33,6 +33,7 @@ import type {
   ChatAgentSettings,
 } from "../hooks/useSettings";
 import type { Snippet } from "../utils/snippets";
+import { seedBrandDefaults } from "@brand/config/brandSeed";
 
 let _ReasoningService: typeof import("../services/ReasoningService").default | null = null;
 
@@ -113,6 +114,9 @@ function migrateMeetingFollowFlags() {
     localStorage.setItem(flag, "false");
   }
 }
+
+// Seed brand self-hosted defaults before any migration or store read below.
+seedBrandDefaults();
 
 migrateMeetingFollowFlags();
 
