@@ -7,6 +7,7 @@ import TranscriptionPreviewOverlay from "./components/TranscriptionPreviewOverla
 import UpdateNotificationOverlay from "./components/UpdateNotificationOverlay.tsx";
 import WindowControls from "./components/WindowControls.tsx";
 import BrandLogo from "@brand/components/ui/BrandLogo";
+import { BRAND } from "@brand/config/brand";
 import { Card, CardContent } from "./components/ui/card.tsx";
 import { useAuth } from "./hooks/useAuth";
 import { useTheme } from "./hooks/useTheme";
@@ -54,7 +55,7 @@ function MainApp() {
     } else if (isControlPanel) {
       import("./components/ControlPanel.tsx").catch(() => {});
 
-      if (!localStorage.getItem("onboardingCompleted")) {
+      if (BRAND.showOnboarding && !localStorage.getItem("onboardingCompleted")) {
         import("./components/OnboardingFlow.tsx").catch(() => {});
       }
     }
@@ -85,12 +86,15 @@ function MainApp() {
       localStorage.setItem("onboardingCompleted", "true");
     }
 
-    const resolved = localStorage.getItem("onboardingCompleted") === "true";
+    // When onboarding is disabled by the brand, treat it as already resolved
+    // so the wizard never shows.
+    const resolved =
+      !BRAND.showOnboarding || localStorage.getItem("onboardingCompleted") === "true";
 
     if (isControlPanel) {
       if (!resolved) {
         setShowOnboarding(true);
-      } else if (!isSignedIn && !authSkipped) {
+      } else if (BRAND.showAccount && !isSignedIn && !authSkipped) {
         setNeedsReauth(true);
       }
     }

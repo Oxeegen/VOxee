@@ -9,6 +9,7 @@ import { useSystemAudioPermission } from "../hooks/useSystemAudioPermission";
 import { useSettingsStore } from "../stores/settingsStore";
 import { canManageSystemAudioInApp } from "../utils/systemAudioAccess";
 import { getMeetingJoinUrl } from "../helpers/meetingJoinUrl";
+import { BRAND } from "@brand/config/brand";
 
 interface UpcomingMeetingsProps {
   events: CalendarEvent[];
@@ -109,7 +110,7 @@ export default function UpcomingMeetings({ events, isLoading }: UpcomingMeetings
                   : t("onboarding.permissions.grantAccess")}
               </Button>
             </>
-          ) : !isSignedIn ? (
+          ) : !isSignedIn && BRAND.showAccount ? (
             <>
               <LogIn size={24} className="text-muted-foreground/30 mb-2.5" />
               <p className="text-xs font-medium text-muted-foreground/70 text-center mb-1">
