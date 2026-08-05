@@ -719,17 +719,62 @@ function looksLikeYouTubeBlock(message) {
   );
 }
 
+// A truncated/corrupt binary (e.g. a self-update that swapped the exe badly on
+// Windows). PyInstaller can't load its embedded archive, so the binary can't
+// even start. Recover by discarding the cache copy and re-seeding the bundle.
+function looksLikeCorruptBinary(message) {
+  return /pyinstaller|embedded pkg archive|could not load|not a valid win32|failed to load python/i.test(
+    message || ""
+  );
+}
+
+// Delete the writable cache binary (+ its recorded checksum) so the next resolve
+// falls back to / re-seeds the signed bundle copy.
+function discardCacheYtDlp() {
+  verifiedCacheStat = null;
+  const cachePath = getCacheYtDlpPath();
+  for (const p of [cachePath, `${cachePath}.sha256`]) {
+    try {
+      fs.unlinkSync(p);
+    } catch {}
+  }
+}
+
 // Single self-heal retry: on stale-extractor failures, force-update and retry once.
-async function runYtDlpWithSelfHeal(binary, args, abortSignal, timeoutMs, onBeforeRetry, onOutput) {
+// Run yt-dlp; if the binary can't even start (a failed self-update left a
+// truncated cache exe that still passes its recorded checksum), discard the
+// cache, re-seed the signed bundle, and run once more.
+async function runYtDlpResilient(binary, args, abortSignal, timeoutMs, onOutput, onBeforeReseed) {
   try {
     return await runYtDlpTracked(binary, args, abortSignal, timeoutMs, onOutput);
+  } catch (e) {
+    if (e.code === "DOWNLOAD_CANCELLED") throw e;
+    if (!looksLikeCorruptBinary(`${e.message || ""} ${e.stderr || ""}`)) throw e;
+    onBeforeReseed?.();
+    discardCacheYtDlp();
+    seedYtDlpFromBundle();
+    return runYtDlpTracked(resolveYtDlpBinary() || binary, args, abortSignal, timeoutMs, onOutput);
+  }
+}
+
+async function runYtDlpWithSelfHeal(binary, args, abortSignal, timeoutMs, onBeforeRetry, onOutput) {
+  try {
+    return await runYtDlpResilient(binary, args, abortSignal, timeoutMs, onOutput, onBeforeRetry);
   } catch (e) {
     if (e.code === "DOWNLOAD_CANCELLED") throw e;
     const text = `${e.message || ""} ${e.stderr || ""}`;
     if (!looksLikeStaleExtractor(text)) throw e;
     onBeforeRetry?.();
     await maybeUpdateYtDlp({ force: true, abortSignal });
-    return runYtDlpTracked(resolveYtDlpBinary() || binary, args, abortSignal, timeoutMs, onOutput);
+    // The nightly self-update can corrupt the exe on Windows; recover here too.
+    return runYtDlpResilient(
+      resolveYtDlpBinary() || binary,
+      args,
+      abortSignal,
+      timeoutMs,
+      onOutput,
+      onBeforeRetry
+    );
   }
 }
 
