@@ -61,6 +61,8 @@ export interface BrandConfig {
   showUseCaseStep: boolean;
   /** Show the Integrations control-panel entry (CLI / MCP / calendar). */
   showIntegrations: boolean;
+  /** Default floating-panel start position (user-overridable). */
+  panelStartPosition: "bottom-right" | "center" | "bottom-left";
   /** Theme values. */
   theme: BrandTheme;
   /** Auto-update feed. feedUrl null => updates disabled. */

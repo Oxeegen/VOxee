@@ -9,6 +9,7 @@
   "showOnboarding": false,
   "showUseCaseStep": false,
   "showIntegrations": false,
+  "panelStartPosition": "center",
   "theme": {
     "primary": "#5E4AF5",
     "keepPrimaryInDark": true
