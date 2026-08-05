@@ -1505,11 +1505,15 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
 
   async getAPIKey() {
     const s = getSettings();
-    if (shouldSkipTranscriptionApiKey(s)) {
+    const provider = s.cloudTranscriptionProvider || "openai";
+
+    // For custom/self-hosted, the key can live only in the secure store and may
+    // not be hydrated into settings yet — so DON'T skip on the (possibly empty)
+    // store value here. The custom branch below retrieves it via IPC and returns
+    // null only when the key is genuinely absent (keyless server).
+    if (provider !== "custom" && shouldSkipTranscriptionApiKey(s)) {
       return null;
     }
-
-    const provider = s.cloudTranscriptionProvider || "openai";
 
     // Check cache (invalidate if provider changed)
     if (this.cachedApiKey !== null && this.cachedApiKeyProvider === provider) {
