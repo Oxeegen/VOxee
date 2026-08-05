@@ -35,6 +35,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useUsage } from "../../hooks/useUsage";
 import { useSettings } from "../../hooks/useSettings";
 import { useStartOnboarding } from "../../hooks/useStartOnboarding";
+import { BRAND } from "@brand/config/brand";
 import { getAllReasoningModels, getBatchTranscriptionModel } from "../../models/ModelRegistry";
 import {
   useSettingsStore,
@@ -290,8 +291,10 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
   if (file) {
     if (useLocalWhisper) {
       // Local transcription: no file size restrictions
-    } else if (isSelfHosted || cloudTranscriptionProvider === "custom") {
-      // Self-hosted / custom endpoints (e.g. local whisper.cpp): no file size restrictions
+    } else if (isSelfHosted || cloudTranscriptionProvider === "custom" || !BRAND.showAccount) {
+      // Self-hosted / custom endpoints (e.g. local whisper.cpp): no file size
+      // restrictions. In account-less brand mode all transcription is
+      // self-hosted, so the third-party 25 MB cap never applies.
     } else if (isByok) {
       byokTooLarge = file.sizeBytes > BYOK_MAX_FILE_SIZE;
       if (byokTooLarge && !isSignedIn) {
