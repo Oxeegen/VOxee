@@ -33,8 +33,9 @@ const STASH = path.join(ROOT, ".brand-bin-stash");
 const args = process.argv.slice(2);
 const debug = args.includes("--debug");
 
-// Keep only Windows runtime helpers in resources/bin during packaging.
-const KEEP = /^(windows-|nircmd\.exe$)/i;
+// Keep Windows runtime helpers + yt-dlp (URL/YouTube upload) in resources/bin
+// during packaging; everything else (model runtimes) is stashed out.
+const KEEP = /^(windows-|yt-dlp|nircmd\.exe$)/i;
 
 function run(cmd, extraEnv) {
   console.log(`\n▶ ${cmd}`);
