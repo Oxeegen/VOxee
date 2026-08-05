@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useSettingsStore, selectIsCloudCleanupMode } from "../stores/settingsStore";
 import { useUsage } from "./useUsage";
+import { BRAND } from "@brand/config/brand";
 
 interface UseNotesOnboardingReturn {
   isComplete: boolean;
@@ -19,7 +20,9 @@ export function useNotesOnboarding(): UseNotesOnboardingReturn {
   const isCloudCleanup = useSettingsStore(selectIsCloudCleanupMode);
 
   const [isComplete, setIsComplete] = useState(
-    () => localStorage.getItem("notesOnboardingComplete") === "true"
+    // Account-less brand builds preconfigure the LLM (self-hosted), so the
+    // notes model-setup onboarding is redundant — treat it as already done.
+    () => !BRAND.showAccount || localStorage.getItem("notesOnboardingComplete") === "true"
   );
 
   const isLLMConfigured = isCloudCleanup || (useCleanupModel && !!effectiveModel);
