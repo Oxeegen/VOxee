@@ -103,10 +103,12 @@ export const MicrophoneSettings: React.FC<MicrophoneSettingsProps> = ({
     loadDevices();
 
     const handleDeviceChange = () => loadDevices();
-    navigator.mediaDevices.addEventListener("devicechange", handleDeviceChange);
+    // navigator.mediaDevices is undefined in insecure contexts (e.g. the browser
+    // preview served over IP), so guard the listener wiring to avoid crashing.
+    navigator.mediaDevices?.addEventListener("devicechange", handleDeviceChange);
 
     return () => {
-      navigator.mediaDevices.removeEventListener("devicechange", handleDeviceChange);
+      navigator.mediaDevices?.removeEventListener("devicechange", handleDeviceChange);
     };
   }, [loadDevices]);
 

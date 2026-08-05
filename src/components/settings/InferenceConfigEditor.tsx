@@ -15,6 +15,8 @@ import OpenAICompatiblePanel from "../OpenAICompatiblePanel";
 import { Toggle } from "../ui/toggle";
 import type { InferenceMode } from "../../types/electron";
 import type { InferenceScope } from "../../config/inferenceScopes";
+import { BRAND } from "@brand/config/brand";
+import BrandModelSection from "@brand/components/settings/BrandModelSection";
 import {
   modelRegistry,
   isEnterpriseProvider,
@@ -59,7 +61,17 @@ interface InferenceConfigEditorProps {
   onModeChange?: (mode: InferenceMode) => void;
 }
 
-export default function InferenceConfigEditor({ scope, onModeChange }: InferenceConfigEditorProps) {
+export default function InferenceConfigEditor(props: InferenceConfigEditorProps) {
+  // Account-less brand builds lock every LLM scope to the org's self-hosted
+  // models (with a Custom escape hatch), replacing the full mode selector.
+  // Kept as a wrapper so the hooks below never sit behind a conditional return.
+  if (!BRAND.showAccount) {
+    return <BrandModelSection scope={props.scope} />;
+  }
+  return <InferenceConfigEditorImpl {...props} />;
+}
+
+function InferenceConfigEditorImpl({ scope, onModeChange }: InferenceConfigEditorProps) {
   const { t } = useTranslation();
   const config = useSettingsStore(useShallow((s) => selectResolvedLLMConfig(s, scope)));
   const isSignedIn = useSettingsStore((s) => s.isSignedIn);

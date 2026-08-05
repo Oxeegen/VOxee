@@ -44,6 +44,15 @@ const registerListener = (channel, handlerFactory) => {
 };
 
 contextBridge.exposeInMainWorld("electronAPI", {
+  // Debug HTTP-exchange logger (brand debug mode).
+  httpDebugRecord: (exchange) => ipcRenderer.invoke("http-debug:record", exchange),
+  httpDebugList: () => ipcRenderer.invoke("http-debug:list"),
+  httpDebugClear: () => ipcRenderer.invoke("http-debug:clear"),
+  onHttpDebugExchange: (cb) => {
+    const listener = (_event, data) => cb(data);
+    ipcRenderer.on("http-debug:exchange", listener);
+    return () => ipcRenderer.removeListener("http-debug:exchange", listener);
+  },
   pasteText: (text, options) => ipcRenderer.invoke("paste-text", text, options),
   hideWindow: () => ipcRenderer.invoke("hide-window"),
   showDictationPanel: () => ipcRenderer.invoke("show-dictation-panel"),

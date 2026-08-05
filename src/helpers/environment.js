@@ -6,6 +6,7 @@ const debugLogger = require("./debugLogger");
 const { normalizeUiLanguage } = require("./i18nMain");
 const secretCrypto = require("./secretCrypto");
 const { BYOK_API_KEYS } = require("../config/secretKeys");
+const brandConfig = require("../../brand/config/brand.config.json");
 
 const SECRET_KEYS = [
   ...BYOK_API_KEYS.map((k) => k.env),
@@ -478,7 +479,7 @@ class EnvironmentManager {
   getPanelStartPosition() {
     const v = this._getKey("PANEL_START_POSITION");
     if (v === "bottom-right" || v === "center" || v === "bottom-left") return v;
-    return "bottom-right";
+    return brandConfig.panelStartPosition || "bottom-right";
   }
 
   savePanelStartPosition(position) {

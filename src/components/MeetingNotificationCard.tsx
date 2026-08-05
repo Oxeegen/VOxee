@@ -1,4 +1,5 @@
 import { X } from "lucide-react";
+import BrandLogo from "@brand/components/ui/BrandLogo";
 
 interface MeetingNotificationCardProps {
   title: string;
@@ -60,13 +61,7 @@ export function MeetingNotificationCard({
 
       <div className="flex items-center gap-2.5">
         <div className="shrink-0 bg-primary/10 rounded-md p-1">
-          <svg viewBox="0 0 1024 1024" className="w-4.5 h-4.5">
-            <rect width="1024" height="1024" rx="241" fill="#2056DF" />
-            <circle cx="512" cy="512" r="314" fill="#2056DF" stroke="white" strokeWidth="74" />
-            <path d="M512 383V641" stroke="white" strokeWidth="74" strokeLinecap="round" />
-            <path d="M627 457V568" stroke="white" strokeWidth="74" strokeLinecap="round" />
-            <path d="M397 457V568" stroke="white" strokeWidth="74" strokeLinecap="round" />
-          </svg>
+          <BrandLogo className="w-4.5 h-4.5" />
         </div>
 
         <div className="flex-1 min-w-0">

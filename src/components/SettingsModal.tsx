@@ -14,6 +14,8 @@ import {
 import SidebarModal, { type SidebarItem } from "./ui/SidebarModal";
 import SettingsPage, { SettingsSectionType } from "./SettingsPage";
 import { useAuth } from "../hooks/useAuth";
+import { BRAND } from "@brand/config/brand";
+import OxeegenMark from "@brand/components/ui/OxeegenMark";
 
 export type { SettingsSectionType };
 
@@ -106,11 +108,28 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
         description: t("settingsModal.sections.llms.description"),
         group: t("settingsModal.groups.aiModels"),
       },
+      ...(!BRAND.showAccount
+        ? [
+            {
+              id: "apiKey" as const,
+              label: `${BRAND.modelBrandName} ${t("common.apiKey")}`,
+              icon: OxeegenMark,
+              description: t("brand.apiKey.sidebarDesc", {
+                defaultValue: `${BRAND.modelBrandName} API key`,
+              }),
+              group: t("settingsModal.groups.aiModels"),
+            },
+          ]
+        : []),
       {
         id: "privacyData",
-        label: t("settingsModal.sections.privacyData.label"),
+        label: BRAND.showAccount
+          ? t("settingsModal.sections.privacyData.label")
+          : t("settingsModal.sections.data.label", { defaultValue: "Data" }),
         icon: Shield,
-        description: t("settingsModal.sections.privacyData.description"),
+        description: BRAND.showAccount
+          ? t("settingsModal.sections.privacyData.description")
+          : t("settingsModal.sections.data.description", { defaultValue: "Permissions & data" }),
         group: t("settingsModal.groups.system"),
       },
       {
@@ -121,11 +140,15 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
         group: t("settingsModal.groups.system"),
       },
     ];
-    return isSignedIn ? items : items.filter((item) => item.id !== "workspace");
+    // In account-less brand mode, drop every account/billing/workspace entry.
+    const withoutAccount = BRAND.showAccount
+      ? items
+      : items.filter((item) => !["account", "plansBilling", "workspace"].includes(item.id));
+    return isSignedIn ? withoutAccount : withoutAccount.filter((item) => item.id !== "workspace");
   }, [t, isSignedIn]);
 
   const resolveSection = (section: string | undefined): SettingsSectionType => {
-    if (!section) return "account";
+    if (!section) return BRAND.showAccount ? "account" : "general";
     return (SECTION_ALIASES[section] ?? section) as SettingsSectionType;
   };
 

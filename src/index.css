@@ -5,7 +5,7 @@
 @theme {
   /* OpenWhispr Theme — registers color tokens with Tailwind v4.
      These are the light-mode defaults; .dark overrides them below. */
-  --color-primary: #2563eb;
+  --color-primary: #5E4AF5;
   --color-primary-foreground: #ffffff;
   --color-secondary: #f5f5f5;
   --color-secondary-foreground: #171717;
@@ -17,19 +17,19 @@
   --color-destructive-foreground: #ffffff;
   --color-border: #e5e5e5;
   --color-input: #f9f6f1;
-  --color-ring: #2563eb;
+  --color-ring: #5E4AF5;
   --color-background: #ffffff;
   --color-foreground: #171717;
   --color-card: #ffffff;
   --color-card-foreground: #171717;
   --color-popover: #ffffff;
   --color-popover-foreground: #171717;
-  --color-link: #2563eb;
+  --color-link: #5E4AF5;
   --color-success: #16a34a;
   --color-success-foreground: #ffffff;
   --color-warning: #d97706;
   --color-warning-foreground: #ffffff;
-  --color-info: #2563eb;
+  --color-info: #5E4AF5;
   --color-info-foreground: #ffffff;
 
   /* Surface hierarchy — light mode equivalents */
@@ -42,7 +42,7 @@
   /* Border states — light mode equivalents */
   --color-border-subtle: #e5e5e5;
   --color-border-hover: #d4d4d4;
-  --color-border-active: #2563eb;
+  --color-border-active: #5E4AF5;
 }
 
 :root {
@@ -89,7 +89,7 @@
   --color-card-foreground: oklch(0.93 0 0);
   --color-popover: oklch(0.29 0.009 260);
   --color-popover-foreground: oklch(0.93 0 0);
-  --color-primary: oklch(0.65 0.2 260);
+  --color-primary: #5E4AF5;
   --color-primary-foreground: oklch(0.99 0 0);
   --color-secondary: oklch(0.28 0.007 260);
   --color-secondary-foreground: oklch(0.9 0 0);
@@ -101,7 +101,7 @@
   --color-destructive-foreground: oklch(0.99 0 0);
   --color-border: oklch(0.35 0.007 260);
   --color-input: oklch(0.19 0.005 260);
-  --color-ring: oklch(0.65 0.2 260);
+  --color-ring: #5E4AF5;
   --color-success: oklch(0.7 0.18 145);
   --color-success-foreground: oklch(0.99 0 0);
   --color-warning: oklch(0.75 0.15 70);
@@ -119,7 +119,7 @@
   /* Border states */
   --color-border-subtle: oklch(0.33 0.006 260);
   --color-border-hover: oklch(0.42 0.01 260);
-  --color-border-active: oklch(0.5 0.15 260);
+  --color-border-active: oklch(0.5 0.15 280);
   --color-link: oklch(0.67 0.1 250);
 
   /* Card depth shadows — softer for charcoal, with top highlight for premium depth */
@@ -131,7 +131,7 @@
   /* Premium effects */
   --shadow-metallic-dark: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-selected-glow:
-    inset 0 0 0 1px oklch(0.65 0.2 260 / 0.2), 0 0 16px -4px oklch(0.65 0.2 260 / 0.2);
+    inset 0 0 0 1px oklch(from #5E4AF5 l c h / 0.2), 0 0 16px -4px oklch(from #5E4AF5 l c h / 0.2);
   --shadow-card-hover-subtle: 0 2px 8px -2px rgba(0, 0, 0, 0.12);
 }
 
@@ -370,7 +370,7 @@ a:hover {
   height: 1px;
   background: linear-gradient(
     90deg,
-    oklch(0.65 0.2 260 / 0.5),
+    oklch(from #5E4AF5 l c h / 0.5),
     oklch(0.7 0.18 280 / 0.3),
     transparent 80%
   );
@@ -602,7 +602,7 @@ a:hover {
 .referral-mesh-bg::before {
   width: 300px;
   height: 300px;
-  background: oklch(0.65 0.2 260);
+  background: #5E4AF5;
   opacity: 0.04;
   top: -80px;
   right: -60px;
@@ -672,11 +672,11 @@ a:hover {
   border-radius: inherit;
   background: conic-gradient(
     from 180deg at 50% 50%,
-    oklch(0.65 0.2 260 / 0.2),
+    oklch(from #5E4AF5 l c h / 0.2),
     oklch(0.55 0.2 320 / 0.1),
     oklch(0.6 0.18 180 / 0.15),
     oklch(0.55 0.2 100 / 0.1),
-    oklch(0.65 0.2 260 / 0.2)
+    oklch(from #5E4AF5 l c h / 0.2)
   );
   z-index: -1;
   opacity: 0;

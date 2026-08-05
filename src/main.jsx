@@ -9,7 +9,18 @@ import { ToastProvider } from "./components/ui/Toast.tsx";
 import { SettingsProvider } from "./hooks/useSettings";
 
 import i18n from "./i18n";
+import { installDebugFetch } from "@brand/utils/debugFetch";
+import brandFavicon from "@brand/assets/voxee.png";
 import "./index.css";
+
+// Point the browser-tab favicon at the brand icon. The static <link> in
+// index.html can't reliably reference brand/ (outside the Vite root) in the dev
+// preview, so set it here via a Vite-resolved asset URL (works in dev + build).
+const faviconLink = document.querySelector("link[rel='icon']");
+if (faviconLink) faviconLink.setAttribute("href", brandFavicon);
+
+// Capture model HTTP exchanges for the debug panel (no-op unless DEBUG_MODE).
+installDebugFetch();
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

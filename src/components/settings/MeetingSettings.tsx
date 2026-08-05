@@ -9,6 +9,8 @@ import TranscriptionModelPicker from "../TranscriptionModelPicker";
 import SelfHostedPanel from "../SelfHostedPanel";
 import type { InferenceMode } from "../../types/electron";
 import { useStartOnboarding } from "../../hooks/useStartOnboarding";
+import { BRAND } from "@brand/config/brand";
+import BrandTranscriptionSection from "@brand/components/settings/BrandTranscriptionSection";
 
 export function MeetingSpeakerDetectionRow() {
   const { t } = useTranslation();
@@ -51,6 +53,9 @@ export function MeetingTranscriptionPanel() {
     setMeetingCloudTranscriptionMode,
     meetingRemoteTranscriptionUrl,
     setMeetingRemoteTranscriptionUrl,
+    // Meeting self-hosted reuses the shared base transcription model.
+    remoteTranscriptionModel,
+    setRemoteTranscriptionModel,
   } = useSettingsStore();
 
   const transcriptionModes: InferenceModeOption[] = [
@@ -128,24 +133,35 @@ export function MeetingTranscriptionPanel() {
 
   return (
     <div className="space-y-3">
-      <InferenceModeSelector
-        modes={transcriptionModes}
-        activeMode={meetingTranscriptionMode}
-        onSelect={handleTranscriptionModeSelect}
-      />
-
-      {meetingTranscriptionMode === "providers" && renderTranscriptionPicker("cloud")}
-      {meetingTranscriptionMode === "local" && renderTranscriptionPicker("local")}
-      {meetingTranscriptionMode === "self-hosted" && (
+      {!BRAND.showAccount ? (
+        <BrandTranscriptionSection
+          url={meetingRemoteTranscriptionUrl}
+          setUrl={setMeetingRemoteTranscriptionUrl}
+          model={remoteTranscriptionModel}
+          setModel={setRemoteTranscriptionModel}
+        />
+      ) : (
         <>
-          <SelfHostedPanel
-            service="transcription"
-            url={meetingRemoteTranscriptionUrl}
-            onUrlChange={setMeetingRemoteTranscriptionUrl}
+          <InferenceModeSelector
+            modes={transcriptionModes}
+            activeMode={meetingTranscriptionMode}
+            onSelect={handleTranscriptionModeSelect}
           />
-          <p className="text-xs text-muted-foreground/80 px-1">
-            {t("settingsPage.speechToText.selfHostedStreamingNote")}
-          </p>
+
+          {meetingTranscriptionMode === "providers" && renderTranscriptionPicker("cloud")}
+          {meetingTranscriptionMode === "local" && renderTranscriptionPicker("local")}
+          {meetingTranscriptionMode === "self-hosted" && (
+            <>
+              <SelfHostedPanel
+                service="transcription"
+                url={meetingRemoteTranscriptionUrl}
+                onUrlChange={setMeetingRemoteTranscriptionUrl}
+              />
+              <p className="text-xs text-muted-foreground/80 px-1">
+                {t("settingsPage.speechToText.selfHostedStreamingNote")}
+              </p>
+            </>
+          )}
         </>
       )}
       <MeetingSpeakerDetectionRow />

@@ -33,6 +33,8 @@ import type {
   ChatAgentSettings,
 } from "../hooks/useSettings";
 import type { Snippet } from "../utils/snippets";
+import { seedBrandDefaults } from "@brand/config/brandSeed";
+import { BRAND } from "@brand/config/brand";
 
 let _ReasoningService: typeof import("../services/ReasoningService").default | null = null;
 
@@ -113,6 +115,9 @@ function migrateMeetingFollowFlags() {
     localStorage.setItem(flag, "false");
   }
 }
+
+// Seed brand self-hosted defaults before any migration or store read below.
+seedBrandDefaults();
 
 migrateMeetingFollowFlags();
 
@@ -1077,7 +1082,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     readString("whisperVadSamplesOverlap", "0.5")
   ),
   panelStartPosition: (() => {
-    const v = readString("panelStartPosition", "bottom-right");
+    const v = readString("panelStartPosition", BRAND.panelStartPosition);
     if (v === "bottom-right" || v === "center" || v === "bottom-left") return v;
     return "bottom-right" as const;
   })(),

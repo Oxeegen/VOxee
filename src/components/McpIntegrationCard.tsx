@@ -5,7 +5,8 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { LogoTile } from "./ui/LogoTile";
 import { useToast } from "./ui/useToast";
-import logo from "../assets/logo.svg";
+import brandLogo from "@brand/assets/voxee-icon.svg";
+import { BRAND } from "@brand/config/brand";
 import claudeIcon from "../assets/icons/providers/claude.svg";
 import openaiIcon from "../assets/icons/providers/openai.svg";
 import cursorIcon from "../assets/icons/providers/cursor.svg";
@@ -37,7 +38,7 @@ export default function McpIntegrationCard({ isPaid, onUpgrade }: McpIntegration
   return (
     <div className="rounded-lg border border-border/50 dark:border-border-subtle/70 bg-card/50 dark:bg-surface-2/50 backdrop-blur-sm p-4">
       <div className="flex items-center gap-2 mb-4">
-        <LogoTile src={logo} alt="OpenWhispr" />
+        <LogoTile src={brandLogo} alt={BRAND.productName} />
         <Plus className="h-3 w-3 text-muted-foreground/40 shrink-0" />
         <div className="flex items-center gap-1">
           <LogoTile src={claudeIcon} alt="Claude" monochrome />

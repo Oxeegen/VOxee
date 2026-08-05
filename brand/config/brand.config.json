@@ -1,0 +1,27 @@
+{
+  "productName": "VOxee",
+  "appId": "com.oxeegen.voxee",
+  "modelBrandName": "Oxeegen",
+  "agentName": "VOxee",
+  "showAccount": false,
+  "showLocalModels": false,
+  "showSupport": false,
+  "showOnboarding": false,
+  "showUseCaseStep": false,
+  "showIntegrations": false,
+  "panelStartPosition": "center",
+  "theme": {
+    "primary": "#5E4AF5",
+    "keepPrimaryInDark": true
+  },
+  "update": { "feedUrl": null },
+  "urls": { "docs": null, "support": null, "terms": null, "privacy": null },
+  "models": {
+    "transcription":        { "provider": "custom", "endpoint": "", "model": "",  "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "dictationCleanup":     { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "dictationAgent":       { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "dictationTranslation": { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "noteFormatting":       { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "chatIntelligence":     { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] }
+  }
+}

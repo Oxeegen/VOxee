@@ -31,6 +31,8 @@ interface OpenAICompatiblePanelProps {
   // Providers whose /models is public but whose inference needs a key.
   apiKeyRequired?: boolean;
   getKeyUrl?: string;
+  // Override the API-key help text (e.g. brand labelling).
+  apiKeyHelp?: ReactNode;
 }
 
 export default function OpenAICompatiblePanel({
@@ -46,6 +48,7 @@ export default function OpenAICompatiblePanel({
   lockedBaseUrl = false,
   apiKeyRequired = false,
   getKeyUrl,
+  apiKeyHelp,
 }: OpenAICompatiblePanelProps) {
   const { t } = useTranslation();
   const [draftBase, setDraftBase] = useState(baseUrl);
@@ -314,7 +317,7 @@ export default function OpenAICompatiblePanel({
           apiKey={apiKey}
           setApiKey={setApiKey}
           label=""
-          helpText={apiKeyRequired ? "" : t("reasoning.custom.apiKeyHelp")}
+          helpText={apiKeyHelp ?? (apiKeyRequired ? "" : t("reasoning.custom.apiKeyHelp"))}
         />
         {apiKeyRequired && !apiKey?.trim() && (
           <p className="text-xs text-warning">{t("reasoning.custom.keyRequiredHint")}</p>

@@ -2,6 +2,20 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { PROMPTS_BY_LOCALE } from "./locales/prompts";
 import { TRANSLATIONS_BY_LOCALE } from "./locales/translations";
+import { BRAND } from "@brand/config/brand";
+
+// Runtime rebrand: translation files keep "OpenWhispr" (mergeable from
+// upstream); this post-processor swaps it for the brand product name at
+// display time. No-op when productName is "OpenWhispr".
+const brandNamePostProcessor = {
+  type: "postProcessor" as const,
+  name: "brandName",
+  process(value: string) {
+    return typeof value === "string"
+      ? value.replace(/OpenWhispr/g, BRAND.productName)
+      : value;
+  },
+};
 
 export const SUPPORTED_UI_LANGUAGES = [
   "en",
@@ -87,17 +101,21 @@ const storageLanguage =
 
 const initialLanguage = normalizeUiLanguage(storageLanguage || browserLanguage || "en");
 
-void i18n.use(initReactI18next).init({
-  resources,
-  lng: initialLanguage,
-  fallbackLng: "en",
-  ns: ["translation", "prompts"],
-  defaultNS: "translation",
-  interpolation: {
-    escapeValue: false,
-  },
-  returnEmptyString: true,
-  returnNull: false,
-});
+void i18n
+  .use(initReactI18next)
+  .use(brandNamePostProcessor)
+  .init({
+    resources,
+    lng: initialLanguage,
+    fallbackLng: "en",
+    ns: ["translation", "prompts"],
+    defaultNS: "translation",
+    interpolation: {
+      escapeValue: false,
+    },
+    postProcess: ["brandName"],
+    returnEmptyString: true,
+    returnNull: false,
+  });
 
 export default i18n;
