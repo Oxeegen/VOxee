@@ -5,7 +5,7 @@
   "agentName": "VOxee",
   "showAccount": false,
   "showLocalModels": false,
-  "showSupport": true,
+  "showSupport": false,
   "showOnboarding": false,
   "showUseCaseStep": false,
   "showIntegrations": false,

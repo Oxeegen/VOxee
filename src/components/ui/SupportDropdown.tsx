@@ -10,6 +10,7 @@ import {
 } from "./dropdown-menu";
 import { cn } from "../lib/utils";
 import logger from "../../utils/logger";
+import { BRAND } from "@brand/config/brand";
 
 function DiscordIcon({ className }: { className?: string }) {
   return (
@@ -37,6 +38,7 @@ const openExternal = async (url: string) => {
 
 export default function SupportDropdown({ className, trigger }: SupportDropdownProps) {
   const { t } = useTranslation();
+  if (!BRAND.showSupport) return null;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
