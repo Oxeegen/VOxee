@@ -3479,7 +3479,8 @@ EOF`,
       case "privacyData":
         return (
           <div className="space-y-6">
-            {/* Privacy */}
+            {/* Privacy — account/analytics only; hidden in account-less brand mode */}
+            {BRAND.showAccount && (
             <div>
               <SectionHeader
                 title={t("settingsPage.privacy.title")}
@@ -3567,17 +3568,20 @@ EOF`,
                 </div>
               )}
 
-              <SettingsPanel>
-                <SettingsPanelRow>
-                  <SettingsRow
-                    label={t("settingsPage.privacy.usageAnalytics")}
-                    description={t("settingsPage.privacy.usageAnalyticsDescription")}
-                  >
-                    <Toggle checked={telemetryEnabled} onChange={setTelemetryEnabled} />
-                  </SettingsRow>
-                </SettingsPanelRow>
-              </SettingsPanel>
+              {BRAND.showAccount && (
+                <SettingsPanel>
+                  <SettingsPanelRow>
+                    <SettingsRow
+                      label={t("settingsPage.privacy.usageAnalytics")}
+                      description={t("settingsPage.privacy.usageAnalyticsDescription")}
+                    >
+                      <Toggle checked={telemetryEnabled} onChange={setTelemetryEnabled} />
+                    </SettingsRow>
+                  </SettingsPanelRow>
+                </SettingsPanel>
+              )}
             </div>
+            )}
 
             {/* Audio Retention */}
             <div className="border-t border-border/40 pt-6">

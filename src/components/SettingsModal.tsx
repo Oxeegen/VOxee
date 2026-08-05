@@ -123,9 +123,13 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
         : []),
       {
         id: "privacyData",
-        label: t("settingsModal.sections.privacyData.label"),
+        label: BRAND.showAccount
+          ? t("settingsModal.sections.privacyData.label")
+          : t("settingsModal.sections.data.label", { defaultValue: "Data" }),
         icon: Shield,
-        description: t("settingsModal.sections.privacyData.description"),
+        description: BRAND.showAccount
+          ? t("settingsModal.sections.privacyData.description")
+          : t("settingsModal.sections.data.description", { defaultValue: "Permissions & data" }),
         group: t("settingsModal.groups.system"),
       },
       {
