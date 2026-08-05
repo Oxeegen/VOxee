@@ -37,6 +37,7 @@ import {
   useMeetingRecordingStore,
 } from "../stores/meetingRecordingStore";
 import ControlPanelSidebar, { type ControlPanelView } from "./ControlPanelSidebar";
+import { BRAND } from "@brand/config/brand";
 import MeetingRecordingMount from "./MeetingRecordingMount";
 import MeetingRecordingPill from "./notes/MeetingRecordingPill";
 import WindowControls from "./WindowControls";
@@ -1102,7 +1103,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                 />
               </Suspense>
             )}
-            {activeView === "integrations" && (
+            {BRAND.showIntegrations && activeView === "integrations" && (
               <Suspense fallback={null}>
                 <IntegrationsView
                   isPaid={!!(usage?.isSubscribed || usage?.isTrial)}

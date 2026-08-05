@@ -8,6 +8,7 @@
   "showSupport": true,
   "showOnboarding": false,
   "showUseCaseStep": false,
+  "showIntegrations": false,
   "theme": {
     "primary": "#5E4AF5",
     "keepPrimaryInDark": true

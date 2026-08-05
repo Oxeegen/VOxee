@@ -91,7 +91,9 @@ export default function ControlPanelSidebar({
     { id: "personal-notes", label: t("sidebar.notes"), icon: NotebookPen },
     { id: "upload", label: t("sidebar.upload"), icon: Upload },
     { id: "dictionary", label: t("sidebar.dictionary"), icon: BookOpen },
-    { id: "integrations", label: t("sidebar.integrations"), icon: Blocks },
+    ...(BRAND.showIntegrations
+      ? [{ id: "integrations" as const, label: t("sidebar.integrations"), icon: Blocks }]
+      : []),
   ];
 
   return (

@@ -59,6 +59,8 @@ export interface BrandConfig {
   showOnboarding: boolean;
   /** Show the "about you" use-case onboarding step. */
   showUseCaseStep: boolean;
+  /** Show the Integrations control-panel entry (CLI / MCP / calendar). */
+  showIntegrations: boolean;
   /** Theme values. */
   theme: BrandTheme;
   /** Auto-update feed. feedUrl null => updates disabled. */
