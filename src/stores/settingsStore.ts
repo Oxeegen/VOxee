@@ -414,6 +414,56 @@ function migrateLLMScopeKeys() {
 
 migrateLLMScopeKeys();
 
+// Account-less brand builds are ALWAYS self-hosted for every inference scope.
+// The one-time seed can't guarantee this (its sentinel survives an uninstall on
+// Windows, and migrateProviderSettings re-derives modes after it), so enforce
+// the mode/provider fields on EVERY launch. Endpoint/model/API key are the
+// user's config and are left untouched.
+function enforceBrandModes() {
+  if (!isBrowser || BRAND.showAccount) return;
+  const set = (key: string, value: string) => {
+    if (localStorage.getItem(key) !== value) localStorage.setItem(key, value);
+  };
+
+  // Transcription (dictation base + meeting + upload).
+  for (const k of ["transcriptionMode", "meetingTranscriptionMode", "uploadTranscriptionMode"]) {
+    set(k, "self-hosted");
+  }
+  set("cloudTranscriptionMode", "byok");
+  set("cloudTranscriptionProvider", "custom");
+  set("remoteTranscriptionType", "openai-compatible");
+
+  // LLM scopes.
+  const modeKeys = [
+    "cleanupMode",
+    "dictationAgentMode",
+    "chatAgentMode",
+    "noteFormattingMode",
+    "translationMode",
+  ];
+  for (const k of modeKeys) set(k, "self-hosted");
+  for (const k of [
+    "cleanupProvider",
+    "dictationAgentProvider",
+    "chatAgentProvider",
+    "noteFormattingProvider",
+    "translationProvider",
+  ]) {
+    set(k, "custom");
+  }
+  for (const k of [
+    "cleanupCloudMode",
+    "dictationAgentCloudMode",
+    "chatAgentCloudMode",
+    "noteFormattingCloudMode",
+    "translationCloudMode",
+  ]) {
+    set(k, "byok");
+  }
+}
+
+enforceBrandModes();
+
 export interface SettingsState
   extends
     TranscriptionSettings,

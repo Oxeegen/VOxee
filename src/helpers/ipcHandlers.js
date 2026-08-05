@@ -2978,6 +2978,18 @@ class IPCHandlers {
         errors.push(`Env file: ${e.message}`);
       }
 
+      // Delete encrypted secret keys (API keys, incl. the shared Oxeegen key)
+      try {
+        const secureKeysDir = path.join(app.getPath("userData"), "secure-keys");
+        if (fs.existsSync(secureKeysDir)) fs.rmSync(secureKeysDir, { recursive: true, force: true });
+        // Drop in-memory copies so a reload (before restart) doesn't re-expose
+        // the shared Oxeegen key.
+        delete process.env.CUSTOM_CLEANUP_API_KEY;
+        delete process.env.CUSTOM_TRANSCRIPTION_API_KEY;
+      } catch (e) {
+        errors.push(`Secure keys: ${e.message}`);
+      }
+
       // Clear session cookies
       try {
         const win = BrowserWindow.fromWebContents(event.sender);
