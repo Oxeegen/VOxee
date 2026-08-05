@@ -9,6 +9,7 @@ import {
 } from "../utils/urlUtils";
 import { withSessionRefresh } from "../lib/auth";
 import { getBaseLanguageCode, getLanguageLabel } from "../utils/languageSupport";
+import { BRAND } from "@brand/config/brand";
 import {
   createLocalSpeechGateState,
   getLocalSpeechGateDecision,
@@ -1222,7 +1223,10 @@ registerProcessor("pcm-streaming-processor", PCMStreamingProcessor);
       const cloudTranscriptionMode = settings.cloudTranscriptionMode;
       const isSignedIn = settings.isSignedIn;
 
-      const isOpenWhisprCloudMode = !useLocalWhisper && cloudTranscriptionMode === "openwhispr";
+      // Account-less brand builds never use OpenWhispr Cloud (all self-hosted),
+      // so never enter that mode even if a stale cloudTranscriptionMode says so.
+      const isOpenWhisprCloudMode =
+        BRAND.showAccount && !useLocalWhisper && cloudTranscriptionMode === "openwhispr";
       const useCloud = isOpenWhisprCloudMode && isSignedIn;
       logger.debug(
         "Transcription routing",
