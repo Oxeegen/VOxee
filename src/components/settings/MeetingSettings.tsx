@@ -135,6 +135,7 @@ export function MeetingTranscriptionPanel() {
     <div className="space-y-3">
       {!BRAND.showAccount ? (
         <BrandTranscriptionSection
+          contextKey="meeting"
           url={meetingRemoteTranscriptionUrl}
           setUrl={setMeetingRemoteTranscriptionUrl}
           model={remoteTranscriptionModel}

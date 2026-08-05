@@ -378,6 +378,7 @@ function TranscriptionSection({
     return (
       <div className="space-y-4">
         <BrandTranscriptionSection
+          contextKey="dictation"
           url={remoteTranscriptionUrl}
           setUrl={setRemoteTranscriptionUrl}
           model={remoteTranscriptionModel}

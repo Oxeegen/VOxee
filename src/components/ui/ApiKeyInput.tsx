@@ -91,6 +91,23 @@ export default function ApiKeyInput({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isEditing, save]);
 
+  // Commit a pending edit on unmount (e.g. the settings window closes while
+  // editing) so a typed key is never silently lost. Escape/✕ clear isEditing
+  // first, so an explicit cancel is still honoured.
+  const isEditingRef = useRef(isEditing);
+  const draftRef = useRef(draft);
+  const setApiKeyRef = useRef(setApiKey);
+  useEffect(() => {
+    isEditingRef.current = isEditing;
+    draftRef.current = draft;
+    setApiKeyRef.current = setApiKey;
+  }, [isEditing, draft, setApiKey]);
+  useEffect(() => {
+    return () => {
+      if (isEditingRef.current) setApiKeyRef.current(draftRef.current.trim());
+    };
+  }, []);
+
   return (
     <div className={className}>
       {resolvedLabel && (
