@@ -15,6 +15,8 @@ import { notesInputClass, notesTextareaClass } from "./shared";
 import { useDialogs } from "../../hooks/useDialogs";
 import { AlertDialog } from "../ui/dialog";
 import ReasoningModelSelector from "../ReasoningModelSelector";
+import { BRAND } from "@brand/config/brand";
+import BrandModelSection from "@brand/components/settings/BrandModelSection";
 import { useSystemAudioPermission } from "../../hooks/useSystemAudioPermission";
 import { canManageSystemAudioInApp } from "../../utils/systemAudioAccess";
 
@@ -158,17 +160,21 @@ export default function NotesOnboarding({ onComplete }: NotesOnboardingProps) {
                   {t("notes.onboarding.llm.description")}
                 </p>
 
-                <ReasoningModelSelector
-                  reasoningModel={cleanupModel}
-                  setReasoningModel={setCleanupModel}
-                  localReasoningProvider={cleanupProvider}
-                  setLocalReasoningProvider={setCleanupProvider}
-                  cloudReasoningBaseUrl={cleanupCloudBaseUrl}
-                  setCloudReasoningBaseUrl={setCleanupCloudBaseUrl}
-                  customReasoningApiKey={cleanupCustomApiKey}
-                  setCustomReasoningApiKey={setCleanupCustomApiKey}
-                  setReasoningMode={setCleanupMode}
-                />
+                {!BRAND.showAccount ? (
+                  <BrandModelSection scope="dictationCleanup" />
+                ) : (
+                  <ReasoningModelSelector
+                    reasoningModel={cleanupModel}
+                    setReasoningModel={setCleanupModel}
+                    localReasoningProvider={cleanupProvider}
+                    setLocalReasoningProvider={setCleanupProvider}
+                    cloudReasoningBaseUrl={cleanupCloudBaseUrl}
+                    setCloudReasoningBaseUrl={setCleanupCloudBaseUrl}
+                    customReasoningApiKey={cleanupCustomApiKey}
+                    setCustomReasoningApiKey={setCleanupCustomApiKey}
+                    setReasoningMode={setCleanupMode}
+                  />
+                )}
               </div>
             )}
           </div>
