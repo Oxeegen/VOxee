@@ -78,7 +78,41 @@ export interface BrandConfig {
   models: Record<BrandModelScope, BrandModelConfig>;
 }
 
-export const BRAND = brandConfig as BrandConfig;
+/**
+ * Build-time overrides for the model endpoint and per-scope model ids, so
+ * deployment config lives in the (unversioned) root .env and can be changed with
+ * a rebuild — no source edit. brand.config.json holds placeholders; the real
+ * values come from .env (see .env.example).
+ *
+ * - VITE_OXEE_ENDPOINT — shared OpenAI-compatible base URL (with /v1)
+ * - VITE_OXEE_MODEL_<SCOPE> — model id per inference scope (see mapping below)
+ */
+const SCOPE_MODEL_ENV: Record<BrandModelScope, string> = {
+  transcription: "VITE_OXEE_MODEL_TRANSCRIPTION",
+  dictationCleanup: "VITE_OXEE_MODEL_DICTATION_CLEANUP",
+  dictationAgent: "VITE_OXEE_MODEL_DICTATION_AGENT",
+  dictationTranslation: "VITE_OXEE_MODEL_DICTATION_TRANSLATION",
+  noteFormatting: "VITE_OXEE_MODEL_NOTE_FORMATTING",
+  chatIntelligence: "VITE_OXEE_MODEL_CHAT_INTELLIGENCE",
+};
+
+const env = import.meta.env as unknown as Record<string, string | undefined>;
+
+function applyEnvOverrides(config: BrandConfig): BrandConfig {
+  const endpointOverride = env.VITE_OXEE_ENDPOINT;
+  const models = {} as Record<BrandModelScope, BrandModelConfig>;
+  for (const scope of Object.keys(config.models) as BrandModelScope[]) {
+    const base = config.models[scope];
+    models[scope] = {
+      ...base,
+      endpoint: endpointOverride || base.endpoint,
+      model: env[SCOPE_MODEL_ENV[scope]] || base.model,
+    };
+  }
+  return { ...config, models };
+}
+
+export const BRAND: BrandConfig = applyEnvOverrides(brandConfig as BrandConfig);
 
 /** Returns the locked model config for a given inference scope. */
 export function getBrandModelConfig(scope: BrandModelScope): BrandModelConfig {

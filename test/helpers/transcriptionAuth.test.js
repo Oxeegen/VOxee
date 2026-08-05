@@ -67,7 +67,7 @@ test("returns false for self-hosted mode with a configured API key (org endpoint
   assert.equal(
     shouldSkipTranscriptionApiKey({
       transcriptionMode: "self-hosted",
-      remoteTranscriptionUrl: "",
+      remoteTranscriptionUrl: "https://example.com/v1",
       customTranscriptionApiKey: "sk-org-abc",
     }),
     false
