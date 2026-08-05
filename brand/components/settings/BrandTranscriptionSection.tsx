@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useSettingsStore } from "@/stores/settingsStore";
 import OpenAICompatiblePanel from "@/components/OpenAICompatiblePanel";
 import { Input } from "@/components/ui/input";
-import { getBrandModelConfig } from "@brand/config/brand";
+import { BRAND, getBrandModelConfig } from "@brand/config/brand";
 import BrandModeChoice, { type BrandChoice } from "./BrandModeChoice";
 import { getOxeegenApiKey } from "./brandApiKey";
 
@@ -70,6 +70,7 @@ export default function BrandTranscriptionSection({
             setApiKey={setCustomTranscriptionApiKey}
             model={model}
             setModel={setModel}
+            apiKeyHelp={t("reasoning.custom.apiKeyHelp").replace(/OpenAI/g, BRAND.modelBrandName)}
           />
         </div>
       )}

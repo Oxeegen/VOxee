@@ -71,6 +71,7 @@ export default function BrandModelSection({ scope }: BrandModelSectionProps) {
             setApiKey={(v) => setResolvedLLMConfig(scope, { customApiKey: v })}
             model={config.model}
             setModel={(v) => setResolvedLLMConfig(scope, { model: v })}
+            apiKeyHelp={t("reasoning.custom.apiKeyHelp").replace(/OpenAI/g, BRAND.modelBrandName)}
           />
         </div>
       )}

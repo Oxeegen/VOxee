@@ -85,6 +85,7 @@ import InferenceConfigEditor from "./settings/InferenceConfigEditor";
 import { MeetingTranscriptionPanel } from "./settings/MeetingSettings";
 import { BRAND } from "@brand/config/brand";
 import BrandTranscriptionSection from "@brand/components/settings/BrandTranscriptionSection";
+import BrandApiKeyPanel from "@brand/components/settings/BrandApiKeyPanel";
 import { DEBUG_MODE } from "@brand/config/debug";
 import DebugLogsPanel from "@brand/components/settings/DebugLogsPanel";
 import { UploadTranscriptionPanel } from "./settings/UploadSettings";
@@ -119,6 +120,7 @@ export type SettingsSectionType =
   | "hotkeys"
   | "speechToText"
   | "llms"
+  | "apiKey"
   | "privacyData"
   | "system";
 
@@ -3466,6 +3468,13 @@ EOF`,
       case "speechToText":
       case "llms":
         return null;
+
+      case "apiKey":
+        return (
+          <div className="space-y-6">
+            <BrandApiKeyPanel />
+          </div>
+        );
 
       case "privacyData":
         return (

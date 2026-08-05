@@ -15,6 +15,7 @@ import SidebarModal, { type SidebarItem } from "./ui/SidebarModal";
 import SettingsPage, { SettingsSectionType } from "./SettingsPage";
 import { useAuth } from "../hooks/useAuth";
 import { BRAND } from "@brand/config/brand";
+import OxeegenMark from "@brand/components/ui/OxeegenMark";
 
 export type { SettingsSectionType };
 
@@ -107,6 +108,19 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
         description: t("settingsModal.sections.llms.description"),
         group: t("settingsModal.groups.aiModels"),
       },
+      ...(!BRAND.showAccount
+        ? [
+            {
+              id: "apiKey" as const,
+              label: `${BRAND.modelBrandName} ${t("common.apiKey")}`,
+              icon: OxeegenMark,
+              description: t("brand.apiKey.sidebarDesc", {
+                defaultValue: `${BRAND.modelBrandName} API key`,
+              }),
+              group: t("settingsModal.groups.aiModels"),
+            },
+          ]
+        : []),
       {
         id: "privacyData",
         label: t("settingsModal.sections.privacyData.label"),
