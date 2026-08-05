@@ -85,9 +85,12 @@ export function computeBrandSeed(brand) {
   if (stt) {
     // Dictation + shared base keys (upload reuses remoteTranscription* url/model).
     seed.transcriptionMode = "self-hosted";
-    // Legacy field defaults to "openwhispr" and drives isOpenWhisprCloudMode in
-    // the recording path — force "byok" so it never demands sign-in.
+    // Legacy fields: migrateProviderSettings() re-derives transcriptionMode from
+    // these AFTER the seed, so they must agree with "self-hosted" — byok + custom
+    // derives to self-hosted (byok alone derives to "providers", which breaks
+    // the self-hosted routing and demands an OpenAI key).
     seed.cloudTranscriptionMode = "byok";
+    seed.cloudTranscriptionProvider = "custom";
     seed.remoteTranscriptionType = "openai-compatible";
     if (stt.endpoint) seed.remoteTranscriptionUrl = stt.endpoint;
     if (stt.model) seed.remoteTranscriptionModel = stt.model;
