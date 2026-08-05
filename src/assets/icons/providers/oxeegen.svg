@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 231 231" fill="none">
+  <mask id="oxeegen-circle" maskUnits="userSpaceOnUse" x="0" y="0" width="231" height="231">
+    <rect width="231" height="231" fill="#000"/>
+    <circle cx="115.5" cy="115.5" r="115.5" fill="#fff"/>
+    <rect x="67" y="0" width="33" height="231" fill="#000"/>
+    <rect x="132" y="0" width="33" height="231" fill="#000"/>
+  </mask>
+  <rect width="231" height="231" fill="#5E4AF5" mask="url(#oxeegen-circle)"/>
+  <rect x="100" y="0" width="32" height="231" rx="5" fill="#5E4AF5"/>
+</svg>
