@@ -3,13 +3,15 @@ const i18next = require("i18next");
 const brandConfig = require("../../brand/config/brand.config.json");
 
 // Runtime rebrand of the product name (see src/i18n.ts for rationale).
+const isRebranded = brandConfig.productName !== "OpenWhispr";
 const brandNamePostProcessor = {
   type: "postProcessor",
   name: "brandName",
   process(value) {
-    return typeof value === "string"
-      ? value.replace(/OpenWhispr/g, brandConfig.productName)
-      : value;
+    if (typeof value !== "string") return value;
+    const out = value.replace(/OpenWhispr/g, brandConfig.productName);
+    // Also rebrand the short "Whispr" form; "Whisper" (with an 'e') is untouched.
+    return isRebranded ? out.replace(/Whispr/g, brandConfig.productName) : out;
   },
 };
 

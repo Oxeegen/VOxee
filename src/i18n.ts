@@ -7,13 +7,17 @@ import { BRAND } from "@brand/config/brand";
 // Runtime rebrand: translation files keep "OpenWhispr" (mergeable from
 // upstream); this post-processor swaps it for the brand product name at
 // display time. No-op when productName is "OpenWhispr".
+const isRebranded = BRAND.productName !== "OpenWhispr";
 const brandNamePostProcessor = {
   type: "postProcessor" as const,
   name: "brandName",
   process(value: string) {
-    return typeof value === "string"
-      ? value.replace(/OpenWhispr/g, BRAND.productName)
-      : value;
+    if (typeof value !== "string") return value;
+    const out = value.replace(/OpenWhispr/g, BRAND.productName);
+    // Also rebrand the short "Whispr" form (e.g. "Hey Whispr"). "Whisper" (the
+    // model, with an 'e') is not matched. Skipped on upstream to avoid mangling
+    // its own name.
+    return isRebranded ? out.replace(/Whispr/g, BRAND.productName) : out;
   },
 };
 
