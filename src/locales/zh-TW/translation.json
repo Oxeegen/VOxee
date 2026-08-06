@@ -24,6 +24,10 @@
       "speakerDetection": {
         "title": "辨識並標記發言者",
         "description": "關閉後，逐字稿會顯示「你」和「其他人」"
+      },
+      "chunkInterval": {
+        "title": "轉錄分塊間隔",
+        "description": "每次轉錄請求前緩衝的音訊秒數（本機與自架批次模式）。數值越大 = 請求越少，延遲越高。"
       }
     }
   },

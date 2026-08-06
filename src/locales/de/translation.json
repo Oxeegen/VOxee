@@ -24,6 +24,10 @@
       "speakerDetection": {
         "title": "Sprecher erkennen und beschriften",
         "description": "Wenn deaktiviert, zeigen Transkripte „Du“ und „Andere“"
+      },
+      "chunkInterval": {
+        "title": "Intervall der Transkriptionsblöcke",
+        "description": "Sekunden Audio, die vor jeder Transkriptionsanfrage gepuffert werden (lokaler und selbstgehosteter Batch-Modus). Höher = weniger Anfragen, mehr Latenz."
       }
     }
   },

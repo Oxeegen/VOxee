@@ -515,6 +515,10 @@ export interface SettingsState
 
   meetingTranscriptionMode: InferenceMode;
   meetingUseLocalWhisper: boolean;
+  // Interval (seconds) between buffered transcription posts for local and
+  // self-hosted batch meeting modes. Higher = fewer requests, more latency.
+  meetingChunkSeconds: number;
+  setMeetingChunkSeconds: (value: number) => void;
   meetingWhisperModel: string;
   meetingLocalTranscriptionProvider: LocalTranscriptionProvider;
   meetingParakeetModel: string;
@@ -1174,6 +1178,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     return "openwhispr" as InferenceMode;
   })(),
   meetingUseLocalWhisper: readBoolean("meetingUseLocalWhisper", false),
+  meetingChunkSeconds: readNumber("meetingChunkSeconds", 5),
   meetingWhisperModel: readString("meetingWhisperModel", ""),
   meetingLocalTranscriptionProvider: (readString("meetingLocalTranscriptionProvider", "whisper") ===
   "nvidia"
@@ -1269,6 +1274,7 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     mode: InferenceMode
   ) => void,
   setMeetingUseLocalWhisper: createBooleanSetter("meetingUseLocalWhisper"),
+  setMeetingChunkSeconds: createNumberSetter("meetingChunkSeconds"),
   setMeetingWhisperModel: createStringSetter("meetingWhisperModel"),
   setMeetingLocalTranscriptionProvider: (value: LocalTranscriptionProvider) => {
     if (isBrowser) localStorage.setItem("meetingLocalTranscriptionProvider", value);

@@ -24,6 +24,10 @@
       "speakerDetection": {
         "title": "Identifica ed etichetta i partecipanti",
         "description": "Se disattivato, le trascrizioni mostrano \"Tu\" e \"Altri\""
+      },
+      "chunkInterval": {
+        "title": "Intervallo dei blocchi di trascrizione",
+        "description": "Secondi di audio bufferizzati prima di ogni richiesta di trascrizione (modalità locale e batch self-hosted). Più alto = meno richieste, più latenza."
       }
     }
   },
