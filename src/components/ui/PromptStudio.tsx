@@ -29,11 +29,21 @@ import {
 import { getLanguageLabel } from "../../utils/languageSupport";
 import { getDictionaryHintWords } from "../../utils/snippets";
 import { resolveDictationAgentInference } from "../../helpers/dictationAgentInference";
+import { BRAND, getBrandModelConfig, type BrandModelScope } from "@brand/config/brand";
 
 interface PromptStudioProps {
   className?: string;
   kind?: PromptKind;
 }
+
+// Prompt-studio kinds map onto the brand model scopes so the Test tab can label
+// the self-hosted "custom" provider as the brand ("Oxeegen") when the selected
+// model is the one shipped for that scope.
+const KIND_TO_BRAND_SCOPE: Partial<Record<PromptKind, BrandModelScope>> = {
+  cleanup: "dictationCleanup",
+  dictationAgent: "dictationAgent",
+  translate: "dictationTranslation",
+};
 
 type ProviderConfig = {
   label: string;
@@ -455,8 +465,19 @@ export default function PromptStudio({ className = "", kind = "cleanup" }: Promp
             const displayModel = testIsCloud
               ? t("promptStudio.test.openwhisprCloud")
               : testModel || t("promptStudio.test.none");
-            const displayProvider =
-              testProvider === "custom"
+            // In account-less brand builds the self-hosted provider is "custom";
+            // show the brand name when the selected model is the one shipped for
+            // this scope, else fall back to the generic "Custom endpoint" label.
+            const brandScope = KIND_TO_BRAND_SCOPE[kind];
+            const brandModel = brandScope ? getBrandModelConfig(brandScope).model : "";
+            const isBrandModel =
+              !BRAND.showAccount &&
+              testProvider === "custom" &&
+              !!brandModel &&
+              testModel === brandModel;
+            const displayProvider = isBrandModel
+              ? BRAND.modelBrandName
+              : testProvider === "custom"
                 ? t("promptStudio.test.customEndpoint")
                 : providerConfig.label;
 
