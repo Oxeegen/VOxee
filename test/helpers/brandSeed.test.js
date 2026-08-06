@@ -34,6 +34,18 @@ test("seeds self-hosted LLM defaults for every scope", async () => {
   assert.equal(seed.translationModel, "llm-1");
 });
 
+test("forces legacy cloud-mode fields to byok (never OpenWhispr Cloud)", async () => {
+  const { computeBrandSeed } = await load();
+  const seed = computeBrandSeed(ACCOUNTLESS_BRAND);
+
+  assert.equal(seed.cloudTranscriptionMode, "byok");
+  assert.equal(seed.cleanupCloudMode, "byok");
+  assert.equal(seed.dictationAgentCloudMode, "byok");
+  assert.equal(seed.chatAgentCloudMode, "byok");
+  assert.equal(seed.noteFormattingCloudMode, "byok");
+  assert.equal(seed.translationCloudMode, "byok");
+});
+
 test("seeds self-hosted transcription for dictation, meeting and upload", async () => {
   const { computeBrandSeed } = await load();
   const seed = computeBrandSeed(ACCOUNTLESS_BRAND);
@@ -42,6 +54,9 @@ test("seeds self-hosted transcription for dictation, meeting and upload", async 
   assert.equal(seed.remoteTranscriptionType, "openai-compatible");
   assert.equal(seed.remoteTranscriptionUrl, "https://ep/v1");
   assert.equal(seed.remoteTranscriptionModel, "stt-1");
+  // Legacy fields must agree with self-hosted so migrateProviderSettings keeps it.
+  assert.equal(seed.cloudTranscriptionMode, "byok");
+  assert.equal(seed.cloudTranscriptionProvider, "custom");
 
   assert.equal(seed.meetingTranscriptionMode, "self-hosted");
   assert.equal(seed.meetingRemoteTranscriptionType, "openai-compatible");

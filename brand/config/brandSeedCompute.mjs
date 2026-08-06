@@ -20,30 +20,35 @@ const LLM_SCOPE_KEYS = {
     provider: "cleanupProvider",
     model: "cleanupModel",
     remoteUrl: "cleanupRemoteUrl",
+    cloudMode: "cleanupCloudMode",
   },
   dictationAgent: {
     mode: "dictationAgentMode",
     provider: "dictationAgentProvider",
     model: "dictationAgentModel",
     remoteUrl: "dictationAgentRemoteUrl",
+    cloudMode: "dictationAgentCloudMode",
   },
   noteFormatting: {
     mode: "noteFormattingMode",
     provider: "noteFormattingProvider",
     model: "noteFormattingModel",
     remoteUrl: "noteFormattingRemoteUrl",
+    cloudMode: "noteFormattingCloudMode",
   },
   chatIntelligence: {
     mode: "chatAgentMode",
     provider: "chatAgentProvider",
     model: "chatAgentModel",
     remoteUrl: "chatAgentRemoteUrl",
+    cloudMode: "chatAgentCloudMode",
   },
   dictationTranslation: {
     mode: "translationMode",
     provider: "translationProvider",
     model: "translationModel",
     remoteUrl: "translationRemoteUrl",
+    cloudMode: "translationCloudMode",
   },
 };
 
@@ -67,6 +72,10 @@ export function computeBrandSeed(brand) {
     if (!cfg) continue;
     seed[keys.mode] = "self-hosted";
     seed[keys.provider] = "custom";
+    // Legacy cloud-mode field defaults to "openwhispr"; force "byok" so no code
+    // path treats an account-less brand build as OpenWhispr Cloud (which would
+    // demand sign-in).
+    seed[keys.cloudMode] = "byok";
     if (cfg.model) seed[keys.model] = cfg.model;
     if (cfg.endpoint) seed[keys.remoteUrl] = cfg.endpoint;
   }
@@ -76,6 +85,12 @@ export function computeBrandSeed(brand) {
   if (stt) {
     // Dictation + shared base keys (upload reuses remoteTranscription* url/model).
     seed.transcriptionMode = "self-hosted";
+    // Legacy fields: migrateProviderSettings() re-derives transcriptionMode from
+    // these AFTER the seed, so they must agree with "self-hosted" — byok + custom
+    // derives to self-hosted (byok alone derives to "providers", which breaks
+    // the self-hosted routing and demands an OpenAI key).
+    seed.cloudTranscriptionMode = "byok";
+    seed.cloudTranscriptionProvider = "custom";
     seed.remoteTranscriptionType = "openai-compatible";
     if (stt.endpoint) seed.remoteTranscriptionUrl = stt.endpoint;
     if (stt.model) seed.remoteTranscriptionModel = stt.model;

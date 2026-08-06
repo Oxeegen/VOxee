@@ -6,8 +6,11 @@ import { Input } from "@/components/ui/input";
 import { BRAND, getBrandModelConfig } from "@brand/config/brand";
 import BrandModeChoice, { type BrandChoice } from "./BrandModeChoice";
 import { getOxeegenApiKey } from "./brandApiKey";
+import { getStoredBrandChoice, setStoredBrandChoice } from "./brandChoice";
 
 interface BrandTranscriptionSectionProps {
+  /** Stable id used to persist the Oxeegen/Custom choice (dictation/meeting/upload). */
+  contextKey: string;
   /** Current self-hosted endpoint for this transcription context. */
   url: string;
   setUrl: (value: string) => void;
@@ -24,6 +27,7 @@ interface BrandTranscriptionSectionProps {
  * transcription secret.
  */
 export default function BrandTranscriptionSection({
+  contextKey,
   url,
   setUrl,
   model,
@@ -31,6 +35,7 @@ export default function BrandTranscriptionSection({
 }: BrandTranscriptionSectionProps) {
   const { t } = useTranslation();
   const brandCfg = getBrandModelConfig("transcription");
+  const choiceId = `transcription.${contextKey}`;
 
   const customTranscriptionApiKey = useSettingsStore((s) => s.customTranscriptionApiKey);
   const setCustomTranscriptionApiKey = useSettingsStore((s) => s.setCustomTranscriptionApiKey);
@@ -39,10 +44,13 @@ export default function BrandTranscriptionSection({
     () => (url || "") === brandCfg.endpoint,
     [url, brandCfg.endpoint]
   );
-  const [choice, setChoice] = useState<BrandChoice>(isOnBrandEndpoint ? "brand" : "custom");
+  const [choice, setChoice] = useState<BrandChoice>(() =>
+    getStoredBrandChoice(choiceId, isOnBrandEndpoint ? "brand" : "custom")
+  );
 
   const handleChange = (next: BrandChoice) => {
     setChoice(next);
+    setStoredBrandChoice(choiceId, next);
     if (next === "brand") {
       setUrl(brandCfg.endpoint);
       setModel(brandCfg.model);

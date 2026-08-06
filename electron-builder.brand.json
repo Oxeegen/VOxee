@@ -3,7 +3,8 @@
   "appId": "com.oxeegen.voxee",
   "productName": "VOxee",
   "extraMetadata": {
-    "author": "Oxeegen"
+    "author": "Oxeegen",
+    "version": "1.0.0"
   },
   "protocols": {
     "name": "VOxee Protocol",

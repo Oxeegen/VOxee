@@ -5,6 +5,7 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import { InferenceModeSelector, SettingsRow } from "../ui/SettingsSection";
 import type { InferenceModeOption } from "../ui/SettingsSection";
 import { Toggle } from "../ui/toggle";
+import { Input } from "../ui/input";
 import TranscriptionModelPicker from "../TranscriptionModelPicker";
 import SelfHostedPanel from "../SelfHostedPanel";
 import type { InferenceMode } from "../../types/electron";
@@ -56,6 +57,8 @@ export function MeetingTranscriptionPanel() {
     // Meeting self-hosted reuses the shared base transcription model.
     remoteTranscriptionModel,
     setRemoteTranscriptionModel,
+    meetingChunkSeconds,
+    setMeetingChunkSeconds,
   } = useSettingsStore();
 
   const transcriptionModes: InferenceModeOption[] = [
@@ -135,6 +138,7 @@ export function MeetingTranscriptionPanel() {
     <div className="space-y-3">
       {!BRAND.showAccount ? (
         <BrandTranscriptionSection
+          contextKey="meeting"
           url={meetingRemoteTranscriptionUrl}
           setUrl={setMeetingRemoteTranscriptionUrl}
           model={remoteTranscriptionModel}
@@ -164,6 +168,25 @@ export function MeetingTranscriptionPanel() {
           )}
         </>
       )}
+      <SettingsRow
+        label={t("settings.meeting.chunkInterval.title")}
+        description={t("settings.meeting.chunkInterval.description")}
+      >
+        <div className="flex items-center gap-1.5">
+          <Input
+            type="number"
+            min={2}
+            max={60}
+            value={meetingChunkSeconds}
+            onChange={(e) => {
+              const n = parseInt(e.target.value, 10);
+              setMeetingChunkSeconds(Number.isFinite(n) ? Math.max(2, Math.min(60, n)) : 5);
+            }}
+            className="w-20 h-8 text-sm"
+          />
+          <span className="text-xs text-muted-foreground">s</span>
+        </div>
+      </SettingsRow>
       <MeetingSpeakerDetectionRow />
     </div>
   );

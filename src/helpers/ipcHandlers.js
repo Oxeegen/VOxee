@@ -2978,6 +2978,18 @@ class IPCHandlers {
         errors.push(`Env file: ${e.message}`);
       }
 
+      // Delete encrypted secret keys (API keys, incl. the shared Oxeegen key)
+      try {
+        const secureKeysDir = path.join(app.getPath("userData"), "secure-keys");
+        if (fs.existsSync(secureKeysDir)) fs.rmSync(secureKeysDir, { recursive: true, force: true });
+        // Drop in-memory copies so a reload (before restart) doesn't re-expose
+        // the shared Oxeegen key.
+        delete process.env.CUSTOM_CLEANUP_API_KEY;
+        delete process.env.CUSTOM_TRANSCRIPTION_API_KEY;
+      } catch (e) {
+        errors.push(`Secure keys: ${e.message}`);
+      }
+
       // Clear session cookies
       try {
         const win = BrowserWindow.fromWebContents(event.sender);
@@ -5382,6 +5394,7 @@ class IPCHandlers {
           tenant: options.tenant,
           keyterms: options.keyterms,
           sampleRate: MEETING_STREAM_SAMPLE_RATE,
+          baseUrl: options.baseUrl,
         };
 
         let pairs;
@@ -5474,6 +5487,14 @@ class IPCHandlers {
       };
 
       const dual = (factory) => (streams === 2 ? Promise.all([factory(), factory()]) : factory());
+
+      // Self-hosted OpenAI-compatible realtime endpoint: authenticate with the
+      // custom transcription key (which may be empty for a keyless server) —
+      // never the OpenAI key.
+      if (options.selfHosted) {
+        const selfHostedKey = this.environmentManager.getCustomTranscriptionKey?.() || "";
+        return streams === 2 ? [selfHostedKey, selfHostedKey] : selfHostedKey;
+      }
 
       if (options.provider === "assemblyai-realtime") {
         if (options.mode === "byok") {
@@ -5615,6 +5636,7 @@ class IPCHandlers {
         tenant: options.tenant,
         keyterms: options.keyterms,
         sampleRate: MEETING_STREAM_SAMPLE_RATE,
+        baseUrl: options.baseUrl,
       };
       const { mode: systemAudioMode } = await getMeetingSystemAudioPlan();
       let pairs;
@@ -5699,6 +5721,12 @@ class IPCHandlers {
     let meetingLocalProvider = null;
     let meetingLocalModel = null;
     let meetingLocalLanguage = null;
+    // {endpoint, model, language} when a self-hosted meeting falls back from
+    // realtime to buffered batch POSTs (reuses the local-mode buffers/timer).
+    let meetingRemoteBatch = null;
+    // Runtime buffered-transcription cadence (user-configurable via Settings →
+    // Speech to Text → Note recording). Applies to local + batch modes.
+    let meetingChunkIntervalMs = LOCAL_MEETING_CHUNK_INTERVAL_MS;
     let meetingLocalTranscribing = false;
     let meetingPendingMicChunks = [];
     let meetingPendingMicFinals = [];
@@ -6040,6 +6068,35 @@ class IPCHandlers {
       return started;
     };
 
+    const buildBatchTranscriptionUrl = (base) => {
+      const u = String(base || "").trim().replace(/\/+$/, "");
+      return /\/audio\/transcriptions$/i.test(u) ? u : `${u}/audio/transcriptions`;
+    };
+
+    // Self-hosted batch fallback: POST a WAV chunk to {endpoint}/audio/transcriptions
+    // with the shared custom transcription key. Used when the realtime WS endpoint
+    // is unavailable (see the realtime→batch fallback in meeting-transcription-start).
+    const transcribeRemoteBatchChunk = async (wav, cfg) => {
+      const url = buildBatchTranscriptionUrl(cfg.endpoint);
+      const formData = new FormData();
+      formData.append("file", new Blob([wav], { type: "audio/wav" }), "audio.wav");
+      if (cfg.model) formData.append("model", cfg.model);
+      if (cfg.language) formData.append("language", cfg.language);
+      const key = this.environmentManager.getCustomTranscriptionKey?.() || "";
+      const response = await net.fetch(url, {
+        method: "POST",
+        useSessionCookies: false,
+        body: formData,
+        ...(key ? { headers: { Authorization: `Bearer ${key}` } } : {}),
+      });
+      if (!response.ok) {
+        const errText = await response.text().catch(() => "");
+        throw new Error(`Self-hosted batch API error: ${response.status} ${errText.slice(0, 200)}`);
+      }
+      const data = await response.json().catch(() => ({}));
+      return { success: !!data?.text?.trim(), text: (data?.text || "").trim() };
+    };
+
     const transcribeLocalMeetingChunk = async (source) => {
       const chunks = meetingLocalBuffers[source];
       if (!chunks.length) return;
@@ -6072,7 +6129,7 @@ class IPCHandlers {
         source === "mic" &&
         rms < MEETING_MIC_BLEED_RMS_CEILING &&
         peak < MEETING_MIC_BLEED_PEAK_CEILING &&
-        meetingEchoLeakDetector.isSystemSpeaking(Date.now() - LOCAL_MEETING_CHUNK_INTERVAL_MS)
+        meetingEchoLeakDetector.isSystemSpeaking(Date.now() - meetingChunkIntervalMs)
       ) {
         debugLogger.debug("Skipping system-dominant mic chunk", {
           source,
@@ -6086,7 +6143,9 @@ class IPCHandlers {
 
       try {
         let result;
-        if (meetingLocalProvider === "nvidia") {
+        if (meetingRemoteBatch) {
+          result = await transcribeRemoteBatchChunk(wav, meetingRemoteBatch);
+        } else if (meetingLocalProvider === "nvidia") {
           result = await this.parakeetManager.transcribeLocalParakeet(wav, {
             model: meetingLocalModel,
           });
@@ -6267,6 +6326,8 @@ class IPCHandlers {
       meetingLocalProvider = null;
       meetingLocalModel = null;
       meetingLocalLanguage = null;
+      meetingRemoteBatch = null;
+      meetingChunkIntervalMs = LOCAL_MEETING_CHUNK_INTERVAL_MS;
       meetingLocalTranscribing = false;
       meetingPendingMicChunks = [];
       resetPendingMicFinals();
@@ -6607,6 +6668,11 @@ class IPCHandlers {
         meetingOneOnOneAttendee = resolveOneOnOneAttendeeForNote(options.noteId);
         meetingOneOnOneProfileBound = false;
         meetingNoteId = options.noteId ?? null;
+        // Clamp the configurable chunk cadence to a sane range (2–60s).
+        meetingChunkIntervalMs = Math.max(
+          2000,
+          Math.min(60000, Number(options.chunkIntervalMs) || LOCAL_MEETING_CHUNK_INTERVAL_MS)
+        );
 
         // Seed the speaker cap from the note/calendar participants up front so live
         // identification isn't stuck at the default if the renderer never pushes a config.
@@ -6657,7 +6723,7 @@ class IPCHandlers {
 
           meetingLocalTimer = setInterval(() => {
             transcribeAllLocalBuffers();
-          }, LOCAL_MEETING_CHUNK_INTERVAL_MS);
+          }, meetingChunkIntervalMs);
 
           ({ systemAudioMode, systemAudioStrategy } = await startMeetingSystemAudio(
             event,
@@ -6684,7 +6750,34 @@ class IPCHandlers {
           return { success: false, error: `Unsupported provider: ${options.provider}` };
         }
 
-        await connectRealtimeStreaming(event, options);
+        try {
+          await connectRealtimeStreaming(event, options);
+        } catch (realtimeErr) {
+          // Self-hosted realtime unavailable (e.g. the endpoint 404s the WS
+          // upgrade): fall back to buffered batch POSTs to /audio/transcriptions
+          // so meeting notes keep working until realtime is deployed. Non
+          // self-hosted providers (real OpenAI, etc.) still surface the error.
+          if (!(options.selfHosted && options.baseUrl)) throw realtimeErr;
+          debugLogger.warn("Self-hosted meeting realtime unavailable — falling back to batch", {
+            error: realtimeErr.message,
+          });
+          await this._meetingMicStreaming?.disconnect().catch(() => {});
+          await this._meetingSystemStreaming?.disconnect().catch(() => {});
+          this._meetingMicStreaming = null;
+          this._meetingSystemStreaming = null;
+          meetingLocalMode = true;
+          meetingRemoteBatch = {
+            endpoint: options.baseUrl,
+            model: options.model || null,
+            language: options.language || null,
+          };
+          meetingLocalWin = BrowserWindow.fromWebContents(event.sender);
+          meetingLocalBuffers = { mic: [], system: [] };
+          meetingLocalTranscript = "";
+          meetingLocalTimer = setInterval(() => {
+            transcribeAllLocalBuffers();
+          }, meetingChunkIntervalMs);
+        }
         const realtimeWin = BrowserWindow.fromWebContents(event.sender);
         await startLiveSpeakerIdentification(realtimeWin, systemAudioMode);
         await startMeetingAec(systemAudioMode);

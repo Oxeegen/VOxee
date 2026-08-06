@@ -9,6 +9,22 @@ const KEEPALIVE_INTERVAL_MS = 15000;
 // OpenAI Realtime sessions die at 60 minutes; reconnect proactively before that.
 const SESSION_PREEMPT_MS = 55 * 60 * 1000;
 
+const OPENAI_REALTIME_URL = "wss://api.openai.com/v1/realtime?intent=transcription";
+
+// Build a realtime WS URL from a self-hosted OpenAI-compatible base URL, e.g.
+// "https://host/v1" -> "wss://host/v1/realtime?intent=transcription". The base
+// may already include "/realtime" and/or a ws(s) scheme.
+function toRealtimeWsUrl(baseUrl) {
+  let u = String(baseUrl).trim().replace(/\/+$/, "");
+  // The stored value may be the batch endpoint (…/v1/audio/transcriptions) or a
+  // trailing /transcriptions; reduce to the API base before appending /realtime.
+  u = u.replace(/\/audio\/transcriptions$/i, "").replace(/\/transcriptions$/i, "");
+  if (!/\/realtime$/i.test(u)) u += "/realtime";
+  u = u.replace(/^http:/i, "ws:").replace(/^https:/i, "wss:");
+  if (!/[?&]intent=/i.test(u)) u += (u.includes("?") ? "&" : "?") + "intent=transcription";
+  return u;
+}
+
 // A socket factory does network work before the socket exists, so the dial
 // must be bounded; a socket resolving after the deadline is closed, not leaked.
 async function createSocketWithTimeout(createSocket, timeoutMs) {
@@ -70,8 +86,10 @@ class OpenAIRealtimeStreaming {
   }
 
   async connect(options = {}) {
-    const { apiKey, model, preconfigured, inputRate, captureRate, createSocket } = options;
-    if (!apiKey) throw new Error("OpenAI API key is required");
+    const { apiKey, model, preconfigured, inputRate, captureRate, createSocket, baseUrl } = options;
+    // A self-hosted endpoint (baseUrl) or an attested socket factory may be
+    // keyless; only the direct OpenAI path strictly requires a key.
+    if (!apiKey && !baseUrl && !createSocket) throw new Error("OpenAI API key is required");
 
     if (this.isConnected || this.isConnecting) {
       debugLogger.debug("OpenAI Realtime already connected/connecting");
@@ -93,15 +111,20 @@ class OpenAIRealtimeStreaming {
     this.speechStartedAt = null;
     this._sessionExpired = false;
 
-    const url = "wss://api.openai.com/v1/realtime?intent=transcription";
-    debugLogger.debug("OpenAI Realtime connecting", { model: this.model });
+    const url = baseUrl ? toRealtimeWsUrl(baseUrl) : OPENAI_REALTIME_URL;
+    debugLogger.info("OpenAI Realtime connecting", {
+      model: this.model,
+      selfHosted: !!baseUrl,
+      // Log the dialed WS URL (self-hosted only) to diagnose 404 path mismatches.
+      url: baseUrl ? url : undefined,
+    });
 
     // Attested providers (Tinfoil) supply their socket via an async factory.
     let ws;
     try {
       ws = createSocket
         ? await createSocketWithTimeout(createSocket, WEBSOCKET_TIMEOUT_MS)
-        : new WebSocket(url, { headers: { Authorization: `Bearer ${apiKey}` } });
+        : new WebSocket(url, apiKey ? { headers: { Authorization: `Bearer ${apiKey}` } } : undefined);
     } catch (err) {
       this.isConnecting = false;
       this.cleanup();

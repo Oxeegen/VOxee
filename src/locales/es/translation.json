@@ -24,6 +24,10 @@
       "speakerDetection": {
         "title": "Identificar y etiquetar participantes",
         "description": "Cuando está desactivado, las transcripciones muestran \"Tú\" y \"Otros\""
+      },
+      "chunkInterval": {
+        "title": "Intervalo de segmentos de transcripción",
+        "description": "Segundos de audio en búfer antes de cada solicitud de transcripción (modos local y batch autoalojado). Mayor = menos solicitudes, más latencia."
       }
     }
   },

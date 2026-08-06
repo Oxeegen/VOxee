@@ -24,6 +24,10 @@
       "speakerDetection": {
         "title": "识别并标记发言者",
         "description": "关闭后，转写会显示\"你\"和\"其他人\""
+      },
+      "chunkInterval": {
+        "title": "转录分块间隔",
+        "description": "每次转录请求前缓冲的音频秒数（本地和自托管批处理模式）。数值越大 = 请求越少，延迟越高。"
       }
     }
   },

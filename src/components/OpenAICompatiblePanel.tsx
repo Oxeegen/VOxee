@@ -71,6 +71,25 @@ export default function OpenAICompatiblePanel({
     setDraftBase(baseUrl);
   }, [baseUrl]);
 
+  // Persist a pending endpoint edit on unmount (e.g. the settings window closes
+  // before the field blurs), so a typed URL is never silently lost.
+  const draftBaseRef = useRef(draftBase);
+  const committedBaseRef = useRef(baseUrl);
+  const setBaseUrlRef = useRef(setBaseUrl);
+  useEffect(() => {
+    draftBaseRef.current = draftBase;
+    committedBaseRef.current = baseUrl;
+    setBaseUrlRef.current = setBaseUrl;
+  }, [draftBase, baseUrl, setBaseUrl]);
+  useEffect(() => {
+    return () => {
+      const draft = draftBaseRef.current.trim();
+      if (draft && draft !== (committedBaseRef.current || "").trim()) {
+        setBaseUrlRef.current(normalizeBaseUrl(draft));
+      }
+    };
+  }, []);
+
   const normalizedBase = useMemo(() => normalizeBaseUrl(baseUrl), [baseUrl]);
 
   useEffect(() => {

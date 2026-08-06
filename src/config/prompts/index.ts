@@ -3,6 +3,8 @@ import { useSettingsStore } from "../../stores/settingsStore";
 import { en as enPrompts } from "../../locales/prompts";
 import { getLanguageInstruction } from "../../utils/languageSupport";
 import { PROMPT_KINDS, type PromptKind } from "./registry";
+import { BRAND } from "@brand/config/brand";
+import { getBrandPrompt } from "@brand/prompts";
 
 export { PROMPT_KINDS, PROMPT_KIND_LIST, type PromptKind } from "./registry";
 
@@ -21,6 +23,13 @@ export function resolvePrompt(kind: PromptKind, opts: ResolvePromptOptions): str
 }
 
 export function getDefaultPromptText(kind: PromptKind, uiLanguage?: string): string {
+  // Account-less brand builds ship their own default prompts (versioned .md).
+  // An empty brand file falls through to the upstream default for that kind.
+  if (!BRAND.showAccount) {
+    const brandPrompt = getBrandPrompt(kind);
+    if (brandPrompt) return brandPrompt;
+  }
+
   const def = PROMPT_KINDS[kind];
   if (!def.i18nKey) return def.fallback;
   const locale = normalizeUiLanguage(uiLanguage || "en");

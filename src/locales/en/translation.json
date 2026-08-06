@@ -24,6 +24,10 @@
       "speakerDetection": {
         "title": "Identify and label speakers",
         "description": "When off, transcripts show \"You\" and \"Others\""
+      },
+      "chunkInterval": {
+        "title": "Transcription chunk interval",
+        "description": "Seconds of audio buffered before each transcription request (local & self-hosted batch modes). Higher = fewer requests, more latency."
       }
     }
   },

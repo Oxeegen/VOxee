@@ -117,6 +117,8 @@ const getMeetingTranscriptionOptions = () => {
   const state = getSettings();
   const resolved = selectResolvedMeetingTranscription(state);
   const language = getBaseLanguageCode(state.preferredLanguage);
+  // Buffered-transcription cadence (local + self-hosted batch modes).
+  const chunkIntervalMs = Math.round((state.meetingChunkSeconds || 5) * 1000);
 
   if (resolved.useLocalWhisper) {
     return {
@@ -127,6 +129,22 @@ const getMeetingTranscriptionOptions = () => {
           ? resolved.parakeetModel || "parakeet-tdt-0.6b-v3"
           : resolved.whisperModel || "base",
       language,
+      chunkIntervalMs,
+    };
+  }
+
+  // Self-hosted OpenAI-compatible realtime endpoint (e.g. Oxeegen /v1/realtime).
+  // Uses the same realtime protocol as OpenAI, so it rides the openai-realtime
+  // client with a base-URL override and the custom transcription key.
+  if (resolved.transcriptionMode === "self-hosted" && resolved.remoteTranscriptionUrl?.trim()) {
+    return {
+      provider: "openai-realtime" as const,
+      model: state.remoteTranscriptionModel || resolved.cloudTranscriptionModel || "",
+      mode: "byok" as const,
+      language,
+      selfHosted: true,
+      baseUrl: resolved.remoteTranscriptionUrl.trim(),
+      chunkIntervalMs,
     };
   }
 

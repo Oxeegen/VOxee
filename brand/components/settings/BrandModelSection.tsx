@@ -13,6 +13,7 @@ import { BRAND, getBrandModelConfig } from "@brand/config/brand";
 import type { BrandModelScope } from "@brand/config/brand";
 import BrandModeChoice, { type BrandChoice } from "./BrandModeChoice";
 import { getOxeegenApiKey } from "./brandApiKey";
+import { getStoredBrandChoice, setStoredBrandChoice } from "./brandChoice";
 
 interface BrandModelSectionProps {
   scope: InferenceScope;
@@ -32,10 +33,13 @@ export default function BrandModelSection({ scope }: BrandModelSectionProps) {
     () => (config.remoteUrl || "") === brandCfg.endpoint,
     [config.remoteUrl, brandCfg.endpoint]
   );
-  const [choice, setChoice] = useState<BrandChoice>(isOnBrandEndpoint ? "brand" : "custom");
+  const [choice, setChoice] = useState<BrandChoice>(() =>
+    getStoredBrandChoice(scope, isOnBrandEndpoint ? "brand" : "custom")
+  );
 
   const handleChange = (next: BrandChoice) => {
     setChoice(next);
+    setStoredBrandChoice(scope, next);
     if (next === "brand") {
       // Lock to the brand endpoint/model and (re)apply the shared org key so
       // the request is authenticated even after a Custom detour.

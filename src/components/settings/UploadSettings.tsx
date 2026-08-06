@@ -108,6 +108,7 @@ export function UploadTranscriptionPanel() {
   if (!BRAND.showAccount) {
     return (
       <BrandTranscriptionSection
+        contextKey="upload"
         url={remoteTranscriptionUrl}
         setUrl={setRemoteTranscriptionUrl}
         model={remoteTranscriptionModel}
