@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { BRAND, getBrandRegionModelConfig } from "@brand/config/brand";
 import type { BrandModelScope, BrandRegionId } from "@brand/config/brand";
 import BrandModeChoice, { type BrandChoice } from "./BrandModeChoice";
+import ProviderHealthBadge from "./ProviderHealthBadge";
 import { getOxeegenRegionKey } from "./brandApiKey";
 import { getStoredBrandChoice, setStoredBrandChoice } from "./brandChoice";
 
@@ -56,9 +57,18 @@ export default function BrandModelSection({ scope }: BrandModelSectionProps) {
       ? getBrandRegionModelConfig(choice, brandScope).model
       : "";
 
+  const activeStatus = choice ? (
+    <ProviderHealthBadge
+      endpoint={config.remoteUrl ?? ""}
+      model={config.model ?? ""}
+      apiKey={config.customApiKey ?? ""}
+      region={choice}
+    />
+  ) : undefined;
+
   return (
     <div className="space-y-3">
-      <BrandModeChoice choice={choice} onChange={handleChange} />
+      <BrandModeChoice choice={choice} onChange={handleChange} activeStatus={activeStatus} />
 
       {choice === "eu" || choice === "us" ? (
         <div className="border border-border rounded-lg p-3 space-y-1.5">

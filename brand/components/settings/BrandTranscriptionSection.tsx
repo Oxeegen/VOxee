@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { BRAND, getBrandRegionModelConfig } from "@brand/config/brand";
 import type { BrandRegionId } from "@brand/config/brand";
 import BrandModeChoice, { type BrandChoice } from "./BrandModeChoice";
+import ProviderHealthBadge from "./ProviderHealthBadge";
 import { getOxeegenRegionKey } from "./brandApiKey";
 import { getStoredBrandChoice, setStoredBrandChoice } from "./brandChoice";
 
@@ -57,9 +58,18 @@ export default function BrandTranscriptionSection({
       ? getBrandRegionModelConfig(choice, "transcription").model
       : "";
 
+  const activeStatus = choice ? (
+    <ProviderHealthBadge
+      endpoint={url}
+      model={model}
+      apiKey={customTranscriptionApiKey ?? ""}
+      region={choice}
+    />
+  ) : undefined;
+
   return (
     <div className="space-y-3">
-      <BrandModeChoice choice={choice} onChange={handleChange} />
+      <BrandModeChoice choice={choice} onChange={handleChange} activeStatus={activeStatus} />
 
       {choice === "eu" || choice === "us" ? (
         <div className="border border-border rounded-lg p-3 space-y-1.5">

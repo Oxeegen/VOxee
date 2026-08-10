@@ -136,6 +136,8 @@ export interface InferenceModeOption {
   label: string;
   /** Optional node rendered right after the label text (e.g. a small flag). */
   labelSuffix?: React.ReactNode;
+  /** Optional node rendered next to the "active" badge (e.g. a health status). */
+  statusSuffix?: React.ReactNode;
   description: string;
   icon: React.ReactNode;
 }
@@ -196,6 +198,7 @@ export function InferenceModeSelector({
                       {mode.badge}
                     </span>
                   )}
+                  {mode.statusSuffix}
                 </div>
                 <p className="text-xs text-muted-foreground/80 mt-0.5">{mode.description}</p>
               </div>

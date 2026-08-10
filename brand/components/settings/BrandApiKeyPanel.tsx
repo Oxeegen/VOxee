@@ -11,6 +11,7 @@ import {
   setOxeegenRegionKey,
   autoSelectRegionForUnsetScopes,
 } from "./brandApiKey";
+import { consumeApiKeyFocus } from "@brand/utils/settingsNav";
 
 type Status = "idle" | "checking" | "valid" | "invalid";
 
@@ -19,7 +20,7 @@ type Status = "idle" | "checking" | "valid" | "invalid";
  * propagated to the scopes on that region, and validated against the region
  * endpoint's /models.
  */
-function RegionKeyField({ region }: { region: BrandRegionId }) {
+function RegionKeyField({ region, highlight }: { region: BrandRegionId; highlight?: boolean }) {
   const { t } = useTranslation();
   const endpoint = BRAND.regions[region].endpoint;
 
@@ -27,6 +28,17 @@ function RegionKeyField({ region }: { region: BrandRegionId }) {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const reqRef = useRef(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [flash, setFlash] = useState(false);
+
+  // When navigated here from a "Key missing" badge, scroll to and flash the field.
+  useEffect(() => {
+    if (!highlight) return;
+    containerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    setFlash(true);
+    const h = setTimeout(() => setFlash(false), 2500);
+    return () => clearTimeout(h);
+  }, [highlight]);
 
   // Load the stored key on mount.
   useEffect(() => {
@@ -87,7 +99,12 @@ function RegionKeyField({ region }: { region: BrandRegionId }) {
   }, [apiKey, region, validate]);
 
   return (
-    <div className="space-y-1.5">
+    <div
+      ref={containerRef}
+      className={`space-y-1.5 rounded-md transition-all ${
+        flash ? "ring-2 ring-destructive/60 ring-offset-2 ring-offset-background p-2 -m-2" : ""
+      }`}
+    >
       <div className="flex items-center gap-1.5">
         <span className="text-xs font-medium text-foreground">{BRAND.regions[region].label}</span>
         <RegionFlag region={region} className="w-4 h-3 shrink-0" />
@@ -131,6 +148,8 @@ function RegionKeyField({ region }: { region: BrandRegionId }) {
  */
 export default function BrandApiKeyPanel() {
   const { t } = useTranslation();
+  // Region to highlight when arriving from a "Key missing" health badge.
+  const [focusRegion] = useState(() => consumeApiKeyFocus());
   return (
     <div className="space-y-4">
       <div className="space-y-1">
@@ -144,8 +163,8 @@ export default function BrandApiKeyPanel() {
         </p>
       </div>
 
-      <RegionKeyField region="us" />
-      <RegionKeyField region="eu" />
+      <RegionKeyField region="us" highlight={focusRegion === "us"} />
+      <RegionKeyField region="eu" highlight={focusRegion === "eu"} />
     </div>
   );
 }

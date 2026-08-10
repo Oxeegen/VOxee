@@ -16,6 +16,7 @@ import SettingsPage, { SettingsSectionType } from "./SettingsPage";
 import { useAuth } from "../hooks/useAuth";
 import { BRAND } from "@brand/config/brand";
 import OxeegenMark from "@brand/components/ui/OxeegenMark";
+import { onOpenApiKey } from "@brand/utils/settingsNav";
 
 export type { SettingsSectionType };
 
@@ -173,6 +174,16 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
     setActiveSection(section);
     setInitialSubTab(undefined);
   };
+
+  // Brand: a provider health badge ("Key missing") can request jumping to the
+  // Oxeegen API Key screen (the panel then highlights the right region field).
+  React.useEffect(() => {
+    if (BRAND.showAccount) return;
+    return onOpenApiKey(() => {
+      setActiveSection("apiKey");
+      setInitialSubTab(undefined);
+    });
+  }, []);
 
   return (
     <SidebarModal<SettingsSectionType>

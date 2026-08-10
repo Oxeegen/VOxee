@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Network } from "lucide-react";
 import { InferenceModeSelector } from "@/components/ui/SettingsSection";
@@ -21,9 +22,12 @@ export type BrandChoice = "us" | "eu" | "custom";
 export default function BrandModeChoice({
   choice,
   onChange,
+  activeStatus,
 }: {
   choice: BrandChoice | null;
   onChange: (choice: BrandChoice) => void;
+  /** Health badge rendered next to the "active" badge on the selected provider. */
+  activeStatus?: ReactNode;
 }) {
   const { t } = useTranslation();
 
@@ -56,9 +60,14 @@ export default function BrandModeChoice({
     },
   ];
 
+  // Attach the health badge to the currently-selected provider row.
+  const modesWithStatus = modes.map((m) =>
+    m.id === (choice as InferenceMode) ? { ...m, statusSuffix: activeStatus } : m
+  );
+
   return (
     <InferenceModeSelector
-      modes={modes}
+      modes={modesWithStatus}
       // Empty string matches no id, so nothing is highlighted when unset.
       activeMode={(choice ?? "") as InferenceMode}
       onSelect={(mode) => onChange(mode as BrandChoice)}
