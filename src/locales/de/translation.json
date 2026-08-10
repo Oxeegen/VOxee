@@ -30,7 +30,8 @@
         "models": "Modelle",
         "prefs": "Einstellungen",
         "hotkeys": "Tastenkürzel",
-        "tour": "Tour"
+        "tour": "Tour",
+        "language": "Sprache"
       },
       "welcome": {
         "title": "Willkommen bei VOxee",
@@ -122,6 +123,10 @@
           "s1": "Freitag ausliefern — vom Team bestätigt.",
           "s2": "Speaker 2 übernimmt die Release Notes."
         }
+      },
+      "language": {
+        "title": "Wähle deine Sprache",
+        "subtitle": "Die Sprache der VOxee-Oberfläche. Später in den Einstellungen änderbar."
       }
     }
   },

@@ -30,7 +30,8 @@
         "models": "Modèles",
         "prefs": "Préférences",
         "hotkeys": "Raccourcis",
-        "tour": "Visite"
+        "tour": "Visite",
+        "language": "Langue"
       },
       "welcome": {
         "title": "Bienvenue dans VOxee",
@@ -122,6 +123,10 @@
           "s1": "Livraison vendredi — validé par l'équipe.",
           "s2": "Speaker 2 s'occupe des notes de version."
         }
+      },
+      "language": {
+        "title": "Choisissez votre langue",
+        "subtitle": "La langue de l'interface VOxee. Modifiable plus tard dans les Réglages."
       }
     }
   },

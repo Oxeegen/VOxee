@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
+  Languages,
   Sparkles,
   Globe,
   KeyRound,
@@ -16,6 +17,7 @@ import StepProgress from "@/components/ui/StepProgress";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@brand/config/brand";
 import OxeegenMark from "@brand/components/ui/OxeegenMark";
+import LanguageStep from "./steps/LanguageStep";
 import WelcomeStep from "./steps/WelcomeStep";
 import RegionStep, { type RegionChoice } from "./steps/RegionStep";
 import ApiKeysStep from "./steps/ApiKeysStep";
@@ -33,6 +35,7 @@ export default function VoxeeOnboarding({ onComplete }: { onComplete: () => void
 
   const steps = useMemo(
     () => [
+      { id: "language", title: t("brand.onboarding.steps.language", { defaultValue: "Language" }), icon: Languages },
       { id: "welcome", title: t("brand.onboarding.steps.welcome", { defaultValue: "Welcome" }), icon: Sparkles },
       { id: "region", title: t("brand.onboarding.steps.region", { defaultValue: "Region" }), icon: Globe },
       { id: "keys", title: t("brand.onboarding.steps.keys", { defaultValue: "API keys" }), icon: KeyRound },
@@ -53,8 +56,8 @@ export default function VoxeeOnboarding({ onComplete }: { onComplete: () => void
           ? keyValid.us || keyValid.eu
           : false;
 
-  // Steps 1 (region) and 2 (a valid key) are mandatory; others are skippable.
-  const canProceed = currentStep === 1 ? region !== null : currentStep === 2 ? step2Valid : true;
+  // Steps 2 (region) and 3 (a valid key) are mandatory; others are skippable.
+  const canProceed = currentStep === 2 ? region !== null : currentStep === 3 ? step2Valid : true;
 
   const isLast = currentStep === steps.length - 1;
   const next = () => (isLast ? onComplete() : setCurrentStep((s) => Math.min(s + 1, steps.length - 1)));
@@ -72,13 +75,14 @@ export default function VoxeeOnboarding({ onComplete }: { onComplete: () => void
 
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="max-w-lg mx-auto">
-          {currentStep === 0 && <WelcomeStep />}
-          {currentStep === 1 && <RegionStep region={region} setRegion={setRegion} />}
-          {currentStep === 2 && <ApiKeysStep region={region} setKeyValid={setKeyValid} />}
-          {currentStep === 3 && <ModelsStep />}
-          {currentStep === 4 && <PreferencesStep />}
-          {currentStep === 5 && <HotkeysStep />}
-          {currentStep === 6 && <TutorialStep />}
+          {currentStep === 0 && <LanguageStep />}
+          {currentStep === 1 && <WelcomeStep />}
+          {currentStep === 2 && <RegionStep region={region} setRegion={setRegion} />}
+          {currentStep === 3 && <ApiKeysStep region={region} setKeyValid={setKeyValid} />}
+          {currentStep === 4 && <ModelsStep />}
+          {currentStep === 5 && <PreferencesStep />}
+          {currentStep === 6 && <HotkeysStep />}
+          {currentStep === 7 && <TutorialStep />}
         </div>
       </div>
 

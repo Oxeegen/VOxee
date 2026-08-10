@@ -8,24 +8,10 @@ import {
 } from "@/components/ui/SettingsSection";
 import { Toggle } from "@/components/ui/toggle";
 import LanguageSelector from "@/components/ui/LanguageSelector";
-import type { LanguageOption } from "@/components/ui/LanguageSelector";
 import { useSettingsStore } from "@/stores/settingsStore";
 import { useTheme } from "@/hooks/useTheme";
 
-const UI_LANGUAGE_OPTIONS: LanguageOption[] = [
-  { value: "en", label: "English", flag: "🇺🇸" },
-  { value: "es", label: "Español", flag: "🇪🇸" },
-  { value: "fr", label: "Français", flag: "🇫🇷" },
-  { value: "de", label: "Deutsch", flag: "🇩🇪" },
-  { value: "pt", label: "Português", flag: "🇵🇹" },
-  { value: "it", label: "Italiano", flag: "🇮🇹" },
-  { value: "ru", label: "Русский", flag: "🇷🇺" },
-  { value: "ja", label: "日本語", flag: "🇯🇵" },
-  { value: "zh-CN", label: "简体中文", flag: "🇨🇳" },
-  { value: "zh-TW", label: "繁體中文", flag: "🇹🇼" },
-];
-
-/** Step 4 — theme, floating icon, and languages (defaults: system theme). */
+/** Preferences — theme, floating icon, transcription language (UI language is step 0). */
 export default function PreferencesStep() {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
@@ -34,8 +20,6 @@ export default function PreferencesStep() {
   const setFloatingIconAutoHide = useSettingsStore((s) => s.setFloatingIconAutoHide);
   const panelStartPosition = useSettingsStore((s) => s.panelStartPosition);
   const setPanelStartPosition = useSettingsStore((s) => s.setPanelStartPosition);
-  const uiLanguage = useSettingsStore((s) => s.uiLanguage);
-  const setUiLanguage = useSettingsStore((s) => s.setUiLanguage);
   const preferredLanguage = useSettingsStore((s) => s.preferredLanguage);
   const setPreferredLanguage = useSettingsStore((s) => s.setPreferredLanguage);
 
@@ -131,19 +115,6 @@ export default function PreferencesStep() {
           })}
         />
         <SettingsPanel>
-          <SettingsPanelRow>
-            <SettingsRow
-              label={t("settings.language.uiLabel", { defaultValue: "Interface language" })}
-              description={t("settings.language.uiDescription", { defaultValue: "Language of the app." })}
-            >
-              <LanguageSelector
-                value={uiLanguage}
-                onChange={setUiLanguage}
-                options={UI_LANGUAGE_OPTIONS}
-                className="min-w-32"
-              />
-            </SettingsRow>
-          </SettingsPanelRow>
           <SettingsPanelRow>
             <SettingsRow
               label={t("settings.language.transcriptionLabel", { defaultValue: "Transcription language" })}

@@ -30,7 +30,8 @@
         "models": "モデル",
         "prefs": "環境設定",
         "hotkeys": "ホットキー",
-        "tour": "ツアー"
+        "tour": "ツアー",
+        "language": "言語"
       },
       "welcome": {
         "title": "VOxee へようこそ",
@@ -122,6 +123,10 @@
           "s1": "金曜リリース — チーム合意。",
           "s2": "Speaker 2 がリリースノート担当。"
         }
+      },
+      "language": {
+        "title": "言語を選択",
+        "subtitle": "VOxee のインターフェース言語。後で設定から変更できます。"
       }
     }
   },

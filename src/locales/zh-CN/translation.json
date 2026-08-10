@@ -30,7 +30,8 @@
         "models": "模型",
         "prefs": "偏好设置",
         "hotkeys": "快捷键",
-        "tour": "导览"
+        "tour": "导览",
+        "language": "语言"
       },
       "welcome": {
         "title": "欢迎使用 VOxee",
@@ -122,6 +123,10 @@
           "s1": "周五发布 — 团队已同意。",
           "s2": "Speaker 2 负责发布说明。"
         }
+      },
+      "language": {
+        "title": "选择你的语言",
+        "subtitle": "VOxee 界面的语言。稍后可在设置中更改。"
       }
     }
   },

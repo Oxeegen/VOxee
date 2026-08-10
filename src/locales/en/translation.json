@@ -30,7 +30,8 @@
         "models": "Models",
         "prefs": "Preferences",
         "hotkeys": "Hotkeys",
-        "tour": "Tour"
+        "tour": "Tour",
+        "language": "Language"
       },
       "welcome": {
         "title": "Welcome to VOxee",
@@ -122,6 +123,10 @@
           "s1": "Ship on Friday — agreed by the team.",
           "s2": "Speaker 2 owns the release notes."
         }
+      },
+      "language": {
+        "title": "Choose your language",
+        "subtitle": "The language of the VOxee interface. You can change it later in Settings."
       }
     }
   },
