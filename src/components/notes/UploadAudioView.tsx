@@ -250,8 +250,9 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     transcriptionMode,
   } = useSettingsStore(useShallow(selectResolvedUploadTranscription));
 
-  const remoteTranscriptionUrl = useSettingsStore((s) => s.remoteTranscriptionUrl);
-  const remoteTranscriptionModel = useSettingsStore((s) => s.remoteTranscriptionModel);
+  // Upload has its own self-hosted endpoint/model (decoupled from dictation).
+  const remoteTranscriptionUrl = useSettingsStore((s) => s.uploadRemoteTranscriptionUrl);
+  const remoteTranscriptionModel = useSettingsStore((s) => s.uploadRemoteTranscriptionModel);
 
   const setUploadTranscriptionMode = useSettingsStore((s) => s.setUploadTranscriptionMode);
   const setUploadCloudTranscriptionMode = useSettingsStore(

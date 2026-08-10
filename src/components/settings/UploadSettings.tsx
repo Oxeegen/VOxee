@@ -33,10 +33,10 @@ export function UploadTranscriptionPanel() {
     setUploadCloudTranscriptionBaseUrl,
     setUploadCloudTranscriptionMode,
     // Upload self-hosted reuses the shared base transcription endpoint/model.
-    remoteTranscriptionUrl,
-    setRemoteTranscriptionUrl,
-    remoteTranscriptionModel,
-    setRemoteTranscriptionModel,
+    uploadRemoteTranscriptionUrl,
+    setUploadRemoteTranscriptionUrl,
+    uploadRemoteTranscriptionModel,
+    setUploadRemoteTranscriptionModel,
   } = useSettingsStore();
 
   const transcriptionModes: InferenceModeOption[] = [
@@ -109,10 +109,10 @@ export function UploadTranscriptionPanel() {
     return (
       <BrandTranscriptionSection
         contextKey="upload"
-        url={remoteTranscriptionUrl}
-        setUrl={setRemoteTranscriptionUrl}
-        model={remoteTranscriptionModel}
-        setModel={setRemoteTranscriptionModel}
+        url={uploadRemoteTranscriptionUrl}
+        setUrl={setUploadRemoteTranscriptionUrl}
+        model={uploadRemoteTranscriptionModel}
+        setModel={setUploadRemoteTranscriptionModel}
       />
     );
   }

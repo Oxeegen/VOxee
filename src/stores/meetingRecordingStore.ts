@@ -139,7 +139,11 @@ const getMeetingTranscriptionOptions = () => {
   if (resolved.transcriptionMode === "self-hosted" && resolved.remoteTranscriptionUrl?.trim()) {
     return {
       provider: "openai-realtime" as const,
-      model: state.remoteTranscriptionModel || resolved.cloudTranscriptionModel || "",
+      model:
+        state.meetingRemoteTranscriptionModel ||
+        state.remoteTranscriptionModel ||
+        resolved.cloudTranscriptionModel ||
+        "",
       mode: "byok" as const,
       language,
       selfHosted: true,

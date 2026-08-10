@@ -528,6 +528,10 @@ export interface SettingsState
   meetingCloudTranscriptionMode: string;
   meetingRemoteTranscriptionType: SelfHostedType;
   meetingRemoteTranscriptionUrl: string;
+  // Per-screen self-hosted transcription config (decoupled from dictation).
+  meetingRemoteTranscriptionModel: string;
+  uploadRemoteTranscriptionUrl: string;
+  uploadRemoteTranscriptionModel: string;
 
   uploadTranscriptionMode: InferenceMode;
   uploadUseLocalWhisper: boolean;
@@ -602,6 +606,9 @@ export interface SettingsState
   setMeetingCloudTranscriptionMode: (value: string) => void;
   setMeetingRemoteTranscriptionType: (type: SelfHostedType) => void;
   setMeetingRemoteTranscriptionUrl: (url: string) => void;
+  setMeetingRemoteTranscriptionModel: (model: string) => void;
+  setUploadRemoteTranscriptionUrl: (url: string) => void;
+  setUploadRemoteTranscriptionModel: (model: string) => void;
 
   setUploadTranscriptionMode: (mode: InferenceMode) => void;
   setUploadUseLocalWhisper: (value: boolean) => void;
@@ -1194,6 +1201,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     return v === "openai-compatible" ? "openai-compatible" : ("lan" as SelfHostedType);
   })(),
   meetingRemoteTranscriptionUrl: readString("meetingRemoteTranscriptionUrl", ""),
+  meetingRemoteTranscriptionModel: readString("meetingRemoteTranscriptionModel", ""),
+  uploadRemoteTranscriptionUrl: readString("uploadRemoteTranscriptionUrl", ""),
+  uploadRemoteTranscriptionModel: readString("uploadRemoteTranscriptionModel", ""),
 
   uploadTranscriptionMode: (() => {
     const v = readString("uploadTranscriptionMode", "openwhispr");
@@ -1289,6 +1299,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     type: SelfHostedType
   ) => void,
   setMeetingRemoteTranscriptionUrl: createStringSetter("meetingRemoteTranscriptionUrl"),
+  setMeetingRemoteTranscriptionModel: createStringSetter("meetingRemoteTranscriptionModel"),
+  setUploadRemoteTranscriptionUrl: createStringSetter("uploadRemoteTranscriptionUrl"),
+  setUploadRemoteTranscriptionModel: createStringSetter("uploadRemoteTranscriptionModel"),
 
   setUploadTranscriptionMode: createStringSetter("uploadTranscriptionMode") as (
     mode: InferenceMode

@@ -54,9 +54,8 @@ export function MeetingTranscriptionPanel() {
     setMeetingCloudTranscriptionMode,
     meetingRemoteTranscriptionUrl,
     setMeetingRemoteTranscriptionUrl,
-    // Meeting self-hosted reuses the shared base transcription model.
-    remoteTranscriptionModel,
-    setRemoteTranscriptionModel,
+    meetingRemoteTranscriptionModel,
+    setMeetingRemoteTranscriptionModel,
     meetingChunkSeconds,
     setMeetingChunkSeconds,
   } = useSettingsStore();
@@ -141,8 +140,8 @@ export function MeetingTranscriptionPanel() {
           contextKey="meeting"
           url={meetingRemoteTranscriptionUrl}
           setUrl={setMeetingRemoteTranscriptionUrl}
-          model={remoteTranscriptionModel}
-          setModel={setRemoteTranscriptionModel}
+          model={meetingRemoteTranscriptionModel}
+          setModel={setMeetingRemoteTranscriptionModel}
         />
       ) : (
         <>

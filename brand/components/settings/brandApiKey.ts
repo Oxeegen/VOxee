@@ -77,22 +77,25 @@ export async function autoSelectRegionForUnsetScopes(region: BrandRegionId): Pro
     setStoredBrandChoice(scope, region);
   }
 
-  // Transcription: dictation + upload share remoteTranscription{Url,Model};
-  // meeting has its own url (meetingRemoteTranscriptionUrl), shared model.
+  // Transcription: each context (dictation/meeting/upload) has its own endpoint
+  // + model fields; the API key is still shared for now.
   const { endpoint, model } = getBrandRegionModelConfig(region, "transcription");
   let touchedTranscription = false;
-  const applyBase = (id: string) => {
-    if (getStoredBrandChoice(id) !== null) return;
+  if (getStoredBrandChoice("transcription.dictation") === null) {
     s.setRemoteTranscriptionUrl(endpoint);
     s.setRemoteTranscriptionModel(model);
-    setStoredBrandChoice(id, region);
+    setStoredBrandChoice("transcription.dictation", region);
     touchedTranscription = true;
-  };
-  applyBase("transcription.dictation");
-  applyBase("transcription.upload");
+  }
+  if (getStoredBrandChoice("transcription.upload") === null) {
+    s.setUploadRemoteTranscriptionUrl(endpoint);
+    s.setUploadRemoteTranscriptionModel(model);
+    setStoredBrandChoice("transcription.upload", region);
+    touchedTranscription = true;
+  }
   if (getStoredBrandChoice("transcription.meeting") === null) {
     s.setMeetingRemoteTranscriptionUrl(endpoint);
-    s.setRemoteTranscriptionModel(model);
+    s.setMeetingRemoteTranscriptionModel(model);
     setStoredBrandChoice("transcription.meeting", region);
     touchedTranscription = true;
   }
