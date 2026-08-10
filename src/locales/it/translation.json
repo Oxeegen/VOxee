@@ -86,17 +86,24 @@
           "pasted": "Incollato al cursore",
           "placeholder": "Le tue parole appaiono qui…",
           "or": "o",
-          "trigger": "Clicca il pulsante o premi la scorciatoia"
+          "trigger": "Clicca il pulsante o premi la scorciatoia",
+          "sample": "Il rapporto trimestrale è pronto per la revisione."
         },
         "cleanup": {
           "title": "Pulizia automatica",
           "desc": "Intercalari e formattazione disordinata vengono puliti al volo.",
-          "badge": "Pulizia IA"
+          "badge": "Pulizia IA",
+          "messy": "ehm cioè il il rapporto è ehm pronto per la revisione credo",
+          "clean": "Il rapporto è pronto per la revisione."
         },
         "agent": {
           "title": "Parla col tuo agente",
           "desc": "Rivolgiti al tuo agente per nome per riscrivere, riassumere o riformattare.",
-          "hotkeyHint": "Scorciatoia agente vocale"
+          "hotkeyHint": "Scorciatoia agente vocale",
+          "command": "Ehi {{agent}}, trasforma questo in 3 punti",
+          "r1": "Rapporto revisionato",
+          "r2": "Pronto per il rilascio",
+          "r3": "In attesa di approvazione"
         },
         "translation": {
           "title": "Parla, incolla tradotto",
@@ -105,7 +112,10 @@
         },
         "meeting": {
           "title": "Note riunione, in diretta",
-          "desc": "Le chiamate rilevate vengono trascritte con le etichette dei parlanti — dritte in una nota."
+          "desc": "Le chiamate rilevate vengono trascritte con le etichette dei parlanti — dritte in una nota.",
+          "l1": "Rilasciamo venerdì.",
+          "l2": "Per me va bene.",
+          "l3": "Preparo le note di rilascio."
         },
         "ready": {
           "title": "Tutto pronto",

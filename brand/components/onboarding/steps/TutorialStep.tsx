@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { Mic, Sparkles, Bot, Languages, Users, FileText, Rocket, ChevronLeft, ChevronRight, Pause, Play, ArrowRight, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAgentName } from "@/utils/agentName";
@@ -9,6 +10,13 @@ import { formatHotkeyListLabel, getDefaultHotkey } from "@/utils/hotkeys";
 import languageRegistry from "@/config/languageRegistry.json";
 
 const CARD_MS = 9000;
+
+/** The whole tour renders in the interface (UI) language. The only exception is
+ *  the translation demo, which targets the user's transcription language. */
+function useTourT(): TFunction {
+  const { t } = useTranslation();
+  return t;
+}
 
 const LANG: Record<string, { code: string; label: string; flag: string }> = Object.fromEntries(
   (languageRegistry as { languages: Array<{ code: string; label: string; flag: string }> }).languages.map(
@@ -77,15 +85,15 @@ function HotkeyChip({ hotkey }: { hotkey: string }) {
   );
 }
 
-/** Shown when a feature wasn't enabled in the earlier onboarding step. */
-function NotEnabled({ label, onEnable }: { label: string; onEnable: () => void }) {
-  const { t } = useTranslation();
+/** Strip shown below a feature's demo when it wasn't enabled in the models step. */
+function EnableStrip({ label, onEnable }: { label: string; onEnable: () => void }) {
+  const t = useTourT();
   return (
-    <div className="flex flex-col items-center gap-3 text-center">
-      <p className="text-sm text-muted-foreground">
+    <div className="mx-auto flex max-w-md items-center justify-between gap-3 rounded-lg border border-amber-500/30 bg-amber-500/5 px-3 py-2">
+      <span className="text-xs text-muted-foreground">
         {t("brand.onboarding.tour.notEnabled", { defaultValue: "{{feature}} isn't enabled yet.", feature: label })}
-      </p>
-      <Button size="sm" onClick={onEnable}>
+      </span>
+      <Button size="sm" variant="outline" onClick={onEnable}>
         {t("brand.onboarding.tour.enable", { defaultValue: "Enable" })}
       </Button>
     </div>
@@ -118,7 +126,7 @@ const PHASE_SEQ: Phase[] = ["idle", "recording", "transcribing", "done"];
 const PHASE_MS: Record<Phase, number> = { idle: 1300, recording: 2800, transcribing: 1700, done: 3200 };
 
 function DictationDemo() {
-  const { t } = useTranslation();
+  const t = useTourT();
   const dictationKey = useSettingsStore((s) => s.dictationKey);
   const hotkey = dictationKey || getDefaultHotkey();
   const [phase, setPhase] = useState<Phase>("idle");
@@ -127,7 +135,11 @@ function DictationDemo() {
     const id = setTimeout(() => setPhase(PHASE_SEQ[(idx + 1) % PHASE_SEQ.length]), PHASE_MS[phase]);
     return () => clearTimeout(id);
   }, [phase]);
-  const typed = useTypewriter("The quarterly report is ready for review.", phase === "done", 32);
+  const typed = useTypewriter(
+    t("brand.onboarding.tour.dictation.sample", { defaultValue: "The quarterly report is ready for review." }),
+    phase === "done",
+    32
+  );
 
   const active = phase === "recording" || phase === "transcribing";
   const btn = phase === "recording" ? "bg-primary" : phase === "transcribing" ? "bg-accent" : "bg-black/60";
@@ -169,25 +181,29 @@ function DictationDemo() {
 }
 
 function CleanupDemo() {
-  const { t } = useTranslation();
+  const t = useTourT();
   return (
     <div className="w-full space-y-2.5">
-      <TextZone muted><span className="line-through opacity-60">um so like the the report is uh ready for review i think</span></TextZone>
+      <TextZone muted><span className="line-through opacity-60">{t("brand.onboarding.tour.cleanup.messy", { defaultValue: "um so like the the report is uh ready for review i think" })}</span></TextZone>
       <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-primary">
         <Sparkles className="w-3.5 h-3.5 vtour-pulse" />
         {t("brand.onboarding.tour.cleanup.badge", { defaultValue: "AI cleanup" })}
       </div>
       <div className="vtour-fade-in">
-        <TextZone className="border-primary/30 bg-primary/5 font-medium">The report is ready for review.</TextZone>
+        <TextZone className="border-primary/30 bg-primary/5 font-medium">{t("brand.onboarding.tour.cleanup.clean", { defaultValue: "The report is ready for review." })}</TextZone>
       </div>
     </div>
   );
 }
 
 function AgentDemo({ agentName }: { agentName: string }) {
-  const { t } = useTranslation();
+  const t = useTourT();
   const voiceAgentKey = useSettingsStore((s) => s.voiceAgentKey);
-  const typed = useTypewriter(`Hey ${agentName}, turn this into 3 bullet points`, true, 30);
+  const typed = useTypewriter(
+    t("brand.onboarding.tour.agent.command", { defaultValue: "Hey {{agent}}, turn this into 3 bullet points", agent: agentName }),
+    true,
+    30
+  );
   return (
     <div className="w-full space-y-2.5">
       {voiceAgentKey && (
@@ -203,14 +219,18 @@ function AgentDemo({ agentName }: { agentName: string }) {
         <TextZone className="flex-1 min-h-[2.5rem]">{typed}<span className="vtour-caret">|</span></TextZone>
       </div>
       <div className="vtour-fade-in-delayed ml-9">
-        <TextZone className="border-primary/30 bg-primary/5 space-y-1"><div>• Report reviewed</div><div>• Ready to ship</div><div>• Needs sign-off</div></TextZone>
+        <TextZone className="border-primary/30 bg-primary/5 space-y-1">
+          <div>• {t("brand.onboarding.tour.agent.r1", { defaultValue: "Report reviewed" })}</div>
+          <div>• {t("brand.onboarding.tour.agent.r2", { defaultValue: "Ready to ship" })}</div>
+          <div>• {t("brand.onboarding.tour.agent.r3", { defaultValue: "Needs sign-off" })}</div>
+        </TextZone>
       </div>
     </div>
   );
 }
 
 function TranslationDemo() {
-  const { t } = useTranslation();
+  const t = useTourT();
   const preferredLanguage = useSettingsStore((s) => s.preferredLanguage);
   const translationKey = useSettingsStore((s) => s.translationKey);
   const base = getBaseLanguageCode(preferredLanguage) || "";
@@ -242,16 +262,21 @@ function TranslationDemo() {
   );
 }
 
-const MEETING_LINES = [
-  { who: "You", text: "Let's ship on Friday.", tone: "bg-primary/10 text-primary" },
-  { who: "Speaker 1", text: "Sounds good to me.", tone: "bg-muted text-foreground" },
-  { who: "Speaker 2", text: "I'll prep the release notes.", tone: "bg-muted text-foreground" },
-];
+/** Sample meeting transcript — texts render in the transcription language. */
+function useMeetingLines() {
+  const t = useTourT();
+  return [
+    { who: t("transcript.speaker.you", { defaultValue: "You" }), text: t("brand.onboarding.tour.meeting.l1", { defaultValue: "Let's ship on Friday." }), tone: "bg-primary/10 text-primary" },
+    { who: "Speaker 1", text: t("brand.onboarding.tour.meeting.l2", { defaultValue: "Sounds good to me." }), tone: "bg-muted text-foreground" },
+    { who: "Speaker 2", text: t("brand.onboarding.tour.meeting.l3", { defaultValue: "I'll prep the release notes." }), tone: "bg-muted text-foreground" },
+  ];
+}
 
 function MeetingDemo() {
+  const meetingLines = useMeetingLines();
   return (
     <div className="w-full space-y-2">
-      {MEETING_LINES.map((l, i) => (
+      {meetingLines.map((l, i) => (
         <div key={i} className="vtour-fade-in-up flex items-center gap-2" style={{ animationDelay: `${i * 550}ms` }}>
           <span className={`shrink-0 rounded-md px-2 py-0.5 text-[11px] font-semibold ${l.tone}`}>{l.who}</span>
           <TextZone className="flex-1 py-1.5">{l.text}</TextZone>
@@ -262,7 +287,8 @@ function MeetingDemo() {
 }
 
 function NotesDemo() {
-  const { t } = useTranslation();
+  const t = useTourT();
+  const meetingLines = useMeetingLines();
   const actions = [
     { label: t("brand.onboarding.tour.notes.summarize", { defaultValue: "Summarize" }), active: true },
     { label: t("brand.onboarding.tour.notes.actionItems", { defaultValue: "Action items" }) },
@@ -272,7 +298,7 @@ function NotesDemo() {
     <div className="w-full space-y-3">
       {/* The meeting note (reused transcript) */}
       <div className="rounded-xl border border-border/70 bg-surface-1/80 p-2.5 shadow-sm space-y-1">
-        {MEETING_LINES.map((l, i) => (
+        {meetingLines.map((l, i) => (
           <div key={i} className="flex items-center gap-2 text-xs">
             <span className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold ${l.tone}`}>{l.who}</span>
             <span className="text-muted-foreground">{l.text}</span>
@@ -307,44 +333,27 @@ function ReadyDemo() {
   );
 }
 
-/* ── Feature cards with enablement gating ──────────────────────────────────── */
-
-function CleanupCard() {
-  const { t } = useTranslation();
-  const enabled = useSettingsStore((s) => s.useCleanupModel);
-  const setEnabled = useSettingsStore((s) => s.setUseCleanupModel);
-  return enabled ? <CleanupDemo /> : <NotEnabled label={t("brand.onboarding.tour.cleanup.title", { defaultValue: "Cleanup" })} onEnable={() => setEnabled(true)} />;
-}
-function AgentCard({ agentName }: { agentName: string }) {
-  const { t } = useTranslation();
-  const enabled = useSettingsStore((s) => s.useDictationAgent);
-  const setEnabled = useSettingsStore((s) => s.setUseDictationAgent);
-  return enabled ? <AgentDemo agentName={agentName} /> : <NotEnabled label={t("brand.onboarding.tour.agent.title", { defaultValue: "Voice agent" })} onEnable={() => setEnabled(true)} />;
-}
-function TranslationCard() {
-  const { t } = useTranslation();
-  const enabled = useSettingsStore((s) => s.useDictationTranslation);
-  const setEnabled = useSettingsStore((s) => s.setUseDictationTranslation);
-  return enabled ? <TranslationDemo /> : <NotEnabled label={t("brand.onboarding.tour.translation.title", { defaultValue: "Translation" })} onEnable={() => setEnabled(true)} />;
-}
-
 /** Final onboarding step — a short auto-playing tour of the key features. */
 export default function TutorialStep() {
-  const { t } = useTranslation();
+  const t = useTourT();
   const { agentName } = useAgentName();
 
-  const cards = useMemo(
-    () => [
-      { id: "dictation", icon: Mic, title: t("brand.onboarding.tour.dictation.title", { defaultValue: "Dictate anywhere" }), desc: t("brand.onboarding.tour.dictation.desc", { defaultValue: "Click the floating button or press your hotkey, speak, and the text lands at your cursor." }), demo: () => <DictationDemo /> },
-      { id: "cleanup", icon: Sparkles, title: t("brand.onboarding.tour.cleanup.title", { defaultValue: "Automatic cleanup" }), desc: t("brand.onboarding.tour.cleanup.desc", { defaultValue: "Filler words and messy formatting are cleaned up on the fly." }), demo: () => <CleanupCard /> },
-      { id: "agent", icon: Bot, title: t("brand.onboarding.tour.agent.title", { defaultValue: "Talk to your agent" }), desc: t("brand.onboarding.tour.agent.desc", { defaultValue: "Address your agent by name and ask it to rewrite, summarize or reformat." }), demo: () => <AgentCard agentName={agentName} /> },
-      { id: "translation", icon: Languages, title: t("brand.onboarding.tour.translation.title", { defaultValue: "Speak, paste translated" }), desc: t("brand.onboarding.tour.translation.desc", { defaultValue: "Dictate in one language and paste the translation in another." }), demo: () => <TranslationCard /> },
-      { id: "meeting", icon: Users, title: t("brand.onboarding.tour.meeting.title", { defaultValue: "Meeting notes, live" }), desc: t("brand.onboarding.tour.meeting.desc", { defaultValue: "Detected calls are transcribed with speaker labels — straight into a note." }), demo: () => <MeetingDemo /> },
-      { id: "notes", icon: FileText, title: t("brand.onboarding.tour.notes.title", { defaultValue: "Turn notes into action" }), desc: t("brand.onboarding.tour.notes.desc", { defaultValue: "Summarize, extract action items or translate any note in one click." }), demo: () => <NotesDemo /> },
-      { id: "ready", icon: Rocket, title: t("brand.onboarding.tour.ready.title", { defaultValue: "You're all set" }), desc: t("brand.onboarding.tour.ready.desc", { defaultValue: "Everything is configurable later in Settings. Press Finish to start using VOxee." }), demo: () => <ReadyDemo /> },
-    ],
-    [t, agentName]
-  );
+  const useCleanupModel = useSettingsStore((s) => s.useCleanupModel);
+  const setUseCleanupModel = useSettingsStore((s) => s.setUseCleanupModel);
+  const useDictationAgent = useSettingsStore((s) => s.useDictationAgent);
+  const setUseDictationAgent = useSettingsStore((s) => s.setUseDictationAgent);
+  const useDictationTranslation = useSettingsStore((s) => s.useDictationTranslation);
+  const setUseDictationTranslation = useSettingsStore((s) => s.setUseDictationTranslation);
+
+  const cards = [
+    { id: "dictation", icon: Mic, title: t("brand.onboarding.tour.dictation.title", { defaultValue: "Dictate anywhere" }), desc: t("brand.onboarding.tour.dictation.desc", { defaultValue: "Click the floating button or press your hotkey, speak, and the text lands at your cursor." }), demo: () => <DictationDemo /> },
+    { id: "cleanup", icon: Sparkles, title: t("brand.onboarding.tour.cleanup.title", { defaultValue: "Automatic cleanup" }), desc: t("brand.onboarding.tour.cleanup.desc", { defaultValue: "Filler words and messy formatting are cleaned up on the fly." }), demo: () => <CleanupDemo /> },
+    { id: "agent", icon: Bot, title: t("brand.onboarding.tour.agent.title", { defaultValue: "Talk to your agent" }), desc: t("brand.onboarding.tour.agent.desc", { defaultValue: "Address your agent by name and ask it to rewrite, summarize or reformat." }), demo: () => <AgentDemo agentName={agentName} /> },
+    { id: "translation", icon: Languages, title: t("brand.onboarding.tour.translation.title", { defaultValue: "Speak, paste translated" }), desc: t("brand.onboarding.tour.translation.desc", { defaultValue: "Dictate in one language and paste the translation in another." }), demo: () => <TranslationDemo /> },
+    { id: "meeting", icon: Users, title: t("brand.onboarding.tour.meeting.title", { defaultValue: "Meeting notes, live" }), desc: t("brand.onboarding.tour.meeting.desc", { defaultValue: "Detected calls are transcribed with speaker labels — straight into a note." }), demo: () => <MeetingDemo /> },
+    { id: "notes", icon: FileText, title: t("brand.onboarding.tour.notes.title", { defaultValue: "Turn notes into action" }), desc: t("brand.onboarding.tour.notes.desc", { defaultValue: "Summarize, extract action items or translate any note in one click." }), demo: () => <NotesDemo /> },
+    { id: "ready", icon: Rocket, title: t("brand.onboarding.tour.ready.title", { defaultValue: "You're all set" }), desc: t("brand.onboarding.tour.ready.desc", { defaultValue: "Everything is configurable later in Settings. Press Finish to start using VOxee." }), demo: () => <ReadyDemo /> },
+  ];
 
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -357,6 +366,17 @@ export default function TutorialStep() {
 
   const card = cards[index];
   const Icon = card.icon;
+
+  // A feature card left disabled in the models step keeps its animation but adds
+  // an "enable" strip below the explanation.
+  const gate =
+    card.id === "cleanup"
+      ? { enabled: useCleanupModel, enable: () => setUseCleanupModel(true), label: t("settingsPage.llms.tabs.dictationCleanup", { defaultValue: "Dictation Cleanup" }) }
+      : card.id === "agent"
+        ? { enabled: useDictationAgent, enable: () => setUseDictationAgent(true), label: t("settingsPage.llms.tabs.dictationAgent", { defaultValue: "Voice Agent" }) }
+        : card.id === "translation"
+          ? { enabled: useDictationTranslation, enable: () => setUseDictationTranslation(true), label: t("settingsPage.llms.tabs.dictationTranslation", { defaultValue: "Translation" }) }
+          : null;
 
   return (
     <div className="space-y-5" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
@@ -391,6 +411,8 @@ export default function TutorialStep() {
         <div className="flex items-center justify-center gap-2"><Icon className="w-4 h-4 text-primary" /><h3 className="text-base font-semibold">{card.title}</h3></div>
         <p className="text-sm text-muted-foreground max-w-md mx-auto">{card.desc}</p>
       </div>
+
+      {gate && !gate.enabled && <EnableStrip label={gate.label} onEnable={gate.enable} />}
 
       <div className="flex items-center justify-center gap-3">
         <button onClick={() => setIndex((i) => (i - 1 + cards.length) % cards.length)} className="rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted/60" aria-label="Previous"><ChevronLeft className="w-4 h-4" /></button>

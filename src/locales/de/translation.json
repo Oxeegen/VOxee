@@ -86,17 +86,24 @@
           "pasted": "Am Cursor eingefügt",
           "placeholder": "Deine Worte erscheinen hier…",
           "or": "oder",
-          "trigger": "Auf den Button klicken oder das Tastenkürzel drücken"
+          "trigger": "Auf den Button klicken oder das Tastenkürzel drücken",
+          "sample": "Der Quartalsbericht ist bereit zur Durchsicht."
         },
         "cleanup": {
           "title": "Automatische Bereinigung",
           "desc": "Füllwörter und unsauberes Format werden sofort bereinigt.",
-          "badge": "KI-Bereinigung"
+          "badge": "KI-Bereinigung",
+          "messy": "ähm also der der Bericht ist äh fertig zur Durchsicht denke ich",
+          "clean": "Der Bericht ist bereit zur Durchsicht."
         },
         "agent": {
           "title": "Sprich mit deinem Agenten",
           "desc": "Sprich deinen Agenten beim Namen an, um umzuschreiben, zusammenzufassen oder zu formatieren.",
-          "hotkeyHint": "Sprachagent-Tastenkürzel"
+          "hotkeyHint": "Sprachagent-Tastenkürzel",
+          "command": "Hey {{agent}}, mach daraus 3 Stichpunkte",
+          "r1": "Bericht geprüft",
+          "r2": "Bereit zum Ausliefern",
+          "r3": "Freigabe ausstehend"
         },
         "translation": {
           "title": "Sprich, füge übersetzt ein",
@@ -105,7 +112,10 @@
         },
         "meeting": {
           "title": "Meeting-Notizen, live",
-          "desc": "Erkannte Calls werden mit Sprecher-Labels transkribiert — direkt in eine Notiz."
+          "desc": "Erkannte Calls werden mit Sprecher-Labels transkribiert — direkt in eine Notiz.",
+          "l1": "Wir liefern am Freitag.",
+          "l2": "Klingt gut für mich.",
+          "l3": "Ich bereite die Release-Notes vor."
         },
         "ready": {
           "title": "Alles bereit",

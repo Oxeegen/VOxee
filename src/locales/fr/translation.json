@@ -86,17 +86,24 @@
           "pasted": "Collé au curseur",
           "placeholder": "Vos mots apparaissent ici…",
           "or": "ou",
-          "trigger": "Cliquez sur le bouton ou appuyez sur le raccourci"
+          "trigger": "Cliquez sur le bouton ou appuyez sur le raccourci",
+          "sample": "Le rapport trimestriel est prêt à être relu."
         },
         "cleanup": {
           "title": "Nettoyage automatique",
           "desc": "Les hésitations et la mise en forme sont nettoyées à la volée.",
-          "badge": "Nettoyage IA"
+          "badge": "Nettoyage IA",
+          "messy": "euh donc genre le le rapport est euh prêt à relire je crois",
+          "clean": "Le rapport est prêt à être relu."
         },
         "agent": {
           "title": "Parlez à votre agent",
           "desc": "Adressez-vous à votre agent par son nom pour réécrire, résumer ou reformater.",
-          "hotkeyHint": "Raccourci agent vocal"
+          "hotkeyHint": "Raccourci agent vocal",
+          "command": "Hé {{agent}}, transforme ça en 3 points",
+          "r1": "Rapport relu",
+          "r2": "Prêt à livrer",
+          "r3": "En attente de validation"
         },
         "translation": {
           "title": "Parlez, collez traduit",
@@ -105,7 +112,10 @@
         },
         "meeting": {
           "title": "Notes de réunion, en direct",
-          "desc": "Les appels détectés sont transcrits avec les locuteurs — directement dans une note."
+          "desc": "Les appels détectés sont transcrits avec les locuteurs — directement dans une note.",
+          "l1": "On livre vendredi.",
+          "l2": "Ça me va.",
+          "l3": "Je prépare les notes de version."
         },
         "ready": {
           "title": "Tout est prêt",

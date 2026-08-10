@@ -86,17 +86,24 @@
           "pasted": "Colado no cursor",
           "placeholder": "As tuas palavras aparecem aqui…",
           "or": "ou",
-          "trigger": "Clique no botão ou prima o atalho"
+          "trigger": "Clique no botão ou prima o atalho",
+          "sample": "O relatório trimestral está pronto para revisão."
         },
         "cleanup": {
           "title": "Limpeza automática",
           "desc": "Hesitações e formatação desordenada são limpas em tempo real.",
-          "badge": "Limpeza por IA"
+          "badge": "Limpeza por IA",
+          "messy": "hum tipo o o relatório está hã pronto para revisão acho",
+          "clean": "O relatório está pronto para revisão."
         },
         "agent": {
           "title": "Fale com o seu agente",
           "desc": "Trate o seu agente pelo nome para reescrever, resumir ou reformatar.",
-          "hotkeyHint": "Atalho do agente de voz"
+          "hotkeyHint": "Atalho do agente de voz",
+          "command": "Ei {{agent}}, transforma isto em 3 tópicos",
+          "r1": "Relatório revisto",
+          "r2": "Pronto para lançar",
+          "r3": "Falta aprovação"
         },
         "translation": {
           "title": "Fale, cole traduzido",
@@ -105,7 +112,10 @@
         },
         "meeting": {
           "title": "Notas de reunião, ao vivo",
-          "desc": "As chamadas detetadas são transcritas com etiquetas de orador — direto para uma nota."
+          "desc": "As chamadas detetadas são transcritas com etiquetas de orador — direto para uma nota.",
+          "l1": "Vamos lançar na sexta.",
+          "l2": "Por mim, tudo bem.",
+          "l3": "Vou preparar as notas de versão."
         },
         "ready": {
           "title": "Tudo pronto",

@@ -86,17 +86,24 @@
           "pasted": "Pasted at your cursor",
           "placeholder": "Your words appear here…",
           "or": "or",
-          "trigger": "Click the button or press the hotkey"
+          "trigger": "Click the button or press the hotkey",
+          "sample": "The quarterly report is ready for review."
         },
         "cleanup": {
           "title": "Automatic cleanup",
           "desc": "Filler words and messy formatting are cleaned up on the fly.",
-          "badge": "AI cleanup"
+          "badge": "AI cleanup",
+          "messy": "um so like the the report is uh ready for review i think",
+          "clean": "The report is ready for review."
         },
         "agent": {
           "title": "Talk to your agent",
           "desc": "Address your agent by name and ask it to rewrite, summarize or reformat.",
-          "hotkeyHint": "Voice agent hotkey"
+          "hotkeyHint": "Voice agent hotkey",
+          "command": "Hey {{agent}}, turn this into 3 bullet points",
+          "r1": "Report reviewed",
+          "r2": "Ready to ship",
+          "r3": "Needs sign-off"
         },
         "translation": {
           "title": "Speak, paste translated",
@@ -105,7 +112,10 @@
         },
         "meeting": {
           "title": "Meeting notes, live",
-          "desc": "Detected calls are transcribed with speaker labels — straight into a note."
+          "desc": "Detected calls are transcribed with speaker labels — straight into a note.",
+          "l1": "Let's ship on Friday.",
+          "l2": "Sounds good to me.",
+          "l3": "I'll prep the release notes."
         },
         "ready": {
           "title": "You're all set",
