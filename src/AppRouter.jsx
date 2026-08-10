@@ -14,6 +14,7 @@ import { useTheme } from "./hooks/useTheme";
 
 const ControlPanel = React.lazy(() => import("./components/ControlPanel.tsx"));
 const OnboardingFlow = React.lazy(() => import("./components/OnboardingFlow.tsx"));
+const VoxeeOnboarding = React.lazy(() => import("@brand/components/onboarding/VoxeeOnboarding"));
 const AgentOverlay = React.lazy(() => import("./components/AgentOverlay.tsx"));
 
 export default function AppRouter() {
@@ -39,6 +40,7 @@ function MainApp() {
   const { isSignedIn, isGracePeriodOnly, isLoaded: authLoaded } = useAuth();
 
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showBrandOnboarding, setShowBrandOnboarding] = useState(false);
   const [needsReauth, setNeedsReauth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [postOnboardingSettingsSection, setPostOnboardingSettingsSection] = useState(undefined);
@@ -57,6 +59,13 @@ function MainApp() {
 
       if (BRAND.showOnboarding && !localStorage.getItem("onboardingCompleted")) {
         import("./components/OnboardingFlow.tsx").catch(() => {});
+      }
+      if (
+        !BRAND.showAccount &&
+        BRAND.showBrandOnboarding &&
+        localStorage.getItem("voxeeOnboardingCompleted") !== "true"
+      ) {
+        import("@brand/components/onboarding/VoxeeOnboarding").catch(() => {});
       }
     }
 
@@ -105,6 +114,18 @@ function MainApp() {
       window.electronAPI?.hideWindow?.();
     }
 
+    // Brand (VOxee) first-run onboarding — independent of the upstream flow.
+    // Only gates the control panel; the dictation overlay is left as-is so it
+    // never stays stuck hidden after the wizard completes.
+    if (
+      isControlPanel &&
+      !BRAND.showAccount &&
+      BRAND.showBrandOnboarding &&
+      localStorage.getItem("voxeeOnboardingCompleted") !== "true"
+    ) {
+      setShowBrandOnboarding(true);
+    }
+
     setIsLoading(false);
   }, [authLoaded, isControlPanel, isDictationPanel, isGracePeriodOnly, isSignedIn]);
 
@@ -114,6 +135,11 @@ function MainApp() {
     }
     setShowOnboarding(false);
     localStorage.setItem("onboardingCompleted", "true");
+  };
+
+  const handleBrandOnboardingComplete = () => {
+    setShowBrandOnboarding(false);
+    localStorage.setItem("voxeeOnboardingCompleted", "true");
   };
 
   // The agent overlay never touches account-scoped data, so it renders
@@ -131,6 +157,14 @@ function MainApp() {
   // resolve (guest/offline presents as signed out).
   if (isLoading) {
     return <LoadingFallback />;
+  }
+
+  if (isControlPanel && showBrandOnboarding) {
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <VoxeeOnboarding onComplete={handleBrandOnboardingComplete} />
+      </Suspense>
+    );
   }
 
   if (isControlPanel && showOnboarding) {

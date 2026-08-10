@@ -1,4 +1,84 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "Sent as a Bearer token for authentication.",
+      "checking": "Verifying…",
+      "valid": "Key verified",
+      "invalid": "Invalid key",
+      "sidebarDesc": "Oxeegen API key"
+    },
+    "health": {
+      "ok": "Connected",
+      "noKey": "Key missing",
+      "noModel": "No model",
+      "connKo": "Connection failed",
+      "badKey": "Key rejected"
+    },
+    "models": {
+      "custom": "Custom",
+      "customDesc": "Your own OpenAI-compatible endpoint",
+      "regionDesc": "Preconfigured Oxeegen models"
+    },
+    "onboarding": {
+      "back": "Back",
+      "next": "Next",
+      "finish": "Finish",
+      "steps": {
+        "welcome": "Welcome",
+        "region": "Region",
+        "keys": "API keys",
+        "models": "Models",
+        "prefs": "Preferences",
+        "hotkeys": "Hotkeys"
+      },
+      "welcome": {
+        "title": "Welcome to VOxee",
+        "subtitle": "VOxee turns your voice into text, notes and actions, powered by Oxeegen models. Let's set it up.",
+        "dictation": "Voice dictation into any app",
+        "cleanup": "AI text cleanup",
+        "agent": "Voice agent commands",
+        "translation": "Dictation translation",
+        "meeting": "Meeting transcription",
+        "notes": "Notes with semantic search"
+      },
+      "region": {
+        "title": "Choose your region",
+        "subtitle": "Pick the Oxeegen deployment closest to you.",
+        "desc": "Preconfigured Oxeegen models",
+        "both": "Both",
+        "bothDesc": "Set up US and EU"
+      },
+      "keys": {
+        "title": "Enter your API key",
+        "subtitle": "Paste the organization key for your region — it's verified against the endpoint."
+      },
+      "models": {
+        "title": "Models",
+        "subtitle": "Enable the features you want. You can change these later in Settings.",
+        "cleanup": "Text cleanup",
+        "cleanupDesc": "Clean up filler words and formatting after dictation.",
+        "agent": "Voice agent",
+        "agentDesc": "Speak commands to your assistant.",
+        "agentName": "Agent name",
+        "agentNameDesc": "How you address your assistant.",
+        "translation": "Translation",
+        "translationDesc": "Dictate in one language and paste in another."
+      },
+      "prefs": {
+        "title": "Preferences",
+        "subtitle": "Appearance and languages."
+      },
+      "hotkeys": {
+        "title": "Hotkeys",
+        "subtitle": "Global shortcuts. Defaults are shown — change any of them.",
+        "dictation": "Dictation",
+        "agent": "Chat agent",
+        "voiceAgent": "Voice agent",
+        "translation": "Translation",
+        "meeting": "Meeting"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "Language",

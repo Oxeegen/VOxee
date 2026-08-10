@@ -1,4 +1,84 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "Wird als Bearer-Token zur Authentifizierung gesendet.",
+      "checking": "Wird überprüft…",
+      "valid": "Schlüssel bestätigt",
+      "invalid": "Ungültiger Schlüssel",
+      "sidebarDesc": "Oxeegen-API-Schlüssel"
+    },
+    "health": {
+      "ok": "Verbunden",
+      "noKey": "Schlüssel fehlt",
+      "noModel": "Kein Modell",
+      "connKo": "Verbindung fehlgeschlagen",
+      "badKey": "Schlüssel abgelehnt"
+    },
+    "models": {
+      "custom": "Benutzerdefiniert",
+      "customDesc": "Dein eigener OpenAI-kompatibler Endpunkt",
+      "regionDesc": "Vorkonfigurierte Oxeegen-Modelle"
+    },
+    "onboarding": {
+      "back": "Zurück",
+      "next": "Weiter",
+      "finish": "Fertig",
+      "steps": {
+        "welcome": "Willkommen",
+        "region": "Region",
+        "keys": "API-Schlüssel",
+        "models": "Modelle",
+        "prefs": "Einstellungen",
+        "hotkeys": "Tastenkürzel"
+      },
+      "welcome": {
+        "title": "Willkommen bei VOxee",
+        "subtitle": "VOxee verwandelt deine Stimme in Text, Notizen und Aktionen – mit Oxeegen-Modellen. Los geht's mit der Einrichtung.",
+        "dictation": "Sprachdiktat in jeder App",
+        "cleanup": "KI-Textbereinigung",
+        "agent": "Sprachagent-Befehle",
+        "translation": "Diktat-Übersetzung",
+        "meeting": "Meeting-Transkription",
+        "notes": "Notizen mit semantischer Suche"
+      },
+      "region": {
+        "title": "Wähle deine Region",
+        "subtitle": "Wähle das nächstgelegene Oxeegen-Deployment.",
+        "desc": "Vorkonfigurierte Oxeegen-Modelle",
+        "both": "Beide",
+        "bothDesc": "US und EU einrichten"
+      },
+      "keys": {
+        "title": "API-Schlüssel eingeben",
+        "subtitle": "Füge den Organisationsschlüssel deiner Region ein — er wird gegen den Endpunkt geprüft."
+      },
+      "models": {
+        "title": "Modelle",
+        "subtitle": "Aktiviere die gewünschten Funktionen. Später in den Einstellungen änderbar.",
+        "cleanup": "Textbereinigung",
+        "cleanupDesc": "Bereinigt Füllwörter und Formatierung nach dem Diktat.",
+        "agent": "Sprachagent",
+        "agentDesc": "Sprich Befehle an deinen Assistenten.",
+        "agentName": "Agentenname",
+        "agentNameDesc": "Wie du deinen Assistenten ansprichst.",
+        "translation": "Übersetzung",
+        "translationDesc": "In einer Sprache diktieren, in einer anderen einfügen."
+      },
+      "prefs": {
+        "title": "Einstellungen",
+        "subtitle": "Darstellung und Sprachen."
+      },
+      "hotkeys": {
+        "title": "Tastenkürzel",
+        "subtitle": "Globale Tastenkürzel. Standardwerte werden angezeigt — ändere sie bei Bedarf.",
+        "dictation": "Diktat",
+        "agent": "Chat-Agent",
+        "voiceAgent": "Sprachagent",
+        "translation": "Übersetzung",
+        "meeting": "Meeting"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "Sprache",

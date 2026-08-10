@@ -1,4 +1,84 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "認証のため Bearer トークンとして送信されます。",
+      "checking": "確認中…",
+      "valid": "キーを確認しました",
+      "invalid": "無効なキー",
+      "sidebarDesc": "Oxeegen API キー"
+    },
+    "health": {
+      "ok": "接続済み",
+      "noKey": "キーがありません",
+      "noModel": "モデル未選択",
+      "connKo": "接続に失敗",
+      "badKey": "キーが拒否されました"
+    },
+    "models": {
+      "custom": "カスタム",
+      "customDesc": "独自の OpenAI 互換エンドポイント",
+      "regionDesc": "設定済みの Oxeegen モデル"
+    },
+    "onboarding": {
+      "back": "戻る",
+      "next": "次へ",
+      "finish": "完了",
+      "steps": {
+        "welcome": "ようこそ",
+        "region": "リージョン",
+        "keys": "API キー",
+        "models": "モデル",
+        "prefs": "環境設定",
+        "hotkeys": "ホットキー"
+      },
+      "welcome": {
+        "title": "VOxee へようこそ",
+        "subtitle": "VOxee は Oxeegen モデルで、音声をテキスト・メモ・操作に変換します。さっそく設定しましょう。",
+        "dictation": "あらゆるアプリへの音声入力",
+        "cleanup": "AI によるテキスト整形",
+        "agent": "音声エージェントへの指示",
+        "translation": "口述の翻訳",
+        "meeting": "会議の文字起こし",
+        "notes": "セマンティック検索付きのメモ"
+      },
+      "region": {
+        "title": "リージョンを選択",
+        "subtitle": "最も近い Oxeegen デプロイを選んでください。",
+        "desc": "設定済みの Oxeegen モデル",
+        "both": "両方",
+        "bothDesc": "US と EU を設定"
+      },
+      "keys": {
+        "title": "API キーを入力",
+        "subtitle": "リージョンの組織キーを貼り付けてください。エンドポイントで検証されます。"
+      },
+      "models": {
+        "title": "モデル",
+        "subtitle": "使いたい機能を有効にしてください。後で設定から変更できます。",
+        "cleanup": "テキスト整形",
+        "cleanupDesc": "口述後のつなぎ言葉や書式を整えます。",
+        "agent": "音声エージェント",
+        "agentDesc": "アシスタントに音声で指示します。",
+        "agentName": "エージェント名",
+        "agentNameDesc": "アシスタントの呼び名。",
+        "translation": "翻訳",
+        "translationDesc": "ある言語で口述し、別の言語で貼り付けます。"
+      },
+      "prefs": {
+        "title": "環境設定",
+        "subtitle": "外観と言語。"
+      },
+      "hotkeys": {
+        "title": "ホットキー",
+        "subtitle": "グローバルショートカット。既定値が表示されています — 変更できます。",
+        "dictation": "口述",
+        "agent": "チャットエージェント",
+        "voiceAgent": "音声エージェント",
+        "translation": "翻訳",
+        "meeting": "会議"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "言語",

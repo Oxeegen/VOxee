@@ -71,6 +71,8 @@ export interface BrandConfig {
   showUseCaseStep: boolean;
   /** Show the Integrations control-panel entry (CLI / MCP / calendar). */
   showIntegrations: boolean;
+  /** Show the VOxee first-run onboarding wizard (account-less brand builds). */
+  showBrandOnboarding: boolean;
   /** Default floating-panel start position (user-overridable). */
   panelStartPosition: "bottom-right" | "center" | "bottom-left";
   /** Theme values. */

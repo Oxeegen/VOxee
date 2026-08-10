@@ -1,4 +1,84 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "Envoyée comme jeton Bearer pour l'authentification.",
+      "checking": "Vérification…",
+      "valid": "Clé vérifiée",
+      "invalid": "Clé invalide",
+      "sidebarDesc": "Clé API Oxeegen"
+    },
+    "health": {
+      "ok": "Connecté",
+      "noKey": "Clé manquante",
+      "noModel": "Aucun modèle",
+      "connKo": "Connexion KO",
+      "badKey": "Clé non connue"
+    },
+    "models": {
+      "custom": "Personnalisé",
+      "customDesc": "Votre endpoint compatible OpenAI",
+      "regionDesc": "Modèles Oxeegen préconfigurés"
+    },
+    "onboarding": {
+      "back": "Retour",
+      "next": "Suivant",
+      "finish": "Terminer",
+      "steps": {
+        "welcome": "Bienvenue",
+        "region": "Région",
+        "keys": "Clés API",
+        "models": "Modèles",
+        "prefs": "Préférences",
+        "hotkeys": "Raccourcis"
+      },
+      "welcome": {
+        "title": "Bienvenue dans VOxee",
+        "subtitle": "VOxee transforme votre voix en texte, notes et actions, propulsé par les modèles Oxeegen. Configurons-le.",
+        "dictation": "Dictée vocale dans n'importe quelle app",
+        "cleanup": "Nettoyage du texte par IA",
+        "agent": "Commandes à l'agent vocal",
+        "translation": "Traduction de la dictée",
+        "meeting": "Transcription de réunion",
+        "notes": "Notes avec recherche sémantique"
+      },
+      "region": {
+        "title": "Choisissez votre région",
+        "subtitle": "Choisissez le déploiement Oxeegen le plus proche.",
+        "desc": "Modèles Oxeegen préconfigurés",
+        "both": "Les deux",
+        "bothDesc": "Configurer US et EU"
+      },
+      "keys": {
+        "title": "Renseignez votre clé API",
+        "subtitle": "Collez la clé d'organisation de votre région — elle est vérifiée auprès de l'endpoint."
+      },
+      "models": {
+        "title": "Modèles",
+        "subtitle": "Activez les fonctionnalités souhaitées. Modifiable plus tard dans les Réglages.",
+        "cleanup": "Nettoyage du texte",
+        "cleanupDesc": "Nettoie les hésitations et la mise en forme après la dictée.",
+        "agent": "Agent vocal",
+        "agentDesc": "Donnez des commandes à votre assistant.",
+        "agentName": "Nom de l'agent",
+        "agentNameDesc": "Comment vous vous adressez à votre assistant.",
+        "translation": "Traduction",
+        "translationDesc": "Dictez dans une langue et collez dans une autre."
+      },
+      "prefs": {
+        "title": "Préférences",
+        "subtitle": "Apparence et langues."
+      },
+      "hotkeys": {
+        "title": "Raccourcis",
+        "subtitle": "Raccourcis globaux. Les valeurs par défaut sont affichées — modifiez-les si besoin.",
+        "dictation": "Dictée",
+        "agent": "Agent de discussion",
+        "voiceAgent": "Agent vocal",
+        "translation": "Traduction",
+        "meeting": "Réunion"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "Langue",

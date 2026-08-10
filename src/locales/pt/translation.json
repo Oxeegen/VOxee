@@ -1,4 +1,84 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "Enviada como token Bearer para autenticação.",
+      "checking": "Verificando…",
+      "valid": "Chave verificada",
+      "invalid": "Chave inválida",
+      "sidebarDesc": "Chave de API da Oxeegen"
+    },
+    "health": {
+      "ok": "Conectado",
+      "noKey": "Chave em falta",
+      "noModel": "Sem modelo",
+      "connKo": "Falha na conexão",
+      "badKey": "Chave rejeitada"
+    },
+    "models": {
+      "custom": "Personalizado",
+      "customDesc": "O seu próprio endpoint compatível com OpenAI",
+      "regionDesc": "Modelos Oxeegen pré-configurados"
+    },
+    "onboarding": {
+      "back": "Voltar",
+      "next": "Seguinte",
+      "finish": "Concluir",
+      "steps": {
+        "welcome": "Boas-vindas",
+        "region": "Região",
+        "keys": "Chaves de API",
+        "models": "Modelos",
+        "prefs": "Preferências",
+        "hotkeys": "Atalhos"
+      },
+      "welcome": {
+        "title": "Bem-vindo ao VOxee",
+        "subtitle": "O VOxee transforma a sua voz em texto, notas e ações, com modelos Oxeegen. Vamos configurar.",
+        "dictation": "Ditado por voz em qualquer app",
+        "cleanup": "Limpeza de texto por IA",
+        "agent": "Comandos ao agente de voz",
+        "translation": "Tradução do ditado",
+        "meeting": "Transcrição de reuniões",
+        "notes": "Notas com pesquisa semântica"
+      },
+      "region": {
+        "title": "Escolha a sua região",
+        "subtitle": "Escolha a implementação Oxeegen mais próxima.",
+        "desc": "Modelos Oxeegen pré-configurados",
+        "both": "Ambas",
+        "bothDesc": "Configurar US e EU"
+      },
+      "keys": {
+        "title": "Introduza a sua chave de API",
+        "subtitle": "Cole a chave da organização da sua região — é verificada no endpoint."
+      },
+      "models": {
+        "title": "Modelos",
+        "subtitle": "Ative as funcionalidades que quiser. Pode alterar depois nas Definições.",
+        "cleanup": "Limpeza de texto",
+        "cleanupDesc": "Limpa hesitações e formatação após o ditado.",
+        "agent": "Agente de voz",
+        "agentDesc": "Dê comandos ao seu assistente.",
+        "agentName": "Nome do agente",
+        "agentNameDesc": "Como se dirige ao seu assistente.",
+        "translation": "Tradução",
+        "translationDesc": "Dite num idioma e cole noutro."
+      },
+      "prefs": {
+        "title": "Preferências",
+        "subtitle": "Aparência e idiomas."
+      },
+      "hotkeys": {
+        "title": "Atalhos",
+        "subtitle": "Atalhos globais. Os valores por defeito são mostrados — altere-os se quiser.",
+        "dictation": "Ditado",
+        "agent": "Agente de chat",
+        "voiceAgent": "Agente de voz",
+        "translation": "Tradução",
+        "meeting": "Reunião"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "Idioma",

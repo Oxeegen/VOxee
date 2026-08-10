@@ -1,4 +1,84 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "Inviata come token Bearer per l'autenticazione.",
+      "checking": "Verifica…",
+      "valid": "Chiave verificata",
+      "invalid": "Chiave non valida",
+      "sidebarDesc": "Chiave API Oxeegen"
+    },
+    "health": {
+      "ok": "Connesso",
+      "noKey": "Chiave mancante",
+      "noModel": "Nessun modello",
+      "connKo": "Connessione non riuscita",
+      "badKey": "Chiave rifiutata"
+    },
+    "models": {
+      "custom": "Personalizzato",
+      "customDesc": "Il tuo endpoint compatibile con OpenAI",
+      "regionDesc": "Modelli Oxeegen preconfigurati"
+    },
+    "onboarding": {
+      "back": "Indietro",
+      "next": "Avanti",
+      "finish": "Fine",
+      "steps": {
+        "welcome": "Benvenuto",
+        "region": "Regione",
+        "keys": "Chiavi API",
+        "models": "Modelli",
+        "prefs": "Preferenze",
+        "hotkeys": "Scorciatoie"
+      },
+      "welcome": {
+        "title": "Benvenuto in VOxee",
+        "subtitle": "VOxee trasforma la tua voce in testo, note e azioni, con i modelli Oxeegen. Configuriamolo.",
+        "dictation": "Dettatura vocale in qualsiasi app",
+        "cleanup": "Pulizia del testo con IA",
+        "agent": "Comandi all'agente vocale",
+        "translation": "Traduzione della dettatura",
+        "meeting": "Trascrizione delle riunioni",
+        "notes": "Note con ricerca semantica"
+      },
+      "region": {
+        "title": "Scegli la tua regione",
+        "subtitle": "Scegli il deployment Oxeegen più vicino.",
+        "desc": "Modelli Oxeegen preconfigurati",
+        "both": "Entrambe",
+        "bothDesc": "Configura US ed EU"
+      },
+      "keys": {
+        "title": "Inserisci la tua chiave API",
+        "subtitle": "Incolla la chiave dell'organizzazione della tua regione — viene verificata sull'endpoint."
+      },
+      "models": {
+        "title": "Modelli",
+        "subtitle": "Attiva le funzioni che vuoi. Potrai cambiarle in seguito nelle Impostazioni.",
+        "cleanup": "Pulizia del testo",
+        "cleanupDesc": "Rimuove intercalari e formattazione dopo la dettatura.",
+        "agent": "Agente vocale",
+        "agentDesc": "Impartisci comandi al tuo assistente.",
+        "agentName": "Nome dell'agente",
+        "agentNameDesc": "Come ti rivolgi al tuo assistente.",
+        "translation": "Traduzione",
+        "translationDesc": "Detta in una lingua e incolla in un'altra."
+      },
+      "prefs": {
+        "title": "Preferenze",
+        "subtitle": "Aspetto e lingue."
+      },
+      "hotkeys": {
+        "title": "Scorciatoie",
+        "subtitle": "Scorciatoie globali. Sono mostrati i valori predefiniti — modificali se vuoi.",
+        "dictation": "Dettatura",
+        "agent": "Agente chat",
+        "voiceAgent": "Agente vocale",
+        "translation": "Traduzione",
+        "meeting": "Riunione"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "Lingua",

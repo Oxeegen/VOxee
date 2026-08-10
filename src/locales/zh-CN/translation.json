@@ -1,4 +1,84 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "作为 Bearer 令牌发送以进行身份验证。",
+      "checking": "验证中…",
+      "valid": "密钥已验证",
+      "invalid": "密钥无效",
+      "sidebarDesc": "Oxeegen API 密钥"
+    },
+    "health": {
+      "ok": "已连接",
+      "noKey": "缺少密钥",
+      "noModel": "未选择模型",
+      "connKo": "连接失败",
+      "badKey": "密钥被拒绝"
+    },
+    "models": {
+      "custom": "自定义",
+      "customDesc": "你自己的 OpenAI 兼容端点",
+      "regionDesc": "预配置的 Oxeegen 模型"
+    },
+    "onboarding": {
+      "back": "返回",
+      "next": "下一步",
+      "finish": "完成",
+      "steps": {
+        "welcome": "欢迎",
+        "region": "区域",
+        "keys": "API 密钥",
+        "models": "模型",
+        "prefs": "偏好设置",
+        "hotkeys": "快捷键"
+      },
+      "welcome": {
+        "title": "欢迎使用 VOxee",
+        "subtitle": "VOxee 由 Oxeegen 模型驱动，将你的语音转为文本、笔记和操作。开始设置吧。",
+        "dictation": "在任意应用中语音听写",
+        "cleanup": "AI 文本清理",
+        "agent": "语音代理指令",
+        "translation": "听写翻译",
+        "meeting": "会议转录",
+        "notes": "带语义搜索的笔记"
+      },
+      "region": {
+        "title": "选择你的区域",
+        "subtitle": "选择最近的 Oxeegen 部署。",
+        "desc": "预配置的 Oxeegen 模型",
+        "both": "两者",
+        "bothDesc": "同时设置 US 和 EU"
+      },
+      "keys": {
+        "title": "输入你的 API 密钥",
+        "subtitle": "粘贴你所在区域的组织密钥 — 将在端点进行验证。"
+      },
+      "models": {
+        "title": "模型",
+        "subtitle": "启用你想要的功能。稍后可在设置中更改。",
+        "cleanup": "文本清理",
+        "cleanupDesc": "听写后清理语气词和格式。",
+        "agent": "语音代理",
+        "agentDesc": "用语音向助手下达指令。",
+        "agentName": "代理名称",
+        "agentNameDesc": "你如何称呼你的助手。",
+        "translation": "翻译",
+        "translationDesc": "用一种语言听写，粘贴为另一种语言。"
+      },
+      "prefs": {
+        "title": "偏好设置",
+        "subtitle": "外观与语言。"
+      },
+      "hotkeys": {
+        "title": "快捷键",
+        "subtitle": "全局快捷键。已显示默认值 — 可随意更改。",
+        "dictation": "听写",
+        "agent": "聊天代理",
+        "voiceAgent": "语音代理",
+        "translation": "翻译",
+        "meeting": "会议"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "语言",
