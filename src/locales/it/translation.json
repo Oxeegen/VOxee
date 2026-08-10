@@ -81,11 +81,14 @@
       "tour": {
         "dictation": {
           "title": "Detta ovunque",
-          "desc": "Premi la scorciatoia, parla e il testo compare al cursore in qualsiasi app."
+          "desc": "Premi la scorciatoia, parla e il testo compare al cursore in qualsiasi app.",
+          "pasted": "Incollato al cursore",
+          "placeholder": "Le tue parole appaiono qui…"
         },
         "cleanup": {
           "title": "Pulizia automatica",
-          "desc": "Intercalari e formattazione disordinata vengono puliti al volo."
+          "desc": "Intercalari e formattazione disordinata vengono puliti al volo.",
+          "badge": "Pulizia IA"
         },
         "agent": {
           "title": "Parla col tuo agente",

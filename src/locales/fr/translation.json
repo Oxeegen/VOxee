@@ -81,11 +81,14 @@
       "tour": {
         "dictation": {
           "title": "Dictez partout",
-          "desc": "Appuyez sur votre raccourci, parlez, et le texte s'insère au curseur dans n'importe quelle app."
+          "desc": "Appuyez sur votre raccourci, parlez, et le texte s'insère au curseur dans n'importe quelle app.",
+          "pasted": "Collé au curseur",
+          "placeholder": "Vos mots apparaissent ici…"
         },
         "cleanup": {
           "title": "Nettoyage automatique",
-          "desc": "Les hésitations et la mise en forme sont nettoyées à la volée."
+          "desc": "Les hésitations et la mise en forme sont nettoyées à la volée.",
+          "badge": "Nettoyage IA"
         },
         "agent": {
           "title": "Parlez à votre agent",

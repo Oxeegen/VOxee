@@ -81,11 +81,14 @@
       "tour": {
         "dictation": {
           "title": "Diktiere überall",
-          "desc": "Tastenkürzel drücken, sprechen — der Text erscheint am Cursor in jeder App."
+          "desc": "Tastenkürzel drücken, sprechen — der Text erscheint am Cursor in jeder App.",
+          "pasted": "Am Cursor eingefügt",
+          "placeholder": "Deine Worte erscheinen hier…"
         },
         "cleanup": {
           "title": "Automatische Bereinigung",
-          "desc": "Füllwörter und unsauberes Format werden sofort bereinigt."
+          "desc": "Füllwörter und unsauberes Format werden sofort bereinigt.",
+          "badge": "KI-Bereinigung"
         },
         "agent": {
           "title": "Sprich mit deinem Agenten",

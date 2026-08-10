@@ -81,11 +81,14 @@
       "tour": {
         "dictation": {
           "title": "Dictate anywhere",
-          "desc": "Press your hotkey, speak, and the text lands at your cursor in any app."
+          "desc": "Press your hotkey, speak, and the text lands at your cursor in any app.",
+          "pasted": "Pasted at your cursor",
+          "placeholder": "Your words appear here…"
         },
         "cleanup": {
           "title": "Automatic cleanup",
-          "desc": "Filler words and messy formatting are cleaned up on the fly."
+          "desc": "Filler words and messy formatting are cleaned up on the fly.",
+          "badge": "AI cleanup"
         },
         "agent": {
           "title": "Talk to your agent",

@@ -81,11 +81,14 @@
       "tour": {
         "dictation": {
           "title": "Dicta en cualquier sitio",
-          "desc": "Pulsa tu atajo, habla y el texto aparece en el cursor de cualquier app."
+          "desc": "Pulsa tu atajo, habla y el texto aparece en el cursor de cualquier app.",
+          "pasted": "Pegado en el cursor",
+          "placeholder": "Tus palabras aparecen aquí…"
         },
         "cleanup": {
           "title": "Limpieza automática",
-          "desc": "Las muletillas y el formato desordenado se limpian sobre la marcha."
+          "desc": "Las muletillas y el formato desordenado se limpian sobre la marcha.",
+          "badge": "Limpieza IA"
         },
         "agent": {
           "title": "Habla con tu agente",
