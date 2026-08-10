@@ -355,7 +355,9 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   }, [authLoaded, isSignedIn, setUseLocalWhisper, setCloudTranscriptionMode]);
 
   useEffect(() => {
-    if (platform === "darwin" || gpuBannerDismissed) return;
+    // GPU acceleration only applies to local models; skip the banner entirely
+    // in account-less brand builds that hide local models (e.g. VOxee).
+    if (platform === "darwin" || gpuBannerDismissed || !BRAND.showLocalModels) return;
     const detect = async () => {
       const results = { transcription: false, intelligence: false };
       if (useLocalWhisper && localTranscriptionProvider === "whisper") {
