@@ -80,6 +80,22 @@ const BYOK_API_KEYS = [
     save: "saveOxeegenUsKey",
     storeKey: "oxeegenUsApiKey",
   },
+  // Per-screen self-hosted transcription keys (dictation keeps the legacy
+  // customTranscriptionApiKey; meeting and upload get their own).
+  {
+    base: "meeting-custom-transcription",
+    env: "MEETING_CUSTOM_TRANSCRIPTION_API_KEY",
+    get: "getMeetingCustomTranscriptionKey",
+    save: "saveMeetingCustomTranscriptionKey",
+    storeKey: "meetingCustomTranscriptionApiKey",
+  },
+  {
+    base: "upload-custom-transcription",
+    env: "UPLOAD_CUSTOM_TRANSCRIPTION_API_KEY",
+    get: "getUploadCustomTranscriptionKey",
+    save: "saveUploadCustomTranscriptionKey",
+    storeKey: "uploadCustomTranscriptionApiKey",
+  },
 ];
 
 module.exports = { BYOK_API_KEYS };

@@ -5492,7 +5492,7 @@ class IPCHandlers {
       // custom transcription key (which may be empty for a keyless server) —
       // never the OpenAI key.
       if (options.selfHosted) {
-        const selfHostedKey = this.environmentManager.getCustomTranscriptionKey?.() || "";
+        const selfHostedKey = this.environmentManager.getMeetingCustomTranscriptionKey?.() || "";
         return streams === 2 ? [selfHostedKey, selfHostedKey] : selfHostedKey;
       }
 
@@ -6082,7 +6082,7 @@ class IPCHandlers {
       formData.append("file", new Blob([wav], { type: "audio/wav" }), "audio.wav");
       if (cfg.model) formData.append("model", cfg.model);
       if (cfg.language) formData.append("language", cfg.language);
-      const key = this.environmentManager.getCustomTranscriptionKey?.() || "";
+      const key = this.environmentManager.getMeetingCustomTranscriptionKey?.() || "";
       const response = await net.fetch(url, {
         method: "POST",
         useSessionCookies: false,
@@ -7869,7 +7869,7 @@ class IPCHandlers {
               AUDIO_MIME_TYPES[ext] || "audio/mpeg",
               { model: selfHostedRoute.model, language }
             );
-            const selfHostedKey = this.environmentManager.getCustomTranscriptionKey();
+            const selfHostedKey = this.environmentManager.getUploadCustomTranscriptionKey();
             const data = await postMultipart(
               new URL(selfHostedRoute.endpoint),
               body,

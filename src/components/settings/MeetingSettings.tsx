@@ -56,6 +56,8 @@ export function MeetingTranscriptionPanel() {
     setMeetingRemoteTranscriptionUrl,
     meetingRemoteTranscriptionModel,
     setMeetingRemoteTranscriptionModel,
+    meetingCustomTranscriptionApiKey,
+    setMeetingCustomTranscriptionApiKey,
     meetingChunkSeconds,
     setMeetingChunkSeconds,
   } = useSettingsStore();
@@ -142,6 +144,8 @@ export function MeetingTranscriptionPanel() {
           setUrl={setMeetingRemoteTranscriptionUrl}
           model={meetingRemoteTranscriptionModel}
           setModel={setMeetingRemoteTranscriptionModel}
+          apiKey={meetingCustomTranscriptionApiKey}
+          setApiKey={setMeetingCustomTranscriptionApiKey}
         />
       ) : (
         <>

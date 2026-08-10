@@ -25,8 +25,8 @@ const SCOPE_KEY_SETTERS: Record<string, (s: Store, key: string) => void> = {
   noteFormatting: (s, k) => s.setNoteFormattingCustomApiKey(k),
   dictationTranslation: (s, k) => s.setTranslationCustomApiKey(k),
   "transcription.dictation": (s, k) => s.setCustomTranscriptionApiKey(k),
-  "transcription.meeting": (s, k) => s.setCustomTranscriptionApiKey(k),
-  "transcription.upload": (s, k) => s.setCustomTranscriptionApiKey(k),
+  "transcription.meeting": (s, k) => s.setMeetingCustomTranscriptionApiKey(k),
+  "transcription.upload": (s, k) => s.setUploadCustomTranscriptionApiKey(k),
 };
 
 export async function getOxeegenRegionKey(region: BrandRegionId): Promise<string> {
@@ -77,27 +77,25 @@ export async function autoSelectRegionForUnsetScopes(region: BrandRegionId): Pro
     setStoredBrandChoice(scope, region);
   }
 
-  // Transcription: each context (dictation/meeting/upload) has its own endpoint
-  // + model fields; the API key is still shared for now.
+  // Transcription: each context (dictation/meeting/upload) owns its endpoint,
+  // model and key.
   const { endpoint, model } = getBrandRegionModelConfig(region, "transcription");
-  let touchedTranscription = false;
   if (getStoredBrandChoice("transcription.dictation") === null) {
     s.setRemoteTranscriptionUrl(endpoint);
     s.setRemoteTranscriptionModel(model);
+    s.setCustomTranscriptionApiKey(key);
     setStoredBrandChoice("transcription.dictation", region);
-    touchedTranscription = true;
   }
   if (getStoredBrandChoice("transcription.upload") === null) {
     s.setUploadRemoteTranscriptionUrl(endpoint);
     s.setUploadRemoteTranscriptionModel(model);
+    s.setUploadCustomTranscriptionApiKey(key);
     setStoredBrandChoice("transcription.upload", region);
-    touchedTranscription = true;
   }
   if (getStoredBrandChoice("transcription.meeting") === null) {
     s.setMeetingRemoteTranscriptionUrl(endpoint);
     s.setMeetingRemoteTranscriptionModel(model);
+    s.setMeetingCustomTranscriptionApiKey(key);
     setStoredBrandChoice("transcription.meeting", region);
-    touchedTranscription = true;
   }
-  if (touchedTranscription) s.setCustomTranscriptionApiKey(key);
 }

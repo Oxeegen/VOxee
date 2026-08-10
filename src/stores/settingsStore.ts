@@ -685,6 +685,10 @@ export interface SettingsState
   setCortiApiKey: (key: string) => void;
   setTinfoilApiKey: (key: string) => void;
   setCustomTranscriptionApiKey: (key: string) => void;
+  meetingCustomTranscriptionApiKey: string;
+  setMeetingCustomTranscriptionApiKey: (key: string) => void;
+  uploadCustomTranscriptionApiKey: string;
+  setUploadCustomTranscriptionApiKey: (key: string) => void;
   setCleanupCustomApiKey: (key: string) => void;
 
   // Corti (BYOK)
@@ -892,6 +896,8 @@ const SECRET_IPC_SAVERS = {
   cortiApiKey: "saveCortiKey",
   tinfoil: "saveTinfoilKey",
   customTranscription: "saveCustomTranscriptionKey",
+  meetingCustomTranscription: "saveMeetingCustomTranscriptionKey",
+  uploadCustomTranscription: "saveUploadCustomTranscriptionKey",
   cleanupCustom: "saveCleanupCustomKey",
   bedrockAccessKeyId: "saveBedrockAccessKeyId",
   bedrockSecretAccessKey: "saveBedrockSecretAccessKey",
@@ -934,6 +940,8 @@ const STALE_SECRET_LOCALSTORAGE_KEYS = [
   "cortiApiKey",
   "tinfoilApiKey",
   "customTranscriptionApiKey",
+  "meetingCustomTranscriptionApiKey",
+  "uploadCustomTranscriptionApiKey",
   "customReasoningApiKey",
   "cleanupCustomApiKey",
   "bedrockAccessKeyId",
@@ -1050,6 +1058,8 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   cortiApiKey: "",
   tinfoilApiKey: "",
   customTranscriptionApiKey: "",
+  meetingCustomTranscriptionApiKey: "",
+  uploadCustomTranscriptionApiKey: "",
   cleanupCustomApiKey: "",
 
   // Enterprise providers
@@ -1561,6 +1571,16 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setCustomTranscriptionApiKey: (key: string) => {
     set({ customTranscriptionApiKey: key });
     debouncedSaveSecret("customTranscription", key);
+    invalidateApiKeyCaches("custom");
+  },
+  setMeetingCustomTranscriptionApiKey: (key: string) => {
+    set({ meetingCustomTranscriptionApiKey: key });
+    debouncedSaveSecret("meetingCustomTranscription", key);
+    invalidateApiKeyCaches("custom");
+  },
+  setUploadCustomTranscriptionApiKey: (key: string) => {
+    set({ uploadCustomTranscriptionApiKey: key });
+    debouncedSaveSecret("uploadCustomTranscription", key);
     invalidateApiKeyCaches("custom");
   },
   setCleanupCustomApiKey: (key: string) => {
@@ -2307,6 +2327,8 @@ export async function initializeSettings(): Promise<void> {
         cortiApiKey,
         tinfoil,
         customTx,
+        meetingCustomTx,
+        uploadCustomTx,
         customRx,
         bedrockAccessKeyId,
         bedrockSecretAccessKey,
@@ -2326,6 +2348,8 @@ export async function initializeSettings(): Promise<void> {
         window.electronAPI.getCortiKey?.(),
         window.electronAPI.getTinfoilKey?.(),
         window.electronAPI.getCustomTranscriptionKey?.(),
+        window.electronAPI.getMeetingCustomTranscriptionKey?.(),
+        window.electronAPI.getUploadCustomTranscriptionKey?.(),
         window.electronAPI.getCleanupCustomKey?.(),
         window.electronAPI.getBedrockAccessKeyId?.(),
         window.electronAPI.getBedrockSecretAccessKey?.(),
@@ -2347,6 +2371,8 @@ export async function initializeSettings(): Promise<void> {
         cortiApiKey: cortiApiKey || "",
         tinfoilApiKey: tinfoil || "",
         customTranscriptionApiKey: customTx || "",
+        meetingCustomTranscriptionApiKey: meetingCustomTx || "",
+        uploadCustomTranscriptionApiKey: uploadCustomTx || "",
         cleanupCustomApiKey: customRx || "",
         bedrockAccessKeyId: bedrockAccessKeyId || "",
         bedrockSecretAccessKey: bedrockSecretAccessKey || "",

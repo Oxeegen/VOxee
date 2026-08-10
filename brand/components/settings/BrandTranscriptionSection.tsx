@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useSettingsStore } from "@/stores/settingsStore";
 import OpenAICompatiblePanel from "@/components/OpenAICompatiblePanel";
 import { Input } from "@/components/ui/input";
 import { BRAND, getBrandRegionModelConfig } from "@brand/config/brand";
@@ -19,13 +18,16 @@ interface BrandTranscriptionSectionProps {
   /** Current model id for this transcription context. */
   model: string;
   setModel: (value: string) => void;
+  /** This context's own API key (each screen has its own). */
+  apiKey: string;
+  setApiKey: (value: string) => void;
 }
 
 /**
  * Account-less transcription config: pick Oxeegen US / Oxeegen EU (locked region
  * endpoint + read-only model, region key applied) or a Custom OpenAI-compatible
- * endpoint. Endpoint/model are owned by the caller (each transcription context
- * has different store keys); the API key is the shared transcription secret.
+ * endpoint. Endpoint/model/key are all owned by the caller so each transcription
+ * screen (dictation/meeting/upload) has its own independent config.
  */
 export default function BrandTranscriptionSection({
   contextKey,
@@ -33,12 +35,11 @@ export default function BrandTranscriptionSection({
   setUrl,
   model,
   setModel,
+  apiKey,
+  setApiKey,
 }: BrandTranscriptionSectionProps) {
   const { t } = useTranslation();
   const choiceId = `transcription.${contextKey}`;
-
-  const customTranscriptionApiKey = useSettingsStore((s) => s.customTranscriptionApiKey);
-  const setCustomTranscriptionApiKey = useSettingsStore((s) => s.setCustomTranscriptionApiKey);
 
   const [choice, setChoice] = useState<BrandChoice | null>(() => getStoredBrandChoice(choiceId));
 
@@ -50,7 +51,7 @@ export default function BrandTranscriptionSection({
     const { endpoint, model: regionModel } = getBrandRegionModelConfig(region, "transcription");
     setUrl(endpoint);
     setModel(regionModel);
-    setCustomTranscriptionApiKey(await getOxeegenRegionKey(region));
+    setApiKey(await getOxeegenRegionKey(region));
   };
 
   const regionModel =
@@ -59,12 +60,7 @@ export default function BrandTranscriptionSection({
       : "";
 
   const activeStatus = choice ? (
-    <ProviderHealthBadge
-      endpoint={url}
-      model={model}
-      apiKey={customTranscriptionApiKey ?? ""}
-      region={choice}
-    />
+    <ProviderHealthBadge endpoint={url} model={model} apiKey={apiKey ?? ""} region={choice} />
   ) : undefined;
 
   return (
@@ -83,8 +79,8 @@ export default function BrandTranscriptionSection({
           <OpenAICompatiblePanel
             baseUrl={url}
             setBaseUrl={setUrl}
-            apiKey={customTranscriptionApiKey ?? ""}
-            setApiKey={setCustomTranscriptionApiKey}
+            apiKey={apiKey ?? ""}
+            setApiKey={setApiKey}
             model={model}
             setModel={setModel}
             apiKeyHelp={t("reasoning.custom.apiKeyHelp").replace(/OpenAI/g, BRAND.modelBrandName)}

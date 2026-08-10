@@ -235,7 +235,6 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     xaiApiKey,
     mistralApiKey,
     tinfoilApiKey,
-    customTranscriptionApiKey,
   } = useSettings();
 
   const {
@@ -250,9 +249,10 @@ export default function UploadAudioView({ onNoteCreated, onOpenSettings }: Uploa
     transcriptionMode,
   } = useSettingsStore(useShallow(selectResolvedUploadTranscription));
 
-  // Upload has its own self-hosted endpoint/model (decoupled from dictation).
+  // Upload has its own self-hosted endpoint/model/key (decoupled from dictation).
   const remoteTranscriptionUrl = useSettingsStore((s) => s.uploadRemoteTranscriptionUrl);
   const remoteTranscriptionModel = useSettingsStore((s) => s.uploadRemoteTranscriptionModel);
+  const customTranscriptionApiKey = useSettingsStore((s) => s.uploadCustomTranscriptionApiKey);
 
   const setUploadTranscriptionMode = useSettingsStore((s) => s.setUploadTranscriptionMode);
   const setUploadCloudTranscriptionMode = useSettingsStore(

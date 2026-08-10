@@ -37,6 +37,8 @@ export function UploadTranscriptionPanel() {
     setUploadRemoteTranscriptionUrl,
     uploadRemoteTranscriptionModel,
     setUploadRemoteTranscriptionModel,
+    uploadCustomTranscriptionApiKey,
+    setUploadCustomTranscriptionApiKey,
   } = useSettingsStore();
 
   const transcriptionModes: InferenceModeOption[] = [
@@ -113,6 +115,8 @@ export function UploadTranscriptionPanel() {
         setUrl={setUploadRemoteTranscriptionUrl}
         model={uploadRemoteTranscriptionModel}
         setModel={setUploadRemoteTranscriptionModel}
+        apiKey={uploadCustomTranscriptionApiKey}
+        setApiKey={setUploadCustomTranscriptionApiKey}
       />
     );
   }

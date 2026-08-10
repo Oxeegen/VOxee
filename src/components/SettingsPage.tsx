@@ -268,6 +268,9 @@ function TranscriptionSection({
   toast,
 }: TranscriptionSectionProps) {
   const { t } = useTranslation();
+  // Dictation transcription key (its own; meeting/upload have separate keys).
+  const customTranscriptionApiKey = useSettingsStore((s) => s.customTranscriptionApiKey);
+  const setCustomTranscriptionApiKey = useSettingsStore((s) => s.setCustomTranscriptionApiKey);
 
   const transcriptionModes: InferenceModeOption[] = [
     {
@@ -383,6 +386,8 @@ function TranscriptionSection({
           setUrl={setRemoteTranscriptionUrl}
           model={remoteTranscriptionModel}
           setModel={setRemoteTranscriptionModel}
+          apiKey={customTranscriptionApiKey}
+          setApiKey={setCustomTranscriptionApiKey}
         />
         <GpuDeviceSelector purpose="transcription" />
       </div>
