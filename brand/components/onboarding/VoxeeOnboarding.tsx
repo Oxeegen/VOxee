@@ -16,7 +16,7 @@ import {
 import StepProgress from "@/components/ui/StepProgress";
 import { Button } from "@/components/ui/button";
 import { BRAND } from "@brand/config/brand";
-import OxeegenMark from "@brand/components/ui/OxeegenMark";
+import VoxeeAppIcon from "@brand/components/ui/VoxeeAppIcon";
 import LanguageStep from "./steps/LanguageStep";
 import WelcomeStep from "./steps/WelcomeStep";
 import RegionStep, { type RegionChoice } from "./steps/RegionStep";
@@ -67,7 +67,7 @@ export default function VoxeeOnboarding({ onComplete }: { onComplete: () => void
     <div className="h-screen flex flex-col bg-background text-foreground">
       <div className="px-6 pt-6 pb-4 border-b border-border/50">
         <div className="flex items-center gap-2 mb-4">
-          <OxeegenMark className="w-5 h-5 text-primary" />
+          <VoxeeAppIcon className="w-5 h-5 rounded-[5px]" />
           <span className="text-sm font-semibold">{BRAND.productName}</span>
         </div>
         <StepProgress steps={steps} currentStep={currentStep} />

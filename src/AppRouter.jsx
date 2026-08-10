@@ -6,7 +6,7 @@ import MeetingNotificationOverlay from "./components/MeetingNotificationOverlay.
 import TranscriptionPreviewOverlay from "./components/TranscriptionPreviewOverlay.tsx";
 import UpdateNotificationOverlay from "./components/UpdateNotificationOverlay.tsx";
 import WindowControls from "./components/WindowControls.tsx";
-import BrandLogo from "@brand/components/ui/BrandLogo";
+import VoxeeAppIcon from "@brand/components/ui/VoxeeAppIcon";
 import { BRAND } from "@brand/config/brand";
 import { Card, CardContent } from "./components/ui/card.tsx";
 import { useAuth } from "./hooks/useAuth";
@@ -228,7 +228,7 @@ function LoadingFallback({ message }) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="flex flex-col items-center gap-4 animate-[scale-in_300ms_ease-out]">
-        <BrandLogo className="w-12 h-12 drop-shadow-[0_2px_8px_rgba(94,74,245,0.18)] dark:drop-shadow-[0_2px_12px_rgba(94,74,245,0.25)]" />
+        <VoxeeAppIcon className="w-12 h-12 rounded-[0.7rem] drop-shadow-[0_2px_8px_rgba(94,74,245,0.18)] dark:drop-shadow-[0_2px_12px_rgba(94,74,245,0.25)]" />
         <div className="w-7 h-7 rounded-full border-[2.5px] border-transparent border-t-primary animate-[spinner-rotate_0.8s_cubic-bezier(0.4,0,0.2,1)_infinite] motion-reduce:animate-none motion-reduce:border-t-muted-foreground motion-reduce:opacity-50" />
         {fallbackMessage && (
           <p className="text-[13px] font-medium text-muted-foreground dark:text-foreground/60 tracking-[-0.01em]">
