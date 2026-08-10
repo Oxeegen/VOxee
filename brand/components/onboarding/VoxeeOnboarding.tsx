@@ -7,6 +7,7 @@ import {
   Brain,
   Sliders,
   Keyboard,
+  Rocket,
   ChevronLeft,
   ChevronRight,
   Check,
@@ -21,6 +22,7 @@ import ApiKeysStep from "./steps/ApiKeysStep";
 import ModelsStep from "./steps/ModelsStep";
 import PreferencesStep from "./steps/PreferencesStep";
 import HotkeysStep from "./steps/HotkeysStep";
+import TutorialStep from "./steps/TutorialStep";
 
 /** First-run VOxee setup wizard. Steps 1 (region) and 2 (a valid key) are required. */
 export default function VoxeeOnboarding({ onComplete }: { onComplete: () => void }) {
@@ -37,6 +39,7 @@ export default function VoxeeOnboarding({ onComplete }: { onComplete: () => void
       { id: "models", title: t("brand.onboarding.steps.models", { defaultValue: "Models" }), icon: Brain },
       { id: "prefs", title: t("brand.onboarding.steps.prefs", { defaultValue: "Preferences" }), icon: Sliders },
       { id: "hotkeys", title: t("brand.onboarding.steps.hotkeys", { defaultValue: "Hotkeys" }), icon: Keyboard },
+      { id: "tour", title: t("brand.onboarding.steps.tour", { defaultValue: "Tour" }), icon: Rocket },
     ],
     [t]
   );
@@ -75,6 +78,7 @@ export default function VoxeeOnboarding({ onComplete }: { onComplete: () => void
           {currentStep === 3 && <ModelsStep />}
           {currentStep === 4 && <PreferencesStep />}
           {currentStep === 5 && <HotkeysStep />}
+          {currentStep === 6 && <TutorialStep />}
         </div>
       </div>
 

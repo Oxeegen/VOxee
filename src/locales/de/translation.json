@@ -29,7 +29,8 @@
         "keys": "API-Schlüssel",
         "models": "Modelle",
         "prefs": "Einstellungen",
-        "hotkeys": "Tastenkürzel"
+        "hotkeys": "Tastenkürzel",
+        "tour": "Tour"
       },
       "welcome": {
         "title": "Willkommen bei VOxee",
@@ -76,6 +77,32 @@
         "voiceAgent": "Sprachagent",
         "translation": "Übersetzung",
         "meeting": "Meeting"
+      },
+      "tour": {
+        "dictation": {
+          "title": "Diktiere überall",
+          "desc": "Tastenkürzel drücken, sprechen — der Text erscheint am Cursor in jeder App."
+        },
+        "cleanup": {
+          "title": "Automatische Bereinigung",
+          "desc": "Füllwörter und unsauberes Format werden sofort bereinigt."
+        },
+        "agent": {
+          "title": "Sprich mit deinem Agenten",
+          "desc": "Sprich deinen Agenten beim Namen an, um umzuschreiben, zusammenzufassen oder zu formatieren."
+        },
+        "translation": {
+          "title": "Sprich, füge übersetzt ein",
+          "desc": "In einer Sprache diktieren und die Übersetzung in einer anderen einfügen."
+        },
+        "meeting": {
+          "title": "Meeting-Notizen, live",
+          "desc": "Erkannte Calls werden mit Sprecher-Labels transkribiert — direkt in eine Notiz."
+        },
+        "ready": {
+          "title": "Alles bereit",
+          "desc": "Alles ist später in den Einstellungen anpassbar. Auf Fertig klicken, um VOxee zu nutzen."
+        }
       }
     }
   },

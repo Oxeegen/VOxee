@@ -29,7 +29,8 @@
         "keys": "API 密钥",
         "models": "模型",
         "prefs": "偏好设置",
-        "hotkeys": "快捷键"
+        "hotkeys": "快捷键",
+        "tour": "导览"
       },
       "welcome": {
         "title": "欢迎使用 VOxee",
@@ -76,6 +77,32 @@
         "voiceAgent": "语音代理",
         "translation": "翻译",
         "meeting": "会议"
+      },
+      "tour": {
+        "dictation": {
+          "title": "随处听写",
+          "desc": "按下快捷键说话，文本就会出现在任意应用的光标处。"
+        },
+        "cleanup": {
+          "title": "自动清理",
+          "desc": "语气词和杂乱格式会即时清理。"
+        },
+        "agent": {
+          "title": "与你的代理对话",
+          "desc": "按名字称呼代理，让它改写、总结或重新排版。"
+        },
+        "translation": {
+          "title": "说话，粘贴译文",
+          "desc": "用一种语言听写，粘贴为另一种语言的译文。"
+        },
+        "meeting": {
+          "title": "会议记录，实时生成",
+          "desc": "检测到的通话会带说话人标签转录 — 直接写入笔记。"
+        },
+        "ready": {
+          "title": "全部就绪",
+          "desc": "一切之后都可在设置中调整。点击“完成”开始使用 VOxee。"
+        }
       }
     }
   },

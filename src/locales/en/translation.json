@@ -29,7 +29,8 @@
         "keys": "API keys",
         "models": "Models",
         "prefs": "Preferences",
-        "hotkeys": "Hotkeys"
+        "hotkeys": "Hotkeys",
+        "tour": "Tour"
       },
       "welcome": {
         "title": "Welcome to VOxee",
@@ -76,6 +77,32 @@
         "voiceAgent": "Voice agent",
         "translation": "Translation",
         "meeting": "Meeting"
+      },
+      "tour": {
+        "dictation": {
+          "title": "Dictate anywhere",
+          "desc": "Press your hotkey, speak, and the text lands at your cursor in any app."
+        },
+        "cleanup": {
+          "title": "Automatic cleanup",
+          "desc": "Filler words and messy formatting are cleaned up on the fly."
+        },
+        "agent": {
+          "title": "Talk to your agent",
+          "desc": "Address your agent by name and ask it to rewrite, summarize or reformat."
+        },
+        "translation": {
+          "title": "Speak, paste translated",
+          "desc": "Dictate in one language and paste the translation in another."
+        },
+        "meeting": {
+          "title": "Meeting notes, live",
+          "desc": "Detected calls are transcribed with speaker labels — straight into a note."
+        },
+        "ready": {
+          "title": "You're all set",
+          "desc": "Everything is configurable later in Settings. Press Finish to start using VOxee."
+        }
       }
     }
   },

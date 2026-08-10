@@ -29,7 +29,8 @@
         "keys": "Claves API",
         "models": "Modelos",
         "prefs": "Preferencias",
-        "hotkeys": "Atajos"
+        "hotkeys": "Atajos",
+        "tour": "Recorrido"
       },
       "welcome": {
         "title": "Te damos la bienvenida a VOxee",
@@ -76,6 +77,32 @@
         "voiceAgent": "Agente de voz",
         "translation": "Traducción",
         "meeting": "Reunión"
+      },
+      "tour": {
+        "dictation": {
+          "title": "Dicta en cualquier sitio",
+          "desc": "Pulsa tu atajo, habla y el texto aparece en el cursor de cualquier app."
+        },
+        "cleanup": {
+          "title": "Limpieza automática",
+          "desc": "Las muletillas y el formato desordenado se limpian sobre la marcha."
+        },
+        "agent": {
+          "title": "Habla con tu agente",
+          "desc": "Dirígete a tu agente por su nombre para reescribir, resumir o reformatear."
+        },
+        "translation": {
+          "title": "Habla y pega traducido",
+          "desc": "Dicta en un idioma y pega la traducción en otro."
+        },
+        "meeting": {
+          "title": "Notas de reunión, en vivo",
+          "desc": "Las llamadas detectadas se transcriben con etiquetas de hablante — directo a una nota."
+        },
+        "ready": {
+          "title": "Todo listo",
+          "desc": "Todo es configurable después en Ajustes. Pulsa Finalizar para empezar a usar VOxee."
+        }
       }
     }
   },

@@ -29,7 +29,8 @@
         "keys": "API 金鑰",
         "models": "模型",
         "prefs": "偏好設定",
-        "hotkeys": "快速鍵"
+        "hotkeys": "快速鍵",
+        "tour": "導覽"
       },
       "welcome": {
         "title": "歡迎使用 VOxee",
@@ -76,6 +77,32 @@
         "voiceAgent": "語音代理",
         "translation": "翻譯",
         "meeting": "會議"
+      },
+      "tour": {
+        "dictation": {
+          "title": "隨處聽寫",
+          "desc": "按下快速鍵說話，文字就會出現在任何應用程式的游標處。"
+        },
+        "cleanup": {
+          "title": "自動清理",
+          "desc": "贅字與雜亂格式會即時清理。"
+        },
+        "agent": {
+          "title": "與你的代理對話",
+          "desc": "以名字稱呼代理，讓它改寫、摘要或重新排版。"
+        },
+        "translation": {
+          "title": "說話，貼上譯文",
+          "desc": "以一種語言聽寫，貼上為另一種語言的譯文。"
+        },
+        "meeting": {
+          "title": "會議筆記，即時產生",
+          "desc": "偵測到的通話會帶說話者標籤轉錄 — 直接寫入筆記。"
+        },
+        "ready": {
+          "title": "全部就緒",
+          "desc": "一切之後都可在設定中調整。點擊「完成」開始使用 VOxee。"
+        }
       }
     }
   },

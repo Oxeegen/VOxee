@@ -29,7 +29,8 @@
         "keys": "Chiavi API",
         "models": "Modelli",
         "prefs": "Preferenze",
-        "hotkeys": "Scorciatoie"
+        "hotkeys": "Scorciatoie",
+        "tour": "Tour"
       },
       "welcome": {
         "title": "Benvenuto in VOxee",
@@ -76,6 +77,32 @@
         "voiceAgent": "Agente vocale",
         "translation": "Traduzione",
         "meeting": "Riunione"
+      },
+      "tour": {
+        "dictation": {
+          "title": "Detta ovunque",
+          "desc": "Premi la scorciatoia, parla e il testo compare al cursore in qualsiasi app."
+        },
+        "cleanup": {
+          "title": "Pulizia automatica",
+          "desc": "Intercalari e formattazione disordinata vengono puliti al volo."
+        },
+        "agent": {
+          "title": "Parla col tuo agente",
+          "desc": "Rivolgiti al tuo agente per nome per riscrivere, riassumere o riformattare."
+        },
+        "translation": {
+          "title": "Parla, incolla tradotto",
+          "desc": "Detta in una lingua e incolla la traduzione in un'altra."
+        },
+        "meeting": {
+          "title": "Note riunione, in diretta",
+          "desc": "Le chiamate rilevate vengono trascritte con le etichette dei parlanti — dritte in una nota."
+        },
+        "ready": {
+          "title": "Tutto pronto",
+          "desc": "Tutto è configurabile dopo nelle Impostazioni. Premi Fine per iniziare a usare VOxee."
+        }
       }
     }
   },
