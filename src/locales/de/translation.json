@@ -83,7 +83,9 @@
           "title": "Diktiere überall",
           "desc": "Tastenkürzel drücken, sprechen — der Text erscheint am Cursor in jeder App.",
           "pasted": "Am Cursor eingefügt",
-          "placeholder": "Deine Worte erscheinen hier…"
+          "placeholder": "Deine Worte erscheinen hier…",
+          "or": "oder",
+          "trigger": "Auf den Button klicken oder das Tastenkürzel drücken"
         },
         "cleanup": {
           "title": "Automatische Bereinigung",
@@ -92,11 +94,13 @@
         },
         "agent": {
           "title": "Sprich mit deinem Agenten",
-          "desc": "Sprich deinen Agenten beim Namen an, um umzuschreiben, zusammenzufassen oder zu formatieren."
+          "desc": "Sprich deinen Agenten beim Namen an, um umzuschreiben, zusammenzufassen oder zu formatieren.",
+          "hotkeyHint": "Sprachagent-Tastenkürzel"
         },
         "translation": {
           "title": "Sprich, füge übersetzt ein",
-          "desc": "In einer Sprache diktieren und die Übersetzung in einer anderen einfügen."
+          "desc": "In einer Sprache diktieren und die Übersetzung in einer anderen einfügen.",
+          "hotkeyHint": "Übersetzungs-Tastenkürzel"
         },
         "meeting": {
           "title": "Meeting-Notizen, live",
@@ -105,6 +109,18 @@
         "ready": {
           "title": "Alles bereit",
           "desc": "Alles ist später in den Einstellungen anpassbar. Auf Fertig klicken, um VOxee zu nutzen."
+        },
+        "notEnabled": "{{feature}} ist noch nicht aktiviert.",
+        "enable": "Aktivieren",
+        "notes": {
+          "title": "Aus Notizen Taten machen",
+          "desc": "Zusammenfassen, Aufgaben extrahieren oder jede Notiz mit einem Klick übersetzen.",
+          "summarize": "Zusammenfassen",
+          "actionItems": "Aufgaben",
+          "translate": "Übersetzen",
+          "summary": "Zusammenfassung",
+          "s1": "Freitag ausliefern — vom Team bestätigt.",
+          "s2": "Speaker 2 übernimmt die Release Notes."
         }
       }
     }

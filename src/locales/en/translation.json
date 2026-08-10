@@ -83,7 +83,9 @@
           "title": "Dictate anywhere",
           "desc": "Press your hotkey, speak, and the text lands at your cursor in any app.",
           "pasted": "Pasted at your cursor",
-          "placeholder": "Your words appear here…"
+          "placeholder": "Your words appear here…",
+          "or": "or",
+          "trigger": "Click the button or press the hotkey"
         },
         "cleanup": {
           "title": "Automatic cleanup",
@@ -92,11 +94,13 @@
         },
         "agent": {
           "title": "Talk to your agent",
-          "desc": "Address your agent by name and ask it to rewrite, summarize or reformat."
+          "desc": "Address your agent by name and ask it to rewrite, summarize or reformat.",
+          "hotkeyHint": "Voice agent hotkey"
         },
         "translation": {
           "title": "Speak, paste translated",
-          "desc": "Dictate in one language and paste the translation in another."
+          "desc": "Dictate in one language and paste the translation in another.",
+          "hotkeyHint": "Translation hotkey"
         },
         "meeting": {
           "title": "Meeting notes, live",
@@ -105,6 +109,18 @@
         "ready": {
           "title": "You're all set",
           "desc": "Everything is configurable later in Settings. Press Finish to start using VOxee."
+        },
+        "notEnabled": "{{feature}} isn't enabled yet.",
+        "enable": "Enable",
+        "notes": {
+          "title": "Turn notes into action",
+          "desc": "Summarize, extract action items or translate any note in one click.",
+          "summarize": "Summarize",
+          "actionItems": "Action items",
+          "translate": "Translate",
+          "summary": "Summary",
+          "s1": "Ship on Friday — agreed by the team.",
+          "s2": "Speaker 2 owns the release notes."
         }
       }
     }

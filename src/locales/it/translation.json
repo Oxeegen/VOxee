@@ -83,7 +83,9 @@
           "title": "Detta ovunque",
           "desc": "Premi la scorciatoia, parla e il testo compare al cursore in qualsiasi app.",
           "pasted": "Incollato al cursore",
-          "placeholder": "Le tue parole appaiono qui…"
+          "placeholder": "Le tue parole appaiono qui…",
+          "or": "o",
+          "trigger": "Clicca il pulsante o premi la scorciatoia"
         },
         "cleanup": {
           "title": "Pulizia automatica",
@@ -92,11 +94,13 @@
         },
         "agent": {
           "title": "Parla col tuo agente",
-          "desc": "Rivolgiti al tuo agente per nome per riscrivere, riassumere o riformattare."
+          "desc": "Rivolgiti al tuo agente per nome per riscrivere, riassumere o riformattare.",
+          "hotkeyHint": "Scorciatoia agente vocale"
         },
         "translation": {
           "title": "Parla, incolla tradotto",
-          "desc": "Detta in una lingua e incolla la traduzione in un'altra."
+          "desc": "Detta in una lingua e incolla la traduzione in un'altra.",
+          "hotkeyHint": "Scorciatoia traduzione"
         },
         "meeting": {
           "title": "Note riunione, in diretta",
@@ -105,6 +109,18 @@
         "ready": {
           "title": "Tutto pronto",
           "desc": "Tutto è configurabile dopo nelle Impostazioni. Premi Fine per iniziare a usare VOxee."
+        },
+        "notEnabled": "{{feature}} non è ancora attivato.",
+        "enable": "Attiva",
+        "notes": {
+          "title": "Trasforma le note in azioni",
+          "desc": "Riassumi, estrai attività o traduci qualsiasi nota con un clic.",
+          "summarize": "Riassumi",
+          "actionItems": "Attività",
+          "translate": "Traduci",
+          "summary": "Riepilogo",
+          "s1": "Rilascio venerdì — approvato dal team.",
+          "s2": "Speaker 2 cura le note di rilascio."
         }
       }
     }

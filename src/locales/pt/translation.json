@@ -83,7 +83,9 @@
           "title": "Dite em qualquer lugar",
           "desc": "Prima o atalho, fale e o texto surge no cursor em qualquer app.",
           "pasted": "Colado no cursor",
-          "placeholder": "As tuas palavras aparecem aqui…"
+          "placeholder": "As tuas palavras aparecem aqui…",
+          "or": "ou",
+          "trigger": "Clique no botão ou prima o atalho"
         },
         "cleanup": {
           "title": "Limpeza automática",
@@ -92,11 +94,13 @@
         },
         "agent": {
           "title": "Fale com o seu agente",
-          "desc": "Trate o seu agente pelo nome para reescrever, resumir ou reformatar."
+          "desc": "Trate o seu agente pelo nome para reescrever, resumir ou reformatar.",
+          "hotkeyHint": "Atalho do agente de voz"
         },
         "translation": {
           "title": "Fale, cole traduzido",
-          "desc": "Dite num idioma e cole a tradução noutro."
+          "desc": "Dite num idioma e cole a tradução noutro.",
+          "hotkeyHint": "Atalho de tradução"
         },
         "meeting": {
           "title": "Notas de reunião, ao vivo",
@@ -105,6 +109,18 @@
         "ready": {
           "title": "Tudo pronto",
           "desc": "Tudo é configurável depois nas Definições. Prima Concluir para começar a usar o VOxee."
+        },
+        "notEnabled": "{{feature}} ainda não está ativado.",
+        "enable": "Ativar",
+        "notes": {
+          "title": "Transforme notas em ação",
+          "desc": "Resuma, extraia tarefas ou traduza qualquer nota num clique.",
+          "summarize": "Resumir",
+          "actionItems": "Tarefas",
+          "translate": "Traduzir",
+          "summary": "Resumo",
+          "s1": "Lançar na sexta — acordado pela equipa.",
+          "s2": "Speaker 2 trata das notas de versão."
         }
       }
     }
