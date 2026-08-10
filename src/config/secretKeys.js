@@ -64,6 +64,22 @@ const BYOK_API_KEYS = [
     save: "saveCortiKey",
     storeKey: "cortiApiKey",
   },
+  // Brand (VOxee): the two Oxeegen region keys (EU / US). Managed by the
+  // Oxeegen API Key panel and propagated to per-scope custom keys by region.
+  {
+    base: "oxeegen-eu",
+    env: "OXEEGEN_EU_API_KEY",
+    get: "getOxeegenEuKey",
+    save: "saveOxeegenEuKey",
+    storeKey: "oxeegenEuApiKey",
+  },
+  {
+    base: "oxeegen-us",
+    env: "OXEEGEN_US_API_KEY",
+    get: "getOxeegenUsKey",
+    save: "saveOxeegenUsKey",
+    storeKey: "oxeegenUsApiKey",
+  },
 ];
 
 module.exports = { BYOK_API_KEYS };

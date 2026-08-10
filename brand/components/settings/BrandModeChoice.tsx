@@ -5,35 +5,46 @@ import type { InferenceModeOption } from "@/components/ui/SettingsSection";
 import type { InferenceMode } from "@/types/electron";
 import { BRAND } from "@brand/config/brand";
 import OxeegenMark from "@brand/components/ui/OxeegenMark";
+import RegionFlag from "@brand/components/ui/RegionFlag";
 
-export type BrandChoice = "brand" | "custom";
+export type BrandChoice = "us" | "eu" | "custom";
 
 /**
- * Two-option badge selector (reuses the upstream InferenceModeSelector look):
- * the locked brand models vs a Custom OpenAI-compatible endpoint.
+ * Three-option badge selector (reuses the upstream InferenceModeSelector look):
+ * the two locked Oxeegen regions (US / EU, with their flags) vs a Custom
+ * OpenAI-compatible endpoint. `choice` may be null — nothing is selected by
+ * default; the user must pick a provider.
  *
- * The selector is generic over its ids, so "brand"/"custom" are cast to
- * InferenceMode purely to satisfy the shared component's typing.
+ * The selector is generic over its ids, so the choices are cast to InferenceMode
+ * purely to satisfy the shared component's typing.
  */
 export default function BrandModeChoice({
   choice,
   onChange,
 }: {
-  choice: BrandChoice;
+  choice: BrandChoice | null;
   onChange: (choice: BrandChoice) => void;
 }) {
   const { t } = useTranslation();
 
+  const regionDesc = t("brand.models.regionDesc", {
+    defaultValue: `Preconfigured ${BRAND.modelBrandName} models`,
+  });
+
   const modes: InferenceModeOption[] = [
     {
-      id: "brand" as InferenceMode,
-      label: BRAND.modelBrandName,
-      description: t("brand.models.brandDesc", {
-        defaultValue: `Preconfigured ${BRAND.modelBrandName} models`,
-      }),
-      // Inherits the selector's icon color: primary (brand) when selected,
-      // muted-foreground when not — adapts to the theme like the lucide icons.
+      id: "us" as InferenceMode,
+      label: BRAND.regions.us.label,
+      description: regionDesc,
       icon: <OxeegenMark className="w-4 h-4" />,
+      labelSuffix: <RegionFlag region="us" className="w-4 h-3 shrink-0" />,
+    },
+    {
+      id: "eu" as InferenceMode,
+      label: BRAND.regions.eu.label,
+      description: regionDesc,
+      icon: <OxeegenMark className="w-4 h-4" />,
+      labelSuffix: <RegionFlag region="eu" className="w-4 h-3 shrink-0" />,
     },
     {
       id: "custom" as InferenceMode,
@@ -48,7 +59,8 @@ export default function BrandModeChoice({
   return (
     <InferenceModeSelector
       modes={modes}
-      activeMode={choice as InferenceMode}
+      // Empty string matches no id, so nothing is highlighted when unset.
+      activeMode={(choice ?? "") as InferenceMode}
       onSelect={(mode) => onChange(mode as BrandChoice)}
     />
   );

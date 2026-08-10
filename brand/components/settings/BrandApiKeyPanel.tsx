@@ -3,24 +3,41 @@ import { useTranslation } from "react-i18next";
 import { Check, Loader2, X } from "lucide-react";
 import ApiKeyInput from "@/components/ui/ApiKeyInput";
 import { buildApiUrl } from "@/config/constants";
-import { BRAND, getBrandModelConfig } from "@brand/config/brand";
-import { useOxeegenApiKey } from "./brandApiKey";
+import { BRAND } from "@brand/config/brand";
+import type { BrandRegionId } from "@brand/config/brand";
+import RegionFlag from "@brand/components/ui/RegionFlag";
+import {
+  getOxeegenRegionKey,
+  setOxeegenRegionKey,
+  autoSelectRegionForUnsetScopes,
+} from "./brandApiKey";
 
 type Status = "idle" | "checking" | "valid" | "invalid";
 
 /**
- * Dedicated panel to enter the single organization API key shared by every
- * self-hosted scope (LLM + transcription). Validates the key against the brand
- * endpoint's /models and shows a green check when it works.
+ * One API key field per Oxeegen region (US / EU). Each key is stored encrypted,
+ * propagated to the scopes on that region, and validated against the region
+ * endpoint's /models.
  */
-export default function BrandApiKeyPanel() {
+function RegionKeyField({ region }: { region: BrandRegionId }) {
   const { t } = useTranslation();
-  const { apiKey, setApiKey } = useOxeegenApiKey();
-  const endpoint = getBrandModelConfig("dictationCleanup").endpoint;
+  const endpoint = BRAND.regions[region].endpoint;
 
+  const [apiKey, setApiKey] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const reqRef = useRef(0);
+
+  // Load the stored key on mount.
+  useEffect(() => {
+    let cancelled = false;
+    void getOxeegenRegionKey(region).then((k) => {
+      if (!cancelled) setApiKey(k);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [region]);
 
   const validate = useCallback(
     async (key: string) => {
@@ -30,6 +47,10 @@ export default function BrandApiKeyPanel() {
         setError(null);
         return;
       }
+      if (!endpoint) {
+        setStatus("idle");
+        return;
+      }
       const reqId = ++reqRef.current;
       setStatus("checking");
       setError(null);
@@ -37,9 +58,12 @@ export default function BrandApiKeyPanel() {
         const res = await fetch(buildApiUrl(endpoint, "/models"), {
           headers: { Authorization: `Bearer ${trimmed}` },
         });
-        if (reqId !== reqRef.current) return; // superseded by a newer check
+        if (reqId !== reqRef.current) return;
         if (res.ok) {
           setStatus("valid");
+          // Onboarding accelerator: auto-select this region for any scope that
+          // has no provider chosen yet (leaves configured scopes untouched).
+          void autoSelectRegionForUnsetScopes(region);
         } else {
           setStatus("invalid");
           setError(`${res.status} ${res.statusText}`.trim());
@@ -50,30 +74,25 @@ export default function BrandApiKeyPanel() {
         setError((e as Error).message);
       }
     },
-    [endpoint]
+    [endpoint, region]
   );
 
-  // Validate on mount (if a key already exists) and debounced on every change.
+  // Debounced persist + validate on change.
   useEffect(() => {
-    const handle = setTimeout(() => validate(apiKey), 500);
+    const handle = setTimeout(() => {
+      void setOxeegenRegionKey(region, apiKey);
+      void validate(apiKey);
+    }, 500);
     return () => clearTimeout(handle);
-  }, [apiKey, validate]);
+  }, [apiKey, region, validate]);
 
   return (
-    <div className="space-y-3">
-      <div className="space-y-1">
-        <h3 className="text-sm font-semibold text-foreground">
-          {BRAND.modelBrandName} {t("common.apiKey")}
-        </h3>
-        <p className="text-xs text-muted-foreground">
-          {t("brand.apiKey.help", {
-            defaultValue: "Sent as a Bearer token for authentication.",
-          })}
-        </p>
+    <div className="space-y-1.5">
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs font-medium text-foreground">{BRAND.regions[region].label}</span>
+        <RegionFlag region={region} className="w-4 h-3 shrink-0" />
       </div>
-
       <ApiKeyInput apiKey={apiKey} setApiKey={setApiKey} />
-
       {status !== "idle" && (
         <div className="flex items-center gap-1.5 text-xs">
           {status === "checking" && (
@@ -102,6 +121,31 @@ export default function BrandApiKeyPanel() {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Dedicated panel with one API key per Oxeegen region. Each region's key
+ * authenticates the scopes pointed at that region.
+ */
+export default function BrandApiKeyPanel() {
+  const { t } = useTranslation();
+  return (
+    <div className="space-y-4">
+      <div className="space-y-1">
+        <h3 className="text-sm font-semibold text-foreground">
+          {BRAND.modelBrandName} {t("common.apiKey")}
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          {t("brand.apiKey.help", {
+            defaultValue: "Sent as a Bearer token for authentication.",
+          })}
+        </p>
+      </div>
+
+      <RegionKeyField region="us" />
+      <RegionKeyField region="eu" />
     </div>
   );
 }

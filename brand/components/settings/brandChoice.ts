@@ -1,17 +1,18 @@
 import type { BrandChoice } from "./BrandModeChoice";
 
 /**
- * Persist the Oxeegen/Custom selection per scope/context. Without this the
- * choice would be inferred from "endpoint === brand endpoint", so picking Custom
- * without changing the URL would revert to Oxeegen on reopen (hiding the Custom
- * panel and its edits).
+ * Persist the Oxeegen-EU / Oxeegen-US / Custom selection per scope/context.
+ * There is no default: a fresh install has nothing selected (returns null) until
+ * the user picks a provider. Legacy values (the old single "brand") map to null
+ * so the user re-selects a region.
  */
 const KEY = (id: string) => `brandChoice.${id}`;
+const VALID: BrandChoice[] = ["eu", "us", "custom"];
 
-export function getStoredBrandChoice(id: string, fallback: BrandChoice): BrandChoice {
-  if (typeof localStorage === "undefined") return fallback;
+export function getStoredBrandChoice(id: string): BrandChoice | null {
+  if (typeof localStorage === "undefined") return null;
   const v = localStorage.getItem(KEY(id));
-  return v === "brand" || v === "custom" ? v : fallback;
+  return VALID.includes(v as BrandChoice) ? (v as BrandChoice) : null;
 }
 
 export function setStoredBrandChoice(id: string, choice: BrandChoice): void {

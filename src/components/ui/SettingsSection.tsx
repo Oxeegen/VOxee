@@ -134,6 +134,8 @@ export interface InferenceModeOption {
   disabled?: boolean;
   badge?: string;
   label: string;
+  /** Optional node rendered right after the label text (e.g. a small flag). */
+  labelSuffix?: React.ReactNode;
   description: string;
   icon: React.ReactNode;
 }
@@ -183,6 +185,7 @@ export function InferenceModeSelector({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium text-foreground">{mode.label}</span>
+                  {mode.labelSuffix}
                   {isActive && !isDisabled && (
                     <span className="text-xs font-medium text-primary bg-primary/10 dark:bg-primary/15 px-1.5 py-px rounded-sm">
                       {t("common.active")}

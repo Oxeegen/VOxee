@@ -29,7 +29,8 @@ import {
 import { getLanguageLabel } from "../../utils/languageSupport";
 import { getDictionaryHintWords } from "../../utils/snippets";
 import { resolveDictationAgentInference } from "../../helpers/dictationAgentInference";
-import { BRAND, getBrandModelConfig, type BrandModelScope } from "@brand/config/brand";
+import { BRAND, type BrandModelScope } from "@brand/config/brand";
+import { getStoredBrandChoice } from "@brand/components/settings/brandChoice";
 
 interface PromptStudioProps {
   className?: string;
@@ -466,20 +467,18 @@ export default function PromptStudio({ className = "", kind = "cleanup" }: Promp
               ? t("promptStudio.test.openwhisprCloud")
               : testModel || t("promptStudio.test.none");
             // In account-less brand builds the self-hosted provider is "custom";
-            // show the brand name when the selected model is the one shipped for
-            // this scope, else fall back to the generic "Custom endpoint" label.
+            // show the picked Oxeegen region (US/EU) for this scope, else fall
+            // back to the generic "Custom endpoint" label.
             const brandScope = KIND_TO_BRAND_SCOPE[kind];
-            const brandModel = brandScope ? getBrandModelConfig(brandScope).model : "";
-            const isBrandModel =
+            const brandChoice = brandScope ? getStoredBrandChoice(brandScope) : null;
+            const displayProvider =
               !BRAND.showAccount &&
               testProvider === "custom" &&
-              !!brandModel &&
-              testModel === brandModel;
-            const displayProvider = isBrandModel
-              ? BRAND.modelBrandName
-              : testProvider === "custom"
-                ? t("promptStudio.test.customEndpoint")
-                : providerConfig.label;
+              (brandChoice === "us" || brandChoice === "eu")
+                ? BRAND.regions[brandChoice].label
+                : testProvider === "custom"
+                  ? t("promptStudio.test.customEndpoint")
+                  : providerConfig.label;
 
             return (
               <div className="divide-y divide-border/40 dark:divide-border-subtle">

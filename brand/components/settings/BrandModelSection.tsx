@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useTranslation } from "react-i18next";
 import {
@@ -9,10 +9,10 @@ import {
 import type { InferenceScope } from "@/config/inferenceScopes";
 import OpenAICompatiblePanel from "@/components/OpenAICompatiblePanel";
 import { Input } from "@/components/ui/input";
-import { BRAND, getBrandModelConfig } from "@brand/config/brand";
-import type { BrandModelScope } from "@brand/config/brand";
+import { BRAND, getBrandRegionModelConfig } from "@brand/config/brand";
+import type { BrandModelScope, BrandRegionId } from "@brand/config/brand";
 import BrandModeChoice, { type BrandChoice } from "./BrandModeChoice";
-import { getOxeegenApiKey } from "./brandApiKey";
+import { getOxeegenRegionKey } from "./brandApiKey";
 import { getStoredBrandChoice, setStoredBrandChoice } from "./brandChoice";
 
 interface BrandModelSectionProps {
@@ -20,53 +20,54 @@ interface BrandModelSectionProps {
 }
 
 /**
- * Account-less LLM editor: choose the locked brand models (model name shown
- * read-only; shared org key entered once in the API Key section) or a Custom
- * OpenAI-compatible endpoint with its own URL/key and a fetched model list.
+ * Account-less LLM editor: choose Oxeegen US / Oxeegen EU (locked region
+ * endpoint + read-only model, region key applied) or a Custom OpenAI-compatible
+ * endpoint. Nothing is selected until the user picks a provider.
  */
 export default function BrandModelSection({ scope }: BrandModelSectionProps) {
   const { t } = useTranslation();
-  const brandCfg = getBrandModelConfig(scope as BrandModelScope);
+  const brandScope = scope as BrandModelScope;
   const config = useSettingsStore(useShallow((s) => selectResolvedLLMConfig(s, scope)));
 
-  const isOnBrandEndpoint = useMemo(
-    () => (config.remoteUrl || "") === brandCfg.endpoint,
-    [config.remoteUrl, brandCfg.endpoint]
-  );
-  const [choice, setChoice] = useState<BrandChoice>(() =>
-    getStoredBrandChoice(scope, isOnBrandEndpoint ? "brand" : "custom")
-  );
+  const [choice, setChoice] = useState<BrandChoice | null>(() => getStoredBrandChoice(scope));
 
-  const handleChange = (next: BrandChoice) => {
+  const handleChange = async (next: BrandChoice) => {
     setChoice(next);
     setStoredBrandChoice(scope, next);
-    if (next === "brand") {
-      // Lock to the brand endpoint/model and (re)apply the shared org key so
-      // the request is authenticated even after a Custom detour.
-      setResolvedLLMConfig(scope, {
-        mode: "self-hosted",
-        provider: "custom",
-        remoteUrl: brandCfg.endpoint,
-        model: brandCfg.model,
-        customApiKey: getOxeegenApiKey(),
-      });
-    } else {
+    if (next === "custom") {
       setResolvedLLMConfig(scope, { mode: "self-hosted", provider: "custom" });
+      return;
     }
+    // Region: lock to that region's endpoint/model and apply its org key.
+    const region = next as BrandRegionId;
+    const { endpoint, model } = getBrandRegionModelConfig(region, brandScope);
+    const key = await getOxeegenRegionKey(region);
+    setResolvedLLMConfig(scope, {
+      mode: "self-hosted",
+      provider: "custom",
+      remoteUrl: endpoint,
+      model,
+      customApiKey: key,
+    });
   };
+
+  const regionModel =
+    choice === "eu" || choice === "us"
+      ? getBrandRegionModelConfig(choice, brandScope).model
+      : "";
 
   return (
     <div className="space-y-3">
       <BrandModeChoice choice={choice} onChange={handleChange} />
 
-      {choice === "brand" ? (
+      {choice === "eu" || choice === "us" ? (
         <div className="border border-border rounded-lg p-3 space-y-1.5">
           <label className="block text-xs font-medium text-muted-foreground">
             {t("common.model")}
           </label>
-          <Input value={brandCfg.model} readOnly disabled className="h-8 text-sm" />
+          <Input value={regionModel} readOnly disabled className="h-8 text-sm" />
         </div>
-      ) : (
+      ) : choice === "custom" ? (
         <div className="border border-border rounded-lg p-3">
           <OpenAICompatiblePanel
             baseUrl={config.remoteUrl ?? ""}
@@ -78,7 +79,7 @@ export default function BrandModelSection({ scope }: BrandModelSectionProps) {
             apiKeyHelp={t("reasoning.custom.apiKeyHelp").replace(/OpenAI/g, BRAND.modelBrandName)}
           />
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
