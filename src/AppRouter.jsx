@@ -6,7 +6,7 @@ import MeetingNotificationOverlay from "./components/MeetingNotificationOverlay.
 import TranscriptionPreviewOverlay from "./components/TranscriptionPreviewOverlay.tsx";
 import UpdateNotificationOverlay from "./components/UpdateNotificationOverlay.tsx";
 import WindowControls from "./components/WindowControls.tsx";
-import BrandLogo from "@brand/components/ui/BrandLogo";
+import VoxeeAppIcon from "@brand/components/ui/VoxeeAppIcon";
 import { BRAND } from "@brand/config/brand";
 import { Card, CardContent } from "./components/ui/card.tsx";
 import { useAuth } from "./hooks/useAuth";
@@ -14,6 +14,7 @@ import { useTheme } from "./hooks/useTheme";
 
 const ControlPanel = React.lazy(() => import("./components/ControlPanel.tsx"));
 const OnboardingFlow = React.lazy(() => import("./components/OnboardingFlow.tsx"));
+const VoxeeOnboarding = React.lazy(() => import("@brand/components/onboarding/VoxeeOnboarding"));
 const AgentOverlay = React.lazy(() => import("./components/AgentOverlay.tsx"));
 
 export default function AppRouter() {
@@ -39,6 +40,7 @@ function MainApp() {
   const { isSignedIn, isGracePeriodOnly, isLoaded: authLoaded } = useAuth();
 
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showBrandOnboarding, setShowBrandOnboarding] = useState(false);
   const [needsReauth, setNeedsReauth] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [postOnboardingSettingsSection, setPostOnboardingSettingsSection] = useState(undefined);
@@ -57,6 +59,13 @@ function MainApp() {
 
       if (BRAND.showOnboarding && !localStorage.getItem("onboardingCompleted")) {
         import("./components/OnboardingFlow.tsx").catch(() => {});
+      }
+      if (
+        !BRAND.showAccount &&
+        BRAND.showBrandOnboarding &&
+        localStorage.getItem("voxeeOnboardingCompleted") !== "true"
+      ) {
+        import("@brand/components/onboarding/VoxeeOnboarding").catch(() => {});
       }
     }
 
@@ -105,6 +114,18 @@ function MainApp() {
       window.electronAPI?.hideWindow?.();
     }
 
+    // Brand (VOxee) first-run onboarding — independent of the upstream flow.
+    // Only gates the control panel; the dictation overlay is left as-is so it
+    // never stays stuck hidden after the wizard completes.
+    if (
+      isControlPanel &&
+      !BRAND.showAccount &&
+      BRAND.showBrandOnboarding &&
+      localStorage.getItem("voxeeOnboardingCompleted") !== "true"
+    ) {
+      setShowBrandOnboarding(true);
+    }
+
     setIsLoading(false);
   }, [authLoaded, isControlPanel, isDictationPanel, isGracePeriodOnly, isSignedIn]);
 
@@ -114,6 +135,11 @@ function MainApp() {
     }
     setShowOnboarding(false);
     localStorage.setItem("onboardingCompleted", "true");
+  };
+
+  const handleBrandOnboardingComplete = () => {
+    setShowBrandOnboarding(false);
+    localStorage.setItem("voxeeOnboardingCompleted", "true");
   };
 
   // The agent overlay never touches account-scoped data, so it renders
@@ -131,6 +157,14 @@ function MainApp() {
   // resolve (guest/offline presents as signed out).
   if (isLoading) {
     return <LoadingFallback />;
+  }
+
+  if (isControlPanel && showBrandOnboarding) {
+    return (
+      <Suspense fallback={<LoadingFallback />}>
+        <VoxeeOnboarding onComplete={handleBrandOnboardingComplete} />
+      </Suspense>
+    );
   }
 
   if (isControlPanel && showOnboarding) {
@@ -194,7 +228,7 @@ function LoadingFallback({ message }) {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
       <div className="flex flex-col items-center gap-4 animate-[scale-in_300ms_ease-out]">
-        <BrandLogo className="w-12 h-12 drop-shadow-[0_2px_8px_rgba(94,74,245,0.18)] dark:drop-shadow-[0_2px_12px_rgba(94,74,245,0.25)]" />
+        <VoxeeAppIcon className="w-12 h-12 rounded-[0.7rem] drop-shadow-[0_2px_8px_rgba(94,74,245,0.18)] dark:drop-shadow-[0_2px_12px_rgba(94,74,245,0.25)]" />
         <div className="w-7 h-7 rounded-full border-[2.5px] border-transparent border-t-primary animate-[spinner-rotate_0.8s_cubic-bezier(0.4,0,0.2,1)_infinite] motion-reduce:animate-none motion-reduce:border-t-muted-foreground motion-reduce:opacity-50" />
         {fallbackMessage && (
           <p className="text-[13px] font-medium text-muted-foreground dark:text-foreground/60 tracking-[-0.01em]">

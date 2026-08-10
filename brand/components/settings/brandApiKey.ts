@@ -1,34 +1,101 @@
-import { useSettingsStore, getSettings } from "@/stores/settingsStore";
+import { useSettingsStore, setResolvedLLMConfig } from "@/stores/settingsStore";
+import type { InferenceScope } from "@/config/inferenceScopes";
+import { getBrandRegionModelConfig } from "@brand/config/brand";
+import type { BrandRegionId } from "@brand/config/brand";
+import { getStoredBrandChoice, setStoredBrandChoice } from "./brandChoice";
 
 /**
- * Single organization API key shared by every self-hosted scope.
+ * Two organization API keys, one per Oxeegen region (EU / US). Each is stored
+ * ENCRYPTED via Electron safeStorage (secretKeys.js entries `oxeegen-eu` /
+ * `oxeegen-us`) and reached through IPC — not kept in the settings store.
  *
- * All brand scopes target the same OpenAI-compatible endpoint, so one key
- * serves them all. It is written through the existing store setters:
- *   - cleanupCustomApiKey and customTranscriptionApiKey persist ENCRYPTED via
- *     Electron safeStorage (they are declared secrets).
- *   - the other per-scope custom keys use the same localStorage storage that
- *     upstream already uses for user-entered custom keys.
- *
- * `cleanupCustomApiKey` is the canonical value read back everywhere.
+ * When a region key is set, it is propagated to the per-scope custom API key of
+ * every scope currently pointed at that region, since inference reads the
+ * per-scope key (cleanupCustomApiKey, customTranscriptionApiKey, …).
  */
 
-export function getOxeegenApiKey(): string {
-  return getSettings().cleanupCustomApiKey || "";
+type Store = ReturnType<typeof useSettingsStore.getState>;
+
+// brandChoice id -> setter for that scope's custom API key. Transcription
+// contexts (dictation/meeting/upload) share the single customTranscriptionApiKey.
+const SCOPE_KEY_SETTERS: Record<string, (s: Store, key: string) => void> = {
+  dictationCleanup: (s, k) => s.setCleanupCustomApiKey(k),
+  dictationAgent: (s, k) => s.setDictationAgentCustomApiKey(k),
+  chatIntelligence: (s, k) => s.setChatAgentCustomApiKey(k),
+  noteFormatting: (s, k) => s.setNoteFormattingCustomApiKey(k),
+  dictationTranslation: (s, k) => s.setTranslationCustomApiKey(k),
+  "transcription.dictation": (s, k) => s.setCustomTranscriptionApiKey(k),
+  "transcription.meeting": (s, k) => s.setMeetingCustomTranscriptionApiKey(k),
+  "transcription.upload": (s, k) => s.setUploadCustomTranscriptionApiKey(k),
+};
+
+export async function getOxeegenRegionKey(region: BrandRegionId): Promise<string> {
+  const api = window.electronAPI;
+  const fn = region === "eu" ? api?.getOxeegenEuKey : api?.getOxeegenUsKey;
+  return (await fn?.()) || "";
 }
 
-export function setOxeegenApiKey(key: string): void {
+export async function setOxeegenRegionKey(region: BrandRegionId, key: string): Promise<void> {
+  const api = window.electronAPI;
+  const save = region === "eu" ? api?.saveOxeegenEuKey : api?.saveOxeegenUsKey;
+  await save?.(key);
+  // Apply to every scope currently on this region.
   const s = useSettingsStore.getState();
-  s.setCleanupCustomApiKey(key); // secret (safeStorage)
-  s.setCustomTranscriptionApiKey(key); // secret (safeStorage)
-  s.setDictationAgentCustomApiKey(key);
-  s.setChatAgentCustomApiKey(key);
-  s.setNoteFormattingCustomApiKey(key);
-  s.setTranslationCustomApiKey(key);
+  for (const [id, setter] of Object.entries(SCOPE_KEY_SETTERS)) {
+    if (getStoredBrandChoice(id) === region) setter(s, key);
+  }
 }
 
-/** Reactive accessor for the shared key. */
-export function useOxeegenApiKey(): { apiKey: string; setApiKey: (key: string) => void } {
-  const apiKey = useSettingsStore((s) => s.cleanupCustomApiKey) || "";
-  return { apiKey, setApiKey: setOxeegenApiKey };
+const LLM_SCOPES: InferenceScope[] = [
+  "dictationCleanup",
+  "dictationAgent",
+  "chatIntelligence",
+  "noteFormatting",
+  "dictationTranslation",
+];
+
+/**
+ * Semi-automatic setup (onboarding accelerator): once a region key validates,
+ * point every scope that has NO provider selected yet at that region (endpoint +
+ * locked model + this key). Scopes already configured (US / EU / Custom) are
+ * left untouched. Runs are idempotent — only null-choice scopes are affected.
+ */
+export async function autoSelectRegionForUnsetScopes(region: BrandRegionId): Promise<void> {
+  const key = await getOxeegenRegionKey(region);
+  const s = useSettingsStore.getState();
+
+  for (const scope of LLM_SCOPES) {
+    if (getStoredBrandChoice(scope) !== null) continue;
+    const { endpoint, model } = getBrandRegionModelConfig(region, scope);
+    setResolvedLLMConfig(scope, {
+      mode: "self-hosted",
+      provider: "custom",
+      remoteUrl: endpoint,
+      model,
+      customApiKey: key,
+    });
+    setStoredBrandChoice(scope, region);
+  }
+
+  // Transcription: each context (dictation/meeting/upload) owns its endpoint,
+  // model and key.
+  const { endpoint, model } = getBrandRegionModelConfig(region, "transcription");
+  if (getStoredBrandChoice("transcription.dictation") === null) {
+    s.setRemoteTranscriptionUrl(endpoint);
+    s.setRemoteTranscriptionModel(model);
+    s.setCustomTranscriptionApiKey(key);
+    setStoredBrandChoice("transcription.dictation", region);
+  }
+  if (getStoredBrandChoice("transcription.upload") === null) {
+    s.setUploadRemoteTranscriptionUrl(endpoint);
+    s.setUploadRemoteTranscriptionModel(model);
+    s.setUploadCustomTranscriptionApiKey(key);
+    setStoredBrandChoice("transcription.upload", region);
+  }
+  if (getStoredBrandChoice("transcription.meeting") === null) {
+    s.setMeetingRemoteTranscriptionUrl(endpoint);
+    s.setMeetingRemoteTranscriptionModel(model);
+    s.setMeetingCustomTranscriptionApiKey(key);
+    setStoredBrandChoice("transcription.meeting", region);
+  }
 }

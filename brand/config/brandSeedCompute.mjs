@@ -76,8 +76,8 @@ export function computeBrandSeed(brand) {
     // path treats an account-less brand build as OpenWhispr Cloud (which would
     // demand sign-in).
     seed[keys.cloudMode] = "byok";
-    if (cfg.model) seed[keys.model] = cfg.model;
-    if (cfg.endpoint) seed[keys.remoteUrl] = cfg.endpoint;
+    // Endpoint + model are NOT seeded: the user picks an Oxeegen region (EU/US)
+    // or Custom per scope, which fills remoteUrl/model/key. No default region.
   }
 
   // --- Transcription: dictation (shared base), meeting, upload ---
@@ -92,13 +92,11 @@ export function computeBrandSeed(brand) {
     seed.cloudTranscriptionMode = "byok";
     seed.cloudTranscriptionProvider = "custom";
     seed.remoteTranscriptionType = "openai-compatible";
-    if (stt.endpoint) seed.remoteTranscriptionUrl = stt.endpoint;
-    if (stt.model) seed.remoteTranscriptionModel = stt.model;
+    // remoteTranscriptionUrl/model are filled when the user picks a region.
 
     // Meeting context.
     seed.meetingTranscriptionMode = "self-hosted";
     seed.meetingRemoteTranscriptionType = "openai-compatible";
-    if (stt.endpoint) seed.meetingRemoteTranscriptionUrl = stt.endpoint;
 
     // Upload context.
     seed.uploadTranscriptionMode = "self-hosted";

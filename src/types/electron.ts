@@ -1403,6 +1403,16 @@ declare global {
       saveCortiClientSecret?: (key: string) => Promise<void>;
       getCortiKey?: () => Promise<string | null>;
       saveCortiKey?: (key: string) => Promise<void>;
+      // Brand (VOxee): the two Oxeegen region API keys.
+      getOxeegenEuKey?: () => Promise<string | null>;
+      saveOxeegenEuKey?: (key: string) => Promise<void>;
+      getOxeegenUsKey?: () => Promise<string | null>;
+      saveOxeegenUsKey?: (key: string) => Promise<void>;
+      // Per-screen self-hosted transcription keys (meeting / upload).
+      getMeetingCustomTranscriptionKey?: () => Promise<string | null>;
+      saveMeetingCustomTranscriptionKey?: (key: string) => Promise<void>;
+      getUploadCustomTranscriptionKey?: () => Promise<string | null>;
+      saveUploadCustomTranscriptionKey?: (key: string) => Promise<void>;
       proxyCortiTranscription?: (data: {
         audioBuffer: ArrayBuffer;
         language: string;

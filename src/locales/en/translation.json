@@ -1,4 +1,145 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "Sent as a Bearer token for authentication.",
+      "checking": "Verifying…",
+      "valid": "Key verified",
+      "invalid": "Invalid key",
+      "sidebarDesc": "Oxeegen API key"
+    },
+    "health": {
+      "ok": "Connected",
+      "noKey": "Key missing",
+      "noModel": "No model",
+      "connKo": "Connection failed",
+      "badKey": "Key rejected"
+    },
+    "models": {
+      "custom": "Custom",
+      "customDesc": "Your own OpenAI-compatible endpoint",
+      "regionDesc": "Preconfigured Oxeegen models"
+    },
+    "onboarding": {
+      "back": "Back",
+      "next": "Next",
+      "finish": "Finish",
+      "steps": {
+        "welcome": "Welcome",
+        "region": "Region",
+        "keys": "API keys",
+        "models": "Models",
+        "prefs": "Preferences",
+        "hotkeys": "Hotkeys",
+        "tour": "Tour",
+        "language": "Language"
+      },
+      "welcome": {
+        "title": "Welcome to VOxee",
+        "subtitle": "VOxee turns your voice into text, notes and actions, powered by Oxeegen models. Let's set it up.",
+        "dictation": "Voice dictation into any app",
+        "cleanup": "AI text cleanup",
+        "agent": "Voice agent commands",
+        "translation": "Dictation translation",
+        "meeting": "Meeting transcription",
+        "notes": "Notes with semantic search"
+      },
+      "region": {
+        "title": "Choose your region",
+        "subtitle": "Pick the Oxeegen deployment closest to you.",
+        "desc": "Preconfigured Oxeegen models",
+        "both": "Both",
+        "bothDesc": "Set up US and EU"
+      },
+      "keys": {
+        "title": "Enter your API key",
+        "subtitle": "Paste the organization key for your region — it's verified against the endpoint."
+      },
+      "models": {
+        "title": "Models",
+        "subtitle": "Enable the features you want. You can change these later in Settings.",
+        "cleanup": "Text cleanup",
+        "cleanupDesc": "Clean up filler words and formatting after dictation.",
+        "agent": "Voice agent",
+        "agentDesc": "Speak commands to your assistant.",
+        "agentName": "Agent name",
+        "agentNameDesc": "How you address your assistant.",
+        "translation": "Translation",
+        "translationDesc": "Dictate in one language and paste in another."
+      },
+      "prefs": {
+        "title": "Preferences",
+        "subtitle": "Appearance and languages."
+      },
+      "hotkeys": {
+        "title": "Hotkeys",
+        "subtitle": "Global shortcuts. Defaults are shown — change any of them.",
+        "dictation": "Dictation",
+        "agent": "Chat agent",
+        "voiceAgent": "Voice agent",
+        "translation": "Translation",
+        "meeting": "Meeting"
+      },
+      "tour": {
+        "dictation": {
+          "title": "Dictate anywhere",
+          "desc": "Press your hotkey, speak, and the text lands at your cursor in any app.",
+          "pasted": "Pasted at your cursor",
+          "placeholder": "Your words appear here…",
+          "or": "or",
+          "trigger": "Click the button or press the hotkey",
+          "sample": "The quarterly report is ready for review."
+        },
+        "cleanup": {
+          "title": "Automatic cleanup",
+          "desc": "Filler words and messy formatting are cleaned up on the fly.",
+          "badge": "AI cleanup",
+          "messy": "um so like the the report is uh ready for review i think",
+          "clean": "The report is ready for review."
+        },
+        "agent": {
+          "title": "Talk to your agent",
+          "desc": "Address your agent by name and ask it to rewrite, summarize or reformat.",
+          "hotkeyHint": "Voice agent hotkey",
+          "command": "Hey {{agent}}, turn this into 3 bullet points",
+          "r1": "Report reviewed",
+          "r2": "Ready to ship",
+          "r3": "Needs sign-off"
+        },
+        "translation": {
+          "title": "Speak, paste translated",
+          "desc": "Dictate in one language and paste the translation in another.",
+          "hotkeyHint": "Translation hotkey"
+        },
+        "meeting": {
+          "title": "Meeting notes, live",
+          "desc": "Detected calls are transcribed with speaker labels — straight into a note.",
+          "l1": "Let's ship on Friday.",
+          "l2": "Sounds good to me.",
+          "l3": "I'll prep the release notes."
+        },
+        "ready": {
+          "title": "You're all set",
+          "desc": "Everything is configurable later in Settings. Press Finish to start using VOxee."
+        },
+        "notEnabled": "{{feature}} isn't enabled yet.",
+        "enable": "Enable",
+        "notes": {
+          "title": "Turn notes into action",
+          "desc": "Summarize, extract action items or translate any note in one click.",
+          "summarize": "Summarize",
+          "actionItems": "Action items",
+          "translate": "Translate",
+          "summary": "Summary",
+          "s1": "Ship on Friday — agreed by the team.",
+          "s2": "Speaker 2 owns the release notes."
+        }
+      },
+      "language": {
+        "title": "Choose your language",
+        "subtitle": "The language of the VOxee interface. You can change it later in Settings."
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "Language",

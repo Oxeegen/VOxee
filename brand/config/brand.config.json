@@ -9,6 +9,7 @@
   "showOnboarding": false,
   "showUseCaseStep": false,
   "showIntegrations": false,
+  "showBrandOnboarding": true,
   "panelStartPosition": "center",
   "theme": {
     "primary": "#5E4AF5",
@@ -17,11 +18,37 @@
   "update": { "feedUrl": null },
   "urls": { "docs": null, "support": null, "terms": null, "privacy": null },
   "models": {
-    "transcription":        { "provider": "custom", "endpoint": "", "model": "",  "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
-    "dictationCleanup":     { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
-    "dictationAgent":       { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
-    "dictationTranslation": { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
-    "noteFormatting":       { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
-    "chatIntelligence":     { "provider": "custom", "endpoint": "", "model": "", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] }
+    "transcription":        { "provider": "custom", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "dictationCleanup":     { "provider": "custom", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "dictationAgent":       { "provider": "custom", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "dictationTranslation": { "provider": "custom", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "noteFormatting":       { "provider": "custom", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },
+    "chatIntelligence":     { "provider": "custom", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] }
+  },
+  "regions": {
+    "us": {
+      "label": "Oxeegen US",
+      "endpoint": "",
+      "models": {
+        "transcription": "",
+        "dictationCleanup": "",
+        "dictationAgent": "",
+        "dictationTranslation": "",
+        "noteFormatting": "",
+        "chatIntelligence": ""
+      }
+    },
+    "eu": {
+      "label": "Oxeegen EU",
+      "endpoint": "",
+      "models": {
+        "transcription": "",
+        "dictationCleanup": "",
+        "dictationAgent": "",
+        "dictationTranslation": "",
+        "noteFormatting": "",
+        "chatIntelligence": ""
+      }
+    }
   }
 }

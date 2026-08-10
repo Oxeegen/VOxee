@@ -38,6 +38,7 @@ import {
 } from "../stores/meetingRecordingStore";
 import ControlPanelSidebar, { type ControlPanelView } from "./ControlPanelSidebar";
 import { BRAND } from "@brand/config/brand";
+import VoxeeAppIcon from "@brand/components/ui/VoxeeAppIcon";
 import MeetingRecordingMount from "./MeetingRecordingMount";
 import MeetingRecordingPill from "./notes/MeetingRecordingPill";
 import WindowControls from "./WindowControls";
@@ -355,7 +356,9 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
   }, [authLoaded, isSignedIn, setUseLocalWhisper, setCloudTranscriptionMode]);
 
   useEffect(() => {
-    if (platform === "darwin" || gpuBannerDismissed) return;
+    // GPU acceleration only applies to local models; skip the banner entirely
+    // in account-less brand builds that hide local models (e.g. VOxee).
+    if (platform === "darwin" || gpuBannerDismissed || !BRAND.showLocalModels) return;
     const detect = async () => {
       const results = { transcription: false, intelligence: false };
       if (useLocalWhisper && localTranscriptionProvider === "whisper") {
@@ -939,7 +942,7 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
             className="flex items-center justify-between w-full h-10 shrink-0"
             style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
           >
-            {isSidePanelLayout && (
+            {isSidePanelLayout ? (
               <div
                 className={platform === "darwin" ? "ml-[84px] mt-[16px]" : "ml-2"}
                 style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
@@ -953,6 +956,11 @@ export default function ControlPanel({ initialSettingsSection }: ControlPanelPro
                   <ChevronLeft size={14} strokeWidth={1.8} />
                   {t("controlPanel.backToNotes")}
                 </Button>
+              </div>
+            ) : (
+              <div className={`flex items-center gap-2 ${platform === "darwin" ? "ml-[84px]" : "ml-3"}`}>
+                <VoxeeAppIcon className="w-5 h-5 rounded-[5px]" />
+                <span className="text-sm font-semibold text-foreground">{BRAND.productName}</span>
               </div>
             )}
             <div className="flex-1" />

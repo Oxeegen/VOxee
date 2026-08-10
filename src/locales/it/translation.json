@@ -1,4 +1,145 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "Inviata come token Bearer per l'autenticazione.",
+      "checking": "Verifica…",
+      "valid": "Chiave verificata",
+      "invalid": "Chiave non valida",
+      "sidebarDesc": "Chiave API Oxeegen"
+    },
+    "health": {
+      "ok": "Connesso",
+      "noKey": "Chiave mancante",
+      "noModel": "Nessun modello",
+      "connKo": "Connessione non riuscita",
+      "badKey": "Chiave rifiutata"
+    },
+    "models": {
+      "custom": "Personalizzato",
+      "customDesc": "Il tuo endpoint compatibile con OpenAI",
+      "regionDesc": "Modelli Oxeegen preconfigurati"
+    },
+    "onboarding": {
+      "back": "Indietro",
+      "next": "Avanti",
+      "finish": "Fine",
+      "steps": {
+        "welcome": "Benvenuto",
+        "region": "Regione",
+        "keys": "Chiavi API",
+        "models": "Modelli",
+        "prefs": "Preferenze",
+        "hotkeys": "Scorciatoie",
+        "tour": "Tour",
+        "language": "Lingua"
+      },
+      "welcome": {
+        "title": "Benvenuto in VOxee",
+        "subtitle": "VOxee trasforma la tua voce in testo, note e azioni, con i modelli Oxeegen. Configuriamolo.",
+        "dictation": "Dettatura vocale in qualsiasi app",
+        "cleanup": "Pulizia del testo con IA",
+        "agent": "Comandi all'agente vocale",
+        "translation": "Traduzione della dettatura",
+        "meeting": "Trascrizione delle riunioni",
+        "notes": "Note con ricerca semantica"
+      },
+      "region": {
+        "title": "Scegli la tua regione",
+        "subtitle": "Scegli il deployment Oxeegen più vicino.",
+        "desc": "Modelli Oxeegen preconfigurati",
+        "both": "Entrambe",
+        "bothDesc": "Configura US ed EU"
+      },
+      "keys": {
+        "title": "Inserisci la tua chiave API",
+        "subtitle": "Incolla la chiave dell'organizzazione della tua regione — viene verificata sull'endpoint."
+      },
+      "models": {
+        "title": "Modelli",
+        "subtitle": "Attiva le funzioni che vuoi. Potrai cambiarle in seguito nelle Impostazioni.",
+        "cleanup": "Pulizia del testo",
+        "cleanupDesc": "Rimuove intercalari e formattazione dopo la dettatura.",
+        "agent": "Agente vocale",
+        "agentDesc": "Impartisci comandi al tuo assistente.",
+        "agentName": "Nome dell'agente",
+        "agentNameDesc": "Come ti rivolgi al tuo assistente.",
+        "translation": "Traduzione",
+        "translationDesc": "Detta in una lingua e incolla in un'altra."
+      },
+      "prefs": {
+        "title": "Preferenze",
+        "subtitle": "Aspetto e lingue."
+      },
+      "hotkeys": {
+        "title": "Scorciatoie",
+        "subtitle": "Scorciatoie globali. Sono mostrati i valori predefiniti — modificali se vuoi.",
+        "dictation": "Dettatura",
+        "agent": "Agente chat",
+        "voiceAgent": "Agente vocale",
+        "translation": "Traduzione",
+        "meeting": "Riunione"
+      },
+      "tour": {
+        "dictation": {
+          "title": "Detta ovunque",
+          "desc": "Premi la scorciatoia, parla e il testo compare al cursore in qualsiasi app.",
+          "pasted": "Incollato al cursore",
+          "placeholder": "Le tue parole appaiono qui…",
+          "or": "o",
+          "trigger": "Clicca il pulsante o premi la scorciatoia",
+          "sample": "Il rapporto trimestrale è pronto per la revisione."
+        },
+        "cleanup": {
+          "title": "Pulizia automatica",
+          "desc": "Intercalari e formattazione disordinata vengono puliti al volo.",
+          "badge": "Pulizia IA",
+          "messy": "ehm cioè il il rapporto è ehm pronto per la revisione credo",
+          "clean": "Il rapporto è pronto per la revisione."
+        },
+        "agent": {
+          "title": "Parla col tuo agente",
+          "desc": "Rivolgiti al tuo agente per nome per riscrivere, riassumere o riformattare.",
+          "hotkeyHint": "Scorciatoia agente vocale",
+          "command": "Ehi {{agent}}, trasforma questo in 3 punti",
+          "r1": "Rapporto revisionato",
+          "r2": "Pronto per il rilascio",
+          "r3": "In attesa di approvazione"
+        },
+        "translation": {
+          "title": "Parla, incolla tradotto",
+          "desc": "Detta in una lingua e incolla la traduzione in un'altra.",
+          "hotkeyHint": "Scorciatoia traduzione"
+        },
+        "meeting": {
+          "title": "Note riunione, in diretta",
+          "desc": "Le chiamate rilevate vengono trascritte con le etichette dei parlanti — dritte in una nota.",
+          "l1": "Rilasciamo venerdì.",
+          "l2": "Per me va bene.",
+          "l3": "Preparo le note di rilascio."
+        },
+        "ready": {
+          "title": "Tutto pronto",
+          "desc": "Tutto è configurabile dopo nelle Impostazioni. Premi Fine per iniziare a usare VOxee."
+        },
+        "notEnabled": "{{feature}} non è ancora attivato.",
+        "enable": "Attiva",
+        "notes": {
+          "title": "Trasforma le note in azioni",
+          "desc": "Riassumi, estrai attività o traduci qualsiasi nota con un clic.",
+          "summarize": "Riassumi",
+          "actionItems": "Attività",
+          "translate": "Traduci",
+          "summary": "Riepilogo",
+          "s1": "Rilascio venerdì — approvato dal team.",
+          "s2": "Speaker 2 cura le note di rilascio."
+        }
+      },
+      "language": {
+        "title": "Scegli la tua lingua",
+        "subtitle": "La lingua dell'interfaccia VOxee. Modificabile in seguito nelle Impostazioni."
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "Lingua",

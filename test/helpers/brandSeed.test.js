@@ -18,20 +18,22 @@ const ACCOUNTLESS_BRAND = {
   },
 };
 
-test("seeds self-hosted LLM defaults for every scope", async () => {
+test("seeds self-hosted LLM modes for every scope (no region endpoint/model)", async () => {
   const { computeBrandSeed } = await load();
   const seed = computeBrandSeed(ACCOUNTLESS_BRAND);
 
   assert.equal(seed.cleanupMode, "self-hosted");
   assert.equal(seed.cleanupProvider, "custom");
-  assert.equal(seed.cleanupModel, "llm-1");
-  assert.equal(seed.cleanupRemoteUrl, "https://ep/v1");
 
   assert.equal(seed.dictationAgentMode, "self-hosted");
   assert.equal(seed.chatAgentMode, "self-hosted");
   assert.equal(seed.noteFormattingMode, "self-hosted");
   assert.equal(seed.translationMode, "self-hosted");
-  assert.equal(seed.translationModel, "llm-1");
+
+  // No default region: endpoint/model are filled when the user picks EU/US.
+  assert.equal("cleanupModel" in seed, false);
+  assert.equal("cleanupRemoteUrl" in seed, false);
+  assert.equal("translationModel" in seed, false);
 });
 
 test("forces legacy cloud-mode fields to byok (never OpenWhispr Cloud)", async () => {
@@ -52,15 +54,16 @@ test("seeds self-hosted transcription for dictation, meeting and upload", async 
 
   assert.equal(seed.transcriptionMode, "self-hosted");
   assert.equal(seed.remoteTranscriptionType, "openai-compatible");
-  assert.equal(seed.remoteTranscriptionUrl, "https://ep/v1");
-  assert.equal(seed.remoteTranscriptionModel, "stt-1");
+  // No default region: the transcription endpoint/model are filled on selection.
+  assert.equal("remoteTranscriptionUrl" in seed, false);
+  assert.equal("remoteTranscriptionModel" in seed, false);
   // Legacy fields must agree with self-hosted so migrateProviderSettings keeps it.
   assert.equal(seed.cloudTranscriptionMode, "byok");
   assert.equal(seed.cloudTranscriptionProvider, "custom");
 
   assert.equal(seed.meetingTranscriptionMode, "self-hosted");
   assert.equal(seed.meetingRemoteTranscriptionType, "openai-compatible");
-  assert.equal(seed.meetingRemoteTranscriptionUrl, "https://ep/v1");
+  assert.equal("meetingRemoteTranscriptionUrl" in seed, false);
 
   assert.equal(seed.uploadTranscriptionMode, "self-hosted");
 });

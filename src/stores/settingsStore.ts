@@ -528,6 +528,10 @@ export interface SettingsState
   meetingCloudTranscriptionMode: string;
   meetingRemoteTranscriptionType: SelfHostedType;
   meetingRemoteTranscriptionUrl: string;
+  // Per-screen self-hosted transcription config (decoupled from dictation).
+  meetingRemoteTranscriptionModel: string;
+  uploadRemoteTranscriptionUrl: string;
+  uploadRemoteTranscriptionModel: string;
 
   uploadTranscriptionMode: InferenceMode;
   uploadUseLocalWhisper: boolean;
@@ -602,6 +606,9 @@ export interface SettingsState
   setMeetingCloudTranscriptionMode: (value: string) => void;
   setMeetingRemoteTranscriptionType: (type: SelfHostedType) => void;
   setMeetingRemoteTranscriptionUrl: (url: string) => void;
+  setMeetingRemoteTranscriptionModel: (model: string) => void;
+  setUploadRemoteTranscriptionUrl: (url: string) => void;
+  setUploadRemoteTranscriptionModel: (model: string) => void;
 
   setUploadTranscriptionMode: (mode: InferenceMode) => void;
   setUploadUseLocalWhisper: (value: boolean) => void;
@@ -678,6 +685,10 @@ export interface SettingsState
   setCortiApiKey: (key: string) => void;
   setTinfoilApiKey: (key: string) => void;
   setCustomTranscriptionApiKey: (key: string) => void;
+  meetingCustomTranscriptionApiKey: string;
+  setMeetingCustomTranscriptionApiKey: (key: string) => void;
+  uploadCustomTranscriptionApiKey: string;
+  setUploadCustomTranscriptionApiKey: (key: string) => void;
   setCleanupCustomApiKey: (key: string) => void;
 
   // Corti (BYOK)
@@ -885,6 +896,8 @@ const SECRET_IPC_SAVERS = {
   cortiApiKey: "saveCortiKey",
   tinfoil: "saveTinfoilKey",
   customTranscription: "saveCustomTranscriptionKey",
+  meetingCustomTranscription: "saveMeetingCustomTranscriptionKey",
+  uploadCustomTranscription: "saveUploadCustomTranscriptionKey",
   cleanupCustom: "saveCleanupCustomKey",
   bedrockAccessKeyId: "saveBedrockAccessKeyId",
   bedrockSecretAccessKey: "saveBedrockSecretAccessKey",
@@ -927,6 +940,8 @@ const STALE_SECRET_LOCALSTORAGE_KEYS = [
   "cortiApiKey",
   "tinfoilApiKey",
   "customTranscriptionApiKey",
+  "meetingCustomTranscriptionApiKey",
+  "uploadCustomTranscriptionApiKey",
   "customReasoningApiKey",
   "cleanupCustomApiKey",
   "bedrockAccessKeyId",
@@ -1043,6 +1058,8 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   cortiApiKey: "",
   tinfoilApiKey: "",
   customTranscriptionApiKey: "",
+  meetingCustomTranscriptionApiKey: "",
+  uploadCustomTranscriptionApiKey: "",
   cleanupCustomApiKey: "",
 
   // Enterprise providers
@@ -1194,6 +1211,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     return v === "openai-compatible" ? "openai-compatible" : ("lan" as SelfHostedType);
   })(),
   meetingRemoteTranscriptionUrl: readString("meetingRemoteTranscriptionUrl", ""),
+  meetingRemoteTranscriptionModel: readString("meetingRemoteTranscriptionModel", ""),
+  uploadRemoteTranscriptionUrl: readString("uploadRemoteTranscriptionUrl", ""),
+  uploadRemoteTranscriptionModel: readString("uploadRemoteTranscriptionModel", ""),
 
   uploadTranscriptionMode: (() => {
     const v = readString("uploadTranscriptionMode", "openwhispr");
@@ -1289,6 +1309,9 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
     type: SelfHostedType
   ) => void,
   setMeetingRemoteTranscriptionUrl: createStringSetter("meetingRemoteTranscriptionUrl"),
+  setMeetingRemoteTranscriptionModel: createStringSetter("meetingRemoteTranscriptionModel"),
+  setUploadRemoteTranscriptionUrl: createStringSetter("uploadRemoteTranscriptionUrl"),
+  setUploadRemoteTranscriptionModel: createStringSetter("uploadRemoteTranscriptionModel"),
 
   setUploadTranscriptionMode: createStringSetter("uploadTranscriptionMode") as (
     mode: InferenceMode
@@ -1548,6 +1571,16 @@ export const useSettingsStore = create<SettingsState>()((set, get) => ({
   setCustomTranscriptionApiKey: (key: string) => {
     set({ customTranscriptionApiKey: key });
     debouncedSaveSecret("customTranscription", key);
+    invalidateApiKeyCaches("custom");
+  },
+  setMeetingCustomTranscriptionApiKey: (key: string) => {
+    set({ meetingCustomTranscriptionApiKey: key });
+    debouncedSaveSecret("meetingCustomTranscription", key);
+    invalidateApiKeyCaches("custom");
+  },
+  setUploadCustomTranscriptionApiKey: (key: string) => {
+    set({ uploadCustomTranscriptionApiKey: key });
+    debouncedSaveSecret("uploadCustomTranscription", key);
     invalidateApiKeyCaches("custom");
   },
   setCleanupCustomApiKey: (key: string) => {
@@ -2294,6 +2327,8 @@ export async function initializeSettings(): Promise<void> {
         cortiApiKey,
         tinfoil,
         customTx,
+        meetingCustomTx,
+        uploadCustomTx,
         customRx,
         bedrockAccessKeyId,
         bedrockSecretAccessKey,
@@ -2313,6 +2348,8 @@ export async function initializeSettings(): Promise<void> {
         window.electronAPI.getCortiKey?.(),
         window.electronAPI.getTinfoilKey?.(),
         window.electronAPI.getCustomTranscriptionKey?.(),
+        window.electronAPI.getMeetingCustomTranscriptionKey?.(),
+        window.electronAPI.getUploadCustomTranscriptionKey?.(),
         window.electronAPI.getCleanupCustomKey?.(),
         window.electronAPI.getBedrockAccessKeyId?.(),
         window.electronAPI.getBedrockSecretAccessKey?.(),
@@ -2334,6 +2371,8 @@ export async function initializeSettings(): Promise<void> {
         cortiApiKey: cortiApiKey || "",
         tinfoilApiKey: tinfoil || "",
         customTranscriptionApiKey: customTx || "",
+        meetingCustomTranscriptionApiKey: meetingCustomTx || "",
+        uploadCustomTranscriptionApiKey: uploadCustomTx || "",
         cleanupCustomApiKey: customRx || "",
         bedrockAccessKeyId: bedrockAccessKeyId || "",
         bedrockSecretAccessKey: bedrockSecretAccessKey || "",

@@ -1,4 +1,145 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "作为 Bearer 令牌发送以进行身份验证。",
+      "checking": "验证中…",
+      "valid": "密钥已验证",
+      "invalid": "密钥无效",
+      "sidebarDesc": "Oxeegen API 密钥"
+    },
+    "health": {
+      "ok": "已连接",
+      "noKey": "缺少密钥",
+      "noModel": "未选择模型",
+      "connKo": "连接失败",
+      "badKey": "密钥被拒绝"
+    },
+    "models": {
+      "custom": "自定义",
+      "customDesc": "你自己的 OpenAI 兼容端点",
+      "regionDesc": "预配置的 Oxeegen 模型"
+    },
+    "onboarding": {
+      "back": "返回",
+      "next": "下一步",
+      "finish": "完成",
+      "steps": {
+        "welcome": "欢迎",
+        "region": "区域",
+        "keys": "API 密钥",
+        "models": "模型",
+        "prefs": "偏好设置",
+        "hotkeys": "快捷键",
+        "tour": "导览",
+        "language": "语言"
+      },
+      "welcome": {
+        "title": "欢迎使用 VOxee",
+        "subtitle": "VOxee 由 Oxeegen 模型驱动，将你的语音转为文本、笔记和操作。开始设置吧。",
+        "dictation": "在任意应用中语音听写",
+        "cleanup": "AI 文本清理",
+        "agent": "语音代理指令",
+        "translation": "听写翻译",
+        "meeting": "会议转录",
+        "notes": "带语义搜索的笔记"
+      },
+      "region": {
+        "title": "选择你的区域",
+        "subtitle": "选择最近的 Oxeegen 部署。",
+        "desc": "预配置的 Oxeegen 模型",
+        "both": "两者",
+        "bothDesc": "同时设置 US 和 EU"
+      },
+      "keys": {
+        "title": "输入你的 API 密钥",
+        "subtitle": "粘贴你所在区域的组织密钥 — 将在端点进行验证。"
+      },
+      "models": {
+        "title": "模型",
+        "subtitle": "启用你想要的功能。稍后可在设置中更改。",
+        "cleanup": "文本清理",
+        "cleanupDesc": "听写后清理语气词和格式。",
+        "agent": "语音代理",
+        "agentDesc": "用语音向助手下达指令。",
+        "agentName": "代理名称",
+        "agentNameDesc": "你如何称呼你的助手。",
+        "translation": "翻译",
+        "translationDesc": "用一种语言听写，粘贴为另一种语言。"
+      },
+      "prefs": {
+        "title": "偏好设置",
+        "subtitle": "外观与语言。"
+      },
+      "hotkeys": {
+        "title": "快捷键",
+        "subtitle": "全局快捷键。已显示默认值 — 可随意更改。",
+        "dictation": "听写",
+        "agent": "聊天代理",
+        "voiceAgent": "语音代理",
+        "translation": "翻译",
+        "meeting": "会议"
+      },
+      "tour": {
+        "dictation": {
+          "title": "随处听写",
+          "desc": "按下快捷键说话，文本就会出现在任意应用的光标处。",
+          "pasted": "已粘贴到光标处",
+          "placeholder": "你的文字会出现在这里…",
+          "or": "或",
+          "trigger": "点击按钮或按下快捷键",
+          "sample": "季度报告已准备好审阅。"
+        },
+        "cleanup": {
+          "title": "自动清理",
+          "desc": "语气词和杂乱格式会即时清理。",
+          "badge": "AI 清理",
+          "messy": "呃 就是 那个 报告 呃 应该准备好审阅了吧",
+          "clean": "报告已准备好审阅。"
+        },
+        "agent": {
+          "title": "与你的代理对话",
+          "desc": "按名字称呼代理，让它改写、总结或重新排版。",
+          "hotkeyHint": "语音代理快捷键",
+          "command": "嘿 {{agent}}，把这个整理成三个要点",
+          "r1": "报告已审阅",
+          "r2": "可以发布",
+          "r3": "待批准"
+        },
+        "translation": {
+          "title": "说话，粘贴译文",
+          "desc": "用一种语言听写，粘贴为另一种语言的译文。",
+          "hotkeyHint": "翻译快捷键"
+        },
+        "meeting": {
+          "title": "会议记录，实时生成",
+          "desc": "检测到的通话会带说话人标签转录 — 直接写入笔记。",
+          "l1": "我们周五发布吧。",
+          "l2": "我觉得可以。",
+          "l3": "我来准备发布说明。"
+        },
+        "ready": {
+          "title": "全部就绪",
+          "desc": "一切之后都可在设置中调整。点击“完成”开始使用 VOxee。"
+        },
+        "notEnabled": "{{feature}} 尚未启用。",
+        "enable": "启用",
+        "notes": {
+          "title": "让笔记付诸行动",
+          "desc": "一键总结、提取行动项或翻译任意笔记。",
+          "summarize": "总结",
+          "actionItems": "行动项",
+          "translate": "翻译",
+          "summary": "摘要",
+          "s1": "周五发布 — 团队已同意。",
+          "s2": "Speaker 2 负责发布说明。"
+        }
+      },
+      "language": {
+        "title": "选择你的语言",
+        "subtitle": "VOxee 界面的语言。稍后可在设置中更改。"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "语言",

@@ -1,4 +1,145 @@
 {
+  "brand": {
+    "apiKey": {
+      "help": "認証のため Bearer トークンとして送信されます。",
+      "checking": "確認中…",
+      "valid": "キーを確認しました",
+      "invalid": "無効なキー",
+      "sidebarDesc": "Oxeegen API キー"
+    },
+    "health": {
+      "ok": "接続済み",
+      "noKey": "キーがありません",
+      "noModel": "モデル未選択",
+      "connKo": "接続に失敗",
+      "badKey": "キーが拒否されました"
+    },
+    "models": {
+      "custom": "カスタム",
+      "customDesc": "独自の OpenAI 互換エンドポイント",
+      "regionDesc": "設定済みの Oxeegen モデル"
+    },
+    "onboarding": {
+      "back": "戻る",
+      "next": "次へ",
+      "finish": "完了",
+      "steps": {
+        "welcome": "ようこそ",
+        "region": "リージョン",
+        "keys": "API キー",
+        "models": "モデル",
+        "prefs": "環境設定",
+        "hotkeys": "ホットキー",
+        "tour": "ツアー",
+        "language": "言語"
+      },
+      "welcome": {
+        "title": "VOxee へようこそ",
+        "subtitle": "VOxee は Oxeegen モデルで、音声をテキスト・メモ・操作に変換します。さっそく設定しましょう。",
+        "dictation": "あらゆるアプリへの音声入力",
+        "cleanup": "AI によるテキスト整形",
+        "agent": "音声エージェントへの指示",
+        "translation": "口述の翻訳",
+        "meeting": "会議の文字起こし",
+        "notes": "セマンティック検索付きのメモ"
+      },
+      "region": {
+        "title": "リージョンを選択",
+        "subtitle": "最も近い Oxeegen デプロイを選んでください。",
+        "desc": "設定済みの Oxeegen モデル",
+        "both": "両方",
+        "bothDesc": "US と EU を設定"
+      },
+      "keys": {
+        "title": "API キーを入力",
+        "subtitle": "リージョンの組織キーを貼り付けてください。エンドポイントで検証されます。"
+      },
+      "models": {
+        "title": "モデル",
+        "subtitle": "使いたい機能を有効にしてください。後で設定から変更できます。",
+        "cleanup": "テキスト整形",
+        "cleanupDesc": "口述後のつなぎ言葉や書式を整えます。",
+        "agent": "音声エージェント",
+        "agentDesc": "アシスタントに音声で指示します。",
+        "agentName": "エージェント名",
+        "agentNameDesc": "アシスタントの呼び名。",
+        "translation": "翻訳",
+        "translationDesc": "ある言語で口述し、別の言語で貼り付けます。"
+      },
+      "prefs": {
+        "title": "環境設定",
+        "subtitle": "外観と言語。"
+      },
+      "hotkeys": {
+        "title": "ホットキー",
+        "subtitle": "グローバルショートカット。既定値が表示されています — 変更できます。",
+        "dictation": "口述",
+        "agent": "チャットエージェント",
+        "voiceAgent": "音声エージェント",
+        "translation": "翻訳",
+        "meeting": "会議"
+      },
+      "tour": {
+        "dictation": {
+          "title": "どこでも口述",
+          "desc": "ホットキーを押して話すと、どのアプリでもカーソル位置に文字が入ります。",
+          "pasted": "カーソル位置に貼付",
+          "placeholder": "ここに文字が表示されます…",
+          "or": "または",
+          "trigger": "ボタンをクリックするかホットキーを押します",
+          "sample": "四半期報告書はレビューの準備ができています。"
+        },
+        "cleanup": {
+          "title": "自動整形",
+          "desc": "つなぎ言葉や乱れた書式をその場で整えます。",
+          "badge": "AI 整形",
+          "messy": "えーっと その 報告書は えー レビューの準備ができたと思います",
+          "clean": "報告書はレビューの準備ができました。"
+        },
+        "agent": {
+          "title": "エージェントに話す",
+          "desc": "名前で呼びかけて、書き換え・要約・整形を依頼できます。",
+          "hotkeyHint": "音声エージェントのホットキー",
+          "command": "ねえ{{agent}}、これを3つの箇条書きにして",
+          "r1": "報告書を確認済み",
+          "r2": "リリース準備完了",
+          "r3": "承認待ち"
+        },
+        "translation": {
+          "title": "話して、翻訳を貼付",
+          "desc": "ある言語で口述し、別の言語で翻訳を貼り付けます。",
+          "hotkeyHint": "翻訳のホットキー"
+        },
+        "meeting": {
+          "title": "会議メモをライブで",
+          "desc": "検出した通話を話者ラベル付きで文字起こしし、そのままメモへ。",
+          "l1": "金曜日にリリースしましょう。",
+          "l2": "いいと思います。",
+          "l3": "リリースノートを用意します。"
+        },
+        "ready": {
+          "title": "準備完了",
+          "desc": "すべては後で設定から変更できます。「完了」を押して VOxee を使い始めましょう。"
+        },
+        "notEnabled": "{{feature}} はまだ有効になっていません。",
+        "enable": "有効にする",
+        "notes": {
+          "title": "メモを行動に",
+          "desc": "要約・アクション抽出・翻訳をワンクリックで。",
+          "summarize": "要約",
+          "actionItems": "アクション",
+          "translate": "翻訳",
+          "summary": "要約",
+          "s1": "金曜リリース — チーム合意。",
+          "s2": "Speaker 2 がリリースノート担当。"
+        }
+      },
+      "language": {
+        "title": "言語を選択",
+        "subtitle": "VOxee のインターフェース言語。後で設定から変更できます。"
+      }
+    }
+  },
   "settings": {
     "language": {
       "sectionTitle": "言語",

@@ -14,6 +14,10 @@ const BYOK_KEY_BRIDGES = [
   { base: "openrouter", get: "getOpenrouterKey", save: "saveOpenrouterKey" },
   { base: "tinfoil", get: "getTinfoilKey", save: "saveTinfoilKey" },
   { base: "corti", get: "getCortiKey", save: "saveCortiKey" },
+  { base: "oxeegen-eu", get: "getOxeegenEuKey", save: "saveOxeegenEuKey" },
+  { base: "oxeegen-us", get: "getOxeegenUsKey", save: "saveOxeegenUsKey" },
+  { base: "meeting-custom-transcription", get: "getMeetingCustomTranscriptionKey", save: "saveMeetingCustomTranscriptionKey" },
+  { base: "upload-custom-transcription", get: "getUploadCustomTranscriptionKey", save: "saveUploadCustomTranscriptionKey" },
 ];
 const secretKeyApi = {};
 for (const k of BYOK_KEY_BRIDGES) {
