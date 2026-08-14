@@ -18,6 +18,13 @@
  *      (extends concatenates extraResources; a filter override cannot remove
  *      them). Restored afterwards.
  *   4. electron-builder with electron-builder.brand.json (unsigned).
+ *
+ * CI knobs (env vars, both optional):
+ *   - BRAND_VERSION: overrides the packaged app version (extraMetadata.version),
+ *     e.g. derived from a `voxee-vX.Y.Z` release tag.
+ *   - BRAND_PUBLISH: electron-builder --publish value (never|onTag|always).
+ *     Defaults to "never" so a local build never publishes, even though
+ *     electron-builder.brand.json now points `publish` at the fork's repo.
  */
 
 const fs = require("fs");
@@ -86,7 +93,12 @@ function main() {
   try {
     run("npm run build:renderer");
     restoreBin = stashModelBinaries();
-    run("npx electron-builder -c electron-builder.brand.json --win", {
+    const version = process.env.BRAND_VERSION;
+    const publish = process.env.BRAND_PUBLISH || "never";
+    let ebCmd = "npx electron-builder -c electron-builder.brand.json --win";
+    if (version) ebCmd += ` -c.extraMetadata.version=${version}`;
+    ebCmd += ` --publish ${publish}`;
+    run(ebCmd, {
       CSC_IDENTITY_AUTO_DISCOVERY: "false",
     });
   } finally {

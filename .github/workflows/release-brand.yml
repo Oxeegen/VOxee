@@ -1,0 +1,108 @@
+name: Release (VOxee brand)
+
+# Builds the branded, unsigned Windows installer and publishes it as a public
+# GitHub Release on this fork (Oxeegen/VOxee). Triggered by a `voxee-vX.Y.Z`
+# tag (the tag is the source of truth: its name sets the release version), or
+# manually via workflow_dispatch with an explicit version.
+#
+# The endpoint / model config is injected from repository Variables
+# (Settings > Secrets and variables > Actions > Variables). API keys are never
+# built in — they stay per-user at runtime.
+
+on:
+  push:
+    tags:
+      - "voxee-v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to release, e.g. 1.2.0 (no 'voxee-v' prefix)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so the annotated tag message is available
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # matches .nvmrc / CI (do not change major)
+
+      - name: Resolve version and tag
+        id: ver
+        shell: bash
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            TAG="${{ github.ref_name }}"
+          else
+            TAG="voxee-v${{ inputs.version }}"
+          fi
+          VERSION="${TAG#voxee-v}"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Releasing $TAG (app version $VERSION)"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Write brand .env from CI variables
+        shell: bash
+        run: |
+          cat > .env <<'ENV'
+          VITE_OXEE_EU_ENDPOINT=${{ vars.VITE_OXEE_EU_ENDPOINT }}
+          VITE_OXEE_EU_MODEL_TRANSCRIPTION=${{ vars.VITE_OXEE_EU_MODEL_TRANSCRIPTION }}
+          VITE_OXEE_EU_MODEL_DICTATION_CLEANUP=${{ vars.VITE_OXEE_EU_MODEL_DICTATION_CLEANUP }}
+          VITE_OXEE_EU_MODEL_DICTATION_AGENT=${{ vars.VITE_OXEE_EU_MODEL_DICTATION_AGENT }}
+          VITE_OXEE_EU_MODEL_DICTATION_TRANSLATION=${{ vars.VITE_OXEE_EU_MODEL_DICTATION_TRANSLATION }}
+          VITE_OXEE_EU_MODEL_NOTE_FORMATTING=${{ vars.VITE_OXEE_EU_MODEL_NOTE_FORMATTING }}
+          VITE_OXEE_EU_MODEL_CHAT_INTELLIGENCE=${{ vars.VITE_OXEE_EU_MODEL_CHAT_INTELLIGENCE }}
+          VITE_OXEE_US_ENDPOINT=${{ vars.VITE_OXEE_US_ENDPOINT }}
+          VITE_OXEE_US_MODEL_TRANSCRIPTION=${{ vars.VITE_OXEE_US_MODEL_TRANSCRIPTION }}
+          VITE_OXEE_US_MODEL_DICTATION_CLEANUP=${{ vars.VITE_OXEE_US_MODEL_DICTATION_CLEANUP }}
+          VITE_OXEE_US_MODEL_DICTATION_AGENT=${{ vars.VITE_OXEE_US_MODEL_DICTATION_AGENT }}
+          VITE_OXEE_US_MODEL_DICTATION_TRANSLATION=${{ vars.VITE_OXEE_US_MODEL_DICTATION_TRANSLATION }}
+          VITE_OXEE_US_MODEL_NOTE_FORMATTING=${{ vars.VITE_OXEE_US_MODEL_NOTE_FORMATTING }}
+          VITE_OXEE_US_MODEL_CHAT_INTELLIGENCE=${{ vars.VITE_OXEE_US_MODEL_CHAT_INTELLIGENCE }}
+          VITE_OXEE_DEBUG=0
+          ENV
+          echo "Wrote .env with $(grep -c '^VITE_OXEE_' .env) VITE_OXEE_* keys"
+
+      - name: Build branded Windows installer
+        shell: bash
+        env:
+          BRAND_VERSION: ${{ steps.ver.outputs.version }}
+          BRAND_PUBLISH: never # we upload via gh release below, on the exact tag
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # raises GitHub API rate limit for helper downloads
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run build:win:brand
+
+      - name: Publish GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          shopt -s nullglob
+          assets=(dist/*.exe dist/latest.yml dist/*.blockmap)
+          if [ ${#assets[@]} -eq 0 ]; then
+            echo "No build artifacts found in dist/" >&2
+            exit 1
+          fi
+          TAG="${{ steps.ver.outputs.tag }}"
+          NOTES="$(git tag -l --format='%(contents)' "$TAG")"
+          [ -z "$NOTES" ] && NOTES="VOxee ${{ steps.ver.outputs.version }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "${assets[@]}" --clobber
+          else
+            gh release create "$TAG" "${assets[@]}" \
+              --target "${{ github.sha }}" \
+              --title "VOxee ${{ steps.ver.outputs.version }}" \
+              --notes "$NOTES"
+          fi
+          echo "Released $TAG with ${#assets[@]} asset(s)."
