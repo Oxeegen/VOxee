@@ -157,10 +157,6 @@ jobs:
     needs: [version, build-windows, build-linux]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # full history so the annotated tag message is available
-
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
@@ -169,6 +165,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }} # gh release context without a checkout
         run: |
           shopt -s nullglob
           assets=(artifacts/*/*)
@@ -177,14 +174,25 @@ jobs:
             exit 1
           fi
           TAG="${{ needs.version.outputs.tag }}"
-          NOTES="$(git tag -l --format='%(contents)' "$TAG")"
-          [ -z "$NOTES" ] && NOTES="VOxee ${{ needs.version.outputs.version }}"
+          VERSION="${{ needs.version.outputs.version }}"
+
+          # Release notes = the annotated tag message, read via the API. The git
+          # checkout doesn't reliably carry the tag object, so `git tag --contents`
+          # falls back to the commit message — the API always has the annotation.
+          NOTES=""
+          OBJ=$(gh api "repos/${{ github.repository }}/git/ref/tags/$TAG" --jq '.object.type + " " + .object.sha' 2>/dev/null || echo "")
+          if [ "${OBJ%% *}" = "tag" ]; then
+            NOTES=$(gh api "repos/${{ github.repository }}/git/tags/${OBJ##* }" --jq '.message')
+          fi
+          [ -z "$NOTES" ] && NOTES="VOxee $VERSION"
+
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "${assets[@]}" --clobber
+            gh release edit "$TAG" --notes "$NOTES"
           else
             gh release create "$TAG" "${assets[@]}" \
               --target "${{ github.sha }}" \
-              --title "VOxee ${{ needs.version.outputs.version }}" \
+              --title "VOxee $VERSION" \
               --notes "$NOTES"
           fi
           echo "Released $TAG with ${#assets[@]} asset(s)."
