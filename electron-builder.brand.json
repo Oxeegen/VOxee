@@ -89,7 +89,11 @@
   ],
   "win": {
     "icon": "brand/assets/voxee.ico",
-    "azureSignOptions": null
+    "azureSignOptions": null,
+    "artifactName": "${productName}-${version}.${ext}"
+  },
+  "nsis": {
+    "artifactName": "${productName}-Setup-${version}.${ext}"
   },
   "mac": {
     "identity": null,
