@@ -98,5 +98,5 @@
   "linux": {
     "icon": "brand/assets/voxee.png"
   },
-  "publish": null
+  "publish": { "provider": "github", "owner": "Oxeegen", "repo": "VOxee" }
 }
