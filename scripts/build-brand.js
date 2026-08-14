@@ -1,20 +1,21 @@
 #!/usr/bin/env node
 /**
- * Branded, unsigned, slimmed Windows build.
+ * Branded, unsigned, slimmed build. Target platform is the first CLI arg
+ * (`win` | `linux`, default `win`) — see `build:win:brand` / `build:linux:brand`.
  *
- * MUST run on a native Windows host (C:\ path), not a WSL/UNC mount: native
- * modules (better-sqlite3) and the bundler binaries (rolldown/esbuild) do not
- * load over UNC.
+ * MUST run on a native host of the target OS (e.g. Windows on a C:\ path, not a
+ * WSL/UNC mount): native modules (better-sqlite3) and the bundler binaries
+ * (rolldown/esbuild) do not load over UNC / cross-platform.
  *
- * The slim prebuild (Windows helpers only) runs automatically as the npm
- * pre-hook of `build:win:brand` (prebuild:win:brand), so this script does not
- * re-run it. Invoke via `npm run build:win:brand` (not `node` directly).
+ * The slim prebuild (target-OS helpers only) runs automatically as the npm
+ * pre-hook (prebuild:<target>:brand), so this script does not re-run it. Invoke
+ * via `npm run build:<target>:brand` (not `node` directly).
  *
  * Steps:
  *   1. Bake brand/config/buildFlags.json (debug flag) — restored afterwards.
  *   2. Renderer build.
- *   3. Physically stash resources/bin/ model binaries (keep only Windows
- *      helpers) so electron-builder cannot bundle them — see FORK piege #1
+ *   3. Physically stash resources/bin/ model binaries (keep only the target
+ *      OS's helpers) so electron-builder cannot bundle them — see FORK piege #1
  *      (extends concatenates extraResources; a filter override cannot remove
  *      them). Restored afterwards.
  *   4. electron-builder with electron-builder.brand.json (unsigned).
@@ -33,16 +34,22 @@ const { execSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
 const BUILD_FLAGS = path.join(ROOT, "brand", "config", "buildFlags.json");
-const BRAND_ICON = path.join(ROOT, "brand", "assets", "voxee.ico");
 const RES_BIN = path.join(ROOT, "resources", "bin");
 const STASH = path.join(ROOT, ".brand-bin-stash");
 
 const args = process.argv.slice(2);
 const debug = args.includes("--debug");
 
-// Keep Windows runtime helpers + yt-dlp (URL/YouTube upload) in resources/bin
-// during packaging; everything else (model runtimes) is stashed out.
-const KEEP = /^(windows-|yt-dlp|nircmd\.exe$)/i;
+// Per-target packaging: electron-builder flag, brand icon, and which
+// resources/bin entries to keep (target-OS helpers + yt-dlp for URL/YouTube
+// upload); everything else (model runtimes) is stashed out.
+const TARGETS = {
+  win: { ebFlag: "--win", icon: "voxee.ico", keep: /^(windows-|yt-dlp|nircmd\.exe$)/i },
+  linux: { ebFlag: "--linux AppImage deb", icon: "voxee.png", keep: /^(linux-|yt-dlp)/i },
+};
+const target = Object.keys(TARGETS).find((t) => args.includes(t)) || "win";
+const targetCfg = TARGETS[target];
+const BRAND_ICON = path.join(ROOT, "brand", "assets", targetCfg.icon);
 
 function run(cmd, extraEnv) {
   console.log(`\n▶ ${cmd}`);
@@ -61,7 +68,7 @@ function stashModelBinaries() {
   fs.mkdirSync(STASH, { recursive: true });
   const moved = [];
   for (const entry of fs.readdirSync(RES_BIN)) {
-    if (KEEP.test(entry)) continue;
+    if (targetCfg.keep.test(entry)) continue;
     const from = path.join(RES_BIN, entry);
     const to = path.join(STASH, entry);
     fs.renameSync(from, to);
@@ -95,7 +102,7 @@ function main() {
     restoreBin = stashModelBinaries();
     const version = process.env.BRAND_VERSION;
     const publish = process.env.BRAND_PUBLISH || "never";
-    let ebCmd = "npx electron-builder -c electron-builder.brand.json --win";
+    let ebCmd = `npx electron-builder -c electron-builder.brand.json ${targetCfg.ebFlag}`;
     if (version) ebCmd += ` -c.extraMetadata.version=${version}`;
     ebCmd += ` --publish ${publish}`;
     run(ebCmd, {
@@ -105,7 +112,7 @@ function main() {
     restoreBin();
     restoreFlags();
   }
-  console.log("\n✓ Branded Windows build complete (dist/).");
+  console.log(`\n✓ Branded ${target} build complete (dist/).`);
 }
 
 main();

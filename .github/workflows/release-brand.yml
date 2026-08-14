@@ -1,11 +1,11 @@
 name: Release (VOxee brand)
 
-# Builds the branded, unsigned Windows installer and publishes it as a public
-# GitHub Release on this fork (Oxeegen/VOxee). Triggered by a `voxee-vX.Y.Z`
-# tag (the tag is the source of truth: its name sets the release version), or
-# manually via workflow_dispatch with an explicit version.
+# Builds the branded, unsigned installers (Windows + Linux) and publishes them
+# as a single public GitHub Release on this fork (Oxeegen/VOxee). Triggered by a
+# `voxee-vX.Y.Z` tag (the tag is the source of truth: its name sets the release
+# version), or manually via workflow_dispatch with an explicit version.
 #
-# The endpoint / model config is injected from repository Variables
+# Endpoint / model config is injected from repository Variables
 # (Settings > Secrets and variables > Actions > Variables). API keys are never
 # built in — they stay per-user at runtime.
 
@@ -24,17 +24,12 @@ permissions:
   contents: write
 
 jobs:
-  build-windows:
-    runs-on: windows-latest
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.ver.outputs.tag }}
+      version: ${{ steps.ver.outputs.version }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # full history so the annotated tag message is available
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24 # matches .nvmrc / CI (do not change major)
-
       - name: Resolve version and tag
         id: ver
         shell: bash
@@ -44,10 +39,18 @@ jobs:
           else
             TAG="voxee-v${{ inputs.version }}"
           fi
-          VERSION="${TAG#voxee-v}"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "Releasing $TAG (app version $VERSION)"
+          echo "version=${TAG#voxee-v}" >> "$GITHUB_OUTPUT"
+          echo "Releasing $TAG (app version ${TAG#voxee-v})"
+
+  build-windows:
+    needs: version
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24 # matches .nvmrc / CI (do not change major)
 
       - name: Install dependencies
         run: npm ci
@@ -72,16 +75,96 @@ jobs:
           VITE_OXEE_US_MODEL_CHAT_INTELLIGENCE=${{ vars.VITE_OXEE_US_MODEL_CHAT_INTELLIGENCE }}
           VITE_OXEE_DEBUG=0
           ENV
-          echo "Wrote .env with $(grep -c '^VITE_OXEE_' .env) VITE_OXEE_* keys"
 
       - name: Build branded Windows installer
         shell: bash
         env:
-          BRAND_VERSION: ${{ steps.ver.outputs.version }}
-          BRAND_PUBLISH: never # we upload via gh release below, on the exact tag
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # raises GitHub API rate limit for helper downloads
+          BRAND_VERSION: ${{ needs.version.outputs.version }}
+          BRAND_PUBLISH: never # release job uploads on the exact tag
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # raises API rate limit for helper downloads
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run build:win:brand
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-windows
+          path: |
+            dist/*.exe
+            dist/*.blockmap
+            dist/latest.yml
+          if-no-files-found: error
+
+  build-linux:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Linux renderer native binaries
+        run: npm install @rollup/rollup-linux-x64-gnu lightningcss-linux-x64-gnu @tailwindcss/oxide-linux-x64-gnu --no-save
+
+      - name: Install Linux build/packaging deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxtst-dev libatspi2.0-dev libglib2.0-dev libpipewire-0.3-dev pkg-config
+
+      - name: Write brand .env from CI variables
+        shell: bash
+        run: |
+          cat > .env <<'ENV'
+          VITE_OXEE_EU_ENDPOINT=${{ vars.VITE_OXEE_EU_ENDPOINT }}
+          VITE_OXEE_EU_MODEL_TRANSCRIPTION=${{ vars.VITE_OXEE_EU_MODEL_TRANSCRIPTION }}
+          VITE_OXEE_EU_MODEL_DICTATION_CLEANUP=${{ vars.VITE_OXEE_EU_MODEL_DICTATION_CLEANUP }}
+          VITE_OXEE_EU_MODEL_DICTATION_AGENT=${{ vars.VITE_OXEE_EU_MODEL_DICTATION_AGENT }}
+          VITE_OXEE_EU_MODEL_DICTATION_TRANSLATION=${{ vars.VITE_OXEE_EU_MODEL_DICTATION_TRANSLATION }}
+          VITE_OXEE_EU_MODEL_NOTE_FORMATTING=${{ vars.VITE_OXEE_EU_MODEL_NOTE_FORMATTING }}
+          VITE_OXEE_EU_MODEL_CHAT_INTELLIGENCE=${{ vars.VITE_OXEE_EU_MODEL_CHAT_INTELLIGENCE }}
+          VITE_OXEE_US_ENDPOINT=${{ vars.VITE_OXEE_US_ENDPOINT }}
+          VITE_OXEE_US_MODEL_TRANSCRIPTION=${{ vars.VITE_OXEE_US_MODEL_TRANSCRIPTION }}
+          VITE_OXEE_US_MODEL_DICTATION_CLEANUP=${{ vars.VITE_OXEE_US_MODEL_DICTATION_CLEANUP }}
+          VITE_OXEE_US_MODEL_DICTATION_AGENT=${{ vars.VITE_OXEE_US_MODEL_DICTATION_AGENT }}
+          VITE_OXEE_US_MODEL_DICTATION_TRANSLATION=${{ vars.VITE_OXEE_US_MODEL_DICTATION_TRANSLATION }}
+          VITE_OXEE_US_MODEL_NOTE_FORMATTING=${{ vars.VITE_OXEE_US_MODEL_NOTE_FORMATTING }}
+          VITE_OXEE_US_MODEL_CHAT_INTELLIGENCE=${{ vars.VITE_OXEE_US_MODEL_CHAT_INTELLIGENCE }}
+          VITE_OXEE_DEBUG=0
+          ENV
+
+      - name: Build branded Linux packages (AppImage + deb)
+        shell: bash
+        env:
+          BRAND_VERSION: ${{ needs.version.outputs.version }}
+          BRAND_PUBLISH: never
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run build:linux:brand
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-linux
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/latest-linux.yml
+          if-no-files-found: error
+
+  release:
+    needs: [version, build-windows, build-linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history so the annotated tag message is available
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
       - name: Publish GitHub Release
         shell: bash
@@ -89,20 +172,20 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           shopt -s nullglob
-          assets=(dist/*.exe dist/latest.yml dist/*.blockmap)
+          assets=(artifacts/*/*)
           if [ ${#assets[@]} -eq 0 ]; then
-            echo "No build artifacts found in dist/" >&2
+            echo "No build artifacts downloaded" >&2
             exit 1
           fi
-          TAG="${{ steps.ver.outputs.tag }}"
+          TAG="${{ needs.version.outputs.tag }}"
           NOTES="$(git tag -l --format='%(contents)' "$TAG")"
-          [ -z "$NOTES" ] && NOTES="VOxee ${{ steps.ver.outputs.version }}"
+          [ -z "$NOTES" ] && NOTES="VOxee ${{ needs.version.outputs.version }}"
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "${assets[@]}" --clobber
           else
             gh release create "$TAG" "${assets[@]}" \
               --target "${{ github.sha }}" \
-              --title "VOxee ${{ steps.ver.outputs.version }}" \
+              --title "VOxee ${{ needs.version.outputs.version }}" \
               --notes "$NOTES"
           fi
           echo "Released $TAG with ${#assets[@]} asset(s)."
