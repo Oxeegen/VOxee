@@ -45,7 +45,7 @@ const debug = args.includes("--debug");
 // upload); everything else (model runtimes) is stashed out.
 const TARGETS = {
   win: { ebFlag: "--win", icon: "voxee.ico", keep: /^(windows-|yt-dlp|nircmd\.exe$)/i },
-  linux: { ebFlag: "--linux AppImage deb", icon: "voxee.png", keep: /^(linux-|yt-dlp)/i },
+  linux: { ebFlag: "--linux AppImage", icon: "voxee.png", keep: /^(linux-|yt-dlp)/i },
 };
 const target = Object.keys(TARGETS).find((t) => args.includes(t)) || "win";
 const targetCfg = TARGETS[target];

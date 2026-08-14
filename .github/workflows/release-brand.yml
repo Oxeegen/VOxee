@@ -136,7 +136,7 @@ jobs:
           VITE_OXEE_DEBUG=0
           ENV
 
-      - name: Build branded Linux packages (AppImage + deb)
+      - name: Build branded Linux package (AppImage)
         shell: bash
         env:
           BRAND_VERSION: ${{ needs.version.outputs.version }}
@@ -150,7 +150,6 @@ jobs:
           name: dist-linux
           path: |
             dist/*.AppImage
-            dist/*.deb
             dist/latest-linux.yml
           if-no-files-found: error
 
