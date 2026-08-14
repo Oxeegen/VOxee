@@ -15,7 +15,7 @@
     "primary": "#5E4AF5",
     "keepPrimaryInDark": true
   },
-  "update": { "feedUrl": null },
+  "update": { "enabled": true, "feedUrl": null },
   "urls": { "docs": null, "support": null, "terms": null, "privacy": null },
   "models": {
     "transcription":        { "provider": "custom", "modes": ["self-hosted"], "lockedFields": ["endpoint", "model"] },

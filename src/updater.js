@@ -1,10 +1,16 @@
 const { autoUpdater } = require("electron-updater");
 
-// Brand-configurable update feed. null (brand default) disables update checks
-// entirely; otherwise a generic electron-updater server URL.
+// Brand-configurable auto-update.
+//  - update.enabled:false disables checks entirely (no network).
+//  - A feedUrl (brand config or OXEE_UPDATE_URL) => generic electron-updater server.
+//  - enabled with no feedUrl => use the bundled app-update.yml (GitHub provider
+//    from the electron-builder publish config), which also carries release notes
+//    for the in-app changelog.
 const brandConfig = require("../brand/config/brand.config.json");
 const UPDATE_FEED_URL =
   (brandConfig.update && brandConfig.update.feedUrl) || process.env.OXEE_UPDATE_URL || null;
+const UPDATES_ENABLED =
+  (brandConfig.update && brandConfig.update.enabled === true) || UPDATE_FEED_URL !== null;
 
 class UpdateManager {
   constructor() {
@@ -32,15 +38,19 @@ class UpdateManager {
       return;
     }
 
-    if (!UPDATE_FEED_URL) {
+    if (!UPDATES_ENABLED) {
       // Updates disabled for this brand build — no feed, no network checks.
       return;
     }
 
-    autoUpdater.setFeedURL({
-      provider: "generic",
-      url: UPDATE_FEED_URL,
-    });
+    // A generic feed URL overrides; otherwise fall through to the bundled
+    // app-update.yml (GitHub provider baked in by electron-builder publish).
+    if (UPDATE_FEED_URL) {
+      autoUpdater.setFeedURL({
+        provider: "generic",
+        url: UPDATE_FEED_URL,
+      });
+    }
 
     // Use arch-specific update channel on macOS to prevent arm64/x64
     // from downloading mismatched artifacts. Both builds publish to the
@@ -179,7 +189,7 @@ class UpdateManager {
         };
       }
 
-      if (!UPDATE_FEED_URL) {
+      if (!UPDATES_ENABLED) {
         return { updateAvailable: false, message: "Updates are disabled" };
       }
 
@@ -218,7 +228,7 @@ class UpdateManager {
         };
       }
 
-      if (!UPDATE_FEED_URL) {
+      if (!UPDATES_ENABLED) {
         return { success: false, message: "Updates are disabled" };
       }
 
@@ -302,7 +312,7 @@ class UpdateManager {
         updateAvailable: this.updateAvailable,
         updateDownloaded: this.updateDownloaded,
         isDevelopment: process.env.NODE_ENV === "development",
-        updatesEnabled: UPDATE_FEED_URL !== null,
+        updatesEnabled: UPDATES_ENABLED,
       };
     } catch (error) {
       console.error("❌ Error getting update status:", error);
@@ -320,7 +330,7 @@ class UpdateManager {
   }
 
   checkForUpdatesOnStartup() {
-    if (!UPDATE_FEED_URL) {
+    if (!UPDATES_ENABLED) {
       return;
     }
     if (process.env.NODE_ENV !== "development") {

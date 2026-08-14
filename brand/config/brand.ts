@@ -77,8 +77,14 @@ export interface BrandConfig {
   panelStartPosition: "bottom-right" | "center" | "bottom-left";
   /** Theme values. */
   theme: BrandTheme;
-  /** Auto-update feed. feedUrl null => updates disabled. */
-  update: { feedUrl: string | null };
+  /**
+   * Auto-update. `enabled:false` disables checks entirely. When enabled with
+   * `feedUrl:null`, the bundled `app-update.yml` (GitHub provider from the
+   * electron-builder publish config) is used — it also carries release notes
+   * for the in-app changelog. A non-null `feedUrl` overrides with a generic
+   * electron-updater server.
+   */
+  update: { enabled: boolean; feedUrl: string | null };
   /** External URLs. null => hidden / not applicable. */
   urls: {
     docs: string | null;
